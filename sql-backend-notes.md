@@ -131,11 +131,35 @@ DECLARE
   user_profile_id integer;
 BEGIN
   SELECT profile_id INTO user_profile_id FROM groups INNER JOIN users ON groups.id = users.personal_space_id WHERE users.id = NEW.user_id;
+  IF user_profile_id IS NULL THEN
+    RAISE EXCEPTION 'User % does not exists', NEW.user_id;
+  END IF;
   NEW.profile_id := user_profile_id;
   RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER join_member_set_default_profile BEFORE INSERT ON members FOR EACH ROW EXECUTE PROCEDURE member_set_default_profile();
+
+-- user_update_username_path
+
+CREATE OR REPLACE FUNCTION user_update_username_path() RETURNS TRIGGER AS $$ BEGIN
+	UPDATE groups SET path = regexp_replace(path, OLD.username, NEW.username, 'q') WHERE root_id = NEW.personal_space_id;
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER user_update_username_path AFTER UPDATE OF username ON users FOR EACH ROW WHEN (NEW.username IS DISTINCT FROM OLD.username) EXECUTE PROCEDURE user_update_username_path();
+
+-- update_group_tree_path
+
+CREATE OR REPLACE FUNCTION update_group_tree_path() RETURNS TRIGGER AS $$ BEGIN
+	UPDATE groups SET path = regexp_replace(path, OLD.path, NEW.path, 'q') WHERE root_id = NEW.root_id AND id != NEW.id;
+	IF NEW.type = 'user' THEN
+		UPDATE users SET username = NEW.path WHERE personal_space_id = NEW.id;
+	END IF;
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_group_tree_path AFTER UPDATE OF path ON groups FOR EACH ROW WHEN (NEW.path IS DISTINCT FROM OLD.path AND pg_trigger_depth() = 0) EXECUTE PROCEDURE update_group_tree_path();
 
 --
 

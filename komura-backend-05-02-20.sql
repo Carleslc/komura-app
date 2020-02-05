@@ -203,6 +203,9 @@ DECLARE
   user_profile_id integer;
 BEGIN
   SELECT profile_id INTO user_profile_id FROM groups INNER JOIN users ON groups.id = users.personal_space_id WHERE users.id = NEW.user_id;
+  IF user_profile_id IS NULL THEN
+    RAISE EXCEPTION 'User % does not exists', NEW.user_id;
+  END IF;
   NEW.profile_id := user_profile_id;
   RETURN NEW;
 END $$;
@@ -223,6 +226,21 @@ END $$;
 
 
 --
+-- Name: update_group_tree_path(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.update_group_tree_path() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$ BEGIN
+	UPDATE groups SET path = regexp_replace(path, OLD.path, NEW.path, 'q') WHERE root_id = NEW.root_id AND id != NEW.id;
+	IF NEW.type = 'user' THEN
+		UPDATE users SET username = NEW.path WHERE personal_space_id = NEW.id;
+	END IF;
+	RETURN NEW;
+END $$;
+
+
+--
 -- Name: user_set_member_personal_space(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -231,6 +249,18 @@ CREATE FUNCTION public.user_set_member_personal_space() RETURNS trigger
     AS $$ BEGIN
  	INSERT INTO members (user_id, group_id, type) VALUES (NEW.id, NEW.personal_space_id, 'owner');
  	RETURN NEW;
+END $$;
+
+
+--
+-- Name: user_update_username_path(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.user_update_username_path() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$ BEGIN
+	UPDATE groups SET path = regexp_replace(path, OLD.username, NEW.username, 'q') WHERE root_id = NEW.personal_space_id;
+	RETURN NEW;
 END $$;
 
 
@@ -763,7 +793,7 @@ CREATE VIEW public.active_groups AS
 
 CREATE TABLE public.groups (
     id integer NOT NULL,
-    path text NOT NULL,
+    path public.citext NOT NULL,
     type text DEFAULT 'group'::text NOT NULL,
     root_id integer NOT NULL,
     parent_id integer,
@@ -796,7 +826,8 @@ CREATE TABLE public.users (
     username public.citext NOT NULL,
     last_login timestamp with time zone DEFAULT now() NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    personal_space_id integer NOT NULL
+    personal_space_id integer NOT NULL,
+    CONSTRAINT "last_login after created_at" CHECK ((last_login >= created_at))
 );
 
 
@@ -1156,8 +1187,8 @@ public	online_members	group	object	{"manual_configuration": {"remote_table": "gr
 public	online_members	user	object	{"manual_configuration": {"remote_table": "users", "column_mapping": {"user_id": "id"}}}	\N	f
 public	active_groups	group	object	{"manual_configuration": {"remote_table": "groups", "column_mapping": {"group_id": "id"}}}	\N	f
 public	active_users	user	object	{"manual_configuration": {"remote_table": "users", "column_mapping": {"id": "id"}}}	\N	f
-public	active_root_groups	group	object	{"manual_configuration": {"remote_table": "groups", "column_mapping": {"group_id": "id"}}}	\N	f
 public	active_members	member	object	{"manual_configuration": {"remote_table": "members", "column_mapping": {"user_id": "user_id", "group_id": "group_id"}}}	\N	f
+public	active_root_groups	group	object	{"manual_configuration": {"remote_table": "groups", "column_mapping": {"group_id": "id"}}}	\N	f
 \.
 
 
@@ -1166,7 +1197,7 @@ public	active_members	member	object	{"manual_configuration": {"remote_table": "m
 --
 
 COPY hdb_catalog.hdb_schema_update_event (instance_id, occurred_at) FROM stdin;
-b5ce0d39-a845-46ca-a1ec-bc8d40330b6c	2020-02-05 20:54:44.943867+00
+69a6ca9a-c6a5-4672-96f8-3e3506800ba8	2020-02-05 23:50:30.975344+00
 \.
 
 
@@ -1240,6 +1271,10 @@ COPY hdb_catalog.remote_schemas (id, name, definition, comment) FROM stdin;
 --
 
 COPY public.chat_settings (group_id, is_public) FROM stdin;
+4	f
+5	f
+6	f
+7	f
 \.
 
 
@@ -1291,6 +1326,10 @@ group
 --
 
 COPY public.groups (id, path, type, root_id, parent_id, is_accessible, profile_id, created_at) FROM stdin;
+4	UserTest	user	4	\N	t	4	2020-02-05 21:12:05.110466+00
+6	test/sub	group	5	5	t	6	2020-02-05 23:30:39.408518+00
+5	test	group	5	\N	t	5	2020-02-05 21:13:02.918309+00
+7	test/sub/deepsub	group	5	6	t	7	2020-02-05 23:52:46.051336+00
 \.
 
 
@@ -1326,6 +1365,8 @@ member
 --
 
 COPY public.members (user_id, group_id, type, profile_id, private_messages, last_seen, last_exit, joined_at) FROM stdin;
+test-1	4	owner	4	t	2020-02-05 21:12:05.110466+00	2020-02-05 21:12:05.110466+00	2020-02-05 21:12:05.110466+00
+test-1	5	owner	4	t	2020-02-05 21:13:02.918309+00	2020-02-05 21:13:02.918309+00	2020-02-05 21:13:02.918309+00
 \.
 
 
@@ -1342,6 +1383,10 @@ COPY public.messages (id, text, created_at) FROM stdin;
 --
 
 COPY public.profiles (id, name, description, image, banner, is_public) FROM stdin;
+4	Usuario de prueba	\N	\N	\N	t
+5	Test	\N	\N	\N	t
+6	Subgroup of Test	\N	\N	\N	t
+7	Subgroup 2 of Test	\N	\N	\N	t
 \.
 
 
@@ -1358,6 +1403,7 @@ COPY public.topics (name) FROM stdin;
 --
 
 COPY public.users (id, email, username, last_login, created_at, personal_space_id) FROM stdin;
+test-1	user1@test.com	UserTest	2020-02-05 21:12:05.110466+00	2020-02-05 21:12:05.110466+00	4
 \.
 
 
@@ -1372,7 +1418,7 @@ SELECT pg_catalog.setval('hdb_catalog.remote_schemas_id_seq', 1, false);
 -- Name: groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.groups_id_seq', 1, false);
+SELECT pg_catalog.setval('public.groups_id_seq', 7, true);
 
 
 --
@@ -1386,7 +1432,7 @@ SELECT pg_catalog.setval('public.messages_id_seq', 1, false);
 -- Name: profiles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.profiles_id_seq', 1, false);
+SELECT pg_catalog.setval('public.profiles_id_seq', 7, true);
 
 
 --
@@ -1773,10 +1819,24 @@ CREATE TRIGGER root_groups_set_root_id_to_self BEFORE INSERT ON public.groups FO
 
 
 --
+-- Name: groups update_group_tree_path; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_group_tree_path AFTER UPDATE OF path ON public.groups FOR EACH ROW WHEN (((new.path IS DISTINCT FROM old.path) AND (pg_trigger_depth() = 0))) EXECUTE PROCEDURE public.update_group_tree_path();
+
+
+--
 -- Name: users user_set_member_personal_space; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER user_set_member_personal_space AFTER INSERT ON public.users FOR EACH ROW EXECUTE PROCEDURE public.user_set_member_personal_space();
+
+
+--
+-- Name: users user_update_username_path; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER user_update_username_path AFTER UPDATE OF username ON public.users FOR EACH ROW WHEN ((new.username IS DISTINCT FROM old.username)) EXECUTE PROCEDURE public.user_update_username_path();
 
 
 --
