@@ -1,0 +1,18 @@
+mutation createDefaultGroup($name: String!, $path: String!) {
+  insert_groups(objects: { profile: { data: { name: $name } }, path: $path }) {
+    returning {
+      id
+      path
+      is_accessible
+      type
+      created_at
+      chat_settings {
+        is_public
+      }
+      profile {
+        name
+        is_public
+      }
+    }
+  }
+}

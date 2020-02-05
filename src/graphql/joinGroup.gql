@@ -1,0 +1,17 @@
+mutation joinGroup($group: Int!, $user: String!) {
+  insert_members(objects: { group_id: $group, user_id: $user }) {
+    returning {
+      group {
+        path
+        profile {
+          name
+        }
+      }
+      profile {
+        name
+      }
+      type
+      joined_at
+    }
+  }
+}
