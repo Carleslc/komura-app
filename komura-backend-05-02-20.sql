@@ -151,7 +151,7 @@ $$;
 CREATE FUNCTION public.default_modules_setup() RETURNS trigger
     LANGUAGE plpgsql
     AS $$ BEGIN
-  INSERT INTO chat_settings(group_id) VALUES (NEW.id);
+  INSERT INTO chat_settings (group_id) VALUES (NEW.id);
   RETURN NEW;
 END $$;
 
@@ -203,24 +203,6 @@ DECLARE
   user_profile_id integer;
 BEGIN
   SELECT profile_id INTO user_profile_id FROM groups INNER JOIN users ON groups.id = users.personal_space_id WHERE users.id = NEW.user_id;
-  NEW.profile_id := user_profile_id;
-  RETURN NEW;
-END $$;
-
-
---
--- Name: member_set_profile_and_default_timestamp(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.member_set_profile_and_default_timestamp() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-  user_profile_id integer;
-BEGIN
-  NEW.last_seen := NEW.joined_at;
-  NEW.last_exit := NEW.joined_at;
-  SELECT profile_id INTO user_profile_id FROM users INNER JOIN groups ON users.personal_space_id = groups.id;
   NEW.profile_id := user_profile_id;
   RETURN NEW;
 END $$;
@@ -1184,7 +1166,7 @@ public	active_members	member	object	{"manual_configuration": {"remote_table": "m
 --
 
 COPY hdb_catalog.hdb_schema_update_event (instance_id, occurred_at) FROM stdin;
-b5ce0d39-a845-46ca-a1ec-bc8d40330b6c	2020-02-05 20:42:47.274039+00
+b5ce0d39-a845-46ca-a1ec-bc8d40330b6c	2020-02-05 20:54:44.943867+00
 \.
 
 
