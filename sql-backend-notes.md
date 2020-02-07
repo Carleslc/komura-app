@@ -60,16 +60,16 @@ CREATE OR REPLACE VIEW "public"."active_groups" AS
   SELECT DISTINCT active_members.group_id
   FROM active_members;
 
+CREATE OR REPLACE VIEW "public"."active_root_groups" AS 
+  SELECT group_id, path
+  FROM active_groups INNER JOIN groups ON active_groups.group_id = groups.id
+  WHERE parent_id IS NULL AND type != 'user';
+
 CREATE OR REPLACE VIEW "public"."active_users" AS 
   SELECT id, username, last_login
   FROM users
   WHERE last_login >= (now() - '1 month'::interval)
   ORDER BY last_login DESC;
-
-CREATE OR REPLACE VIEW "public"."active_root_groups" AS 
-  SELECT group_id, path
-  FROM active_groups INNER JOIN groups ON active_groups.group_id = groups.id
-  WHERE parent_id IS NULL AND type != 'user';
 ```
 
 ## SQL Triggers
@@ -118,7 +118,7 @@ CREATE TRIGGER delete_group_profile AFTER DELETE ON groups FOR EACH ROW EXECUTE 
 -- user_set_member_personal_space
 
 CREATE OR REPLACE FUNCTION user_set_member_personal_space() RETURNS TRIGGER AS $$ BEGIN
- 	INSERT INTO members (user_id, group_id, type) VALUES (NEW.id, NEW.personal_space_id, 'owner');
+ 	INSERT INTO members (group_id, user_id, role) VALUES (NEW.personal_space_id, NEW.id, 'owner');
  	RETURN NEW;
 END $$ LANGUAGE plpgsql;
  
@@ -236,6 +236,12 @@ List constraints:
 SELECT constraint_name, constraint_type, is_deferrable, initially_deferred, enforced
     FROM "information_schema"."table_constraints"
     WHERE table_schema='public' AND table_name='chat_settings';
+```
+
+Rename:
+
+```sql
+ALTER TABLE name RENAME CONSTRAINT constraint_name TO new_constraint_name;
 ```
 
 Make constraints deferred:
