@@ -1,6 +1,3 @@
 module.exports = {
-  presets: [
-    '@quasar/babel-preset-app',
-    'airbnb',
-  ],
+  presets: ['@quasar/babel-preset-app']
 };

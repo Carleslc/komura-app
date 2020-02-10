@@ -77,16 +77,26 @@ CREATE OR REPLACE VIEW "public"."active_users" AS
 ```plsql
 SELECT * FROM information_schema.triggers;
 
--- root_groups_set_root_id_to_self
+-- groups_set_root_path
 
-CREATE OR REPLACE FUNCTION root_groups_set_root_id_to_self() RETURNS TRIGGER AS $$ BEGIN
+CREATE OR REPLACE FUNCTION groups_set_root_path() RETURNS TRIGGER AS $$
+DECLARE
+  parent_root_id integer;
+  parent_path text;
+  slug text;
+BEGIN
   IF NEW.parent_id IS NULL THEN
-  	NEW.root_id = NEW.id;
+    NEW.root_id := NEW.id;
+  ELSE
+    SELECT root_id, path INTO parent_root_id, parent_path FROM groups WHERE id = NEW.parent_id;
+    NEW.root_id := parent_root_id;
+    slug := regexp_replace(NEW.path, '^.*/', ''); -- strip every node but last
+    NEW.path := concat_ws('/', parent_path, slug);
   END IF;
   RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER root_groups_set_root_id_to_self BEFORE INSERT ON groups FOR EACH ROW EXECUTE PROCEDURE root_groups_set_root_id_to_self();
+CREATE TRIGGER groups_set_root_path BEFORE INSERT ON groups FOR EACH ROW EXECUTE PROCEDURE groups_set_root_path();
 
 -- default_modules_setup
 
@@ -140,26 +150,37 @@ END $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER join_member_set_default_profile BEFORE INSERT ON members FOR EACH ROW EXECUTE PROCEDURE member_set_default_profile();
 
+-- TODO: delete_member_profile after delete on members (ignore if fkey violation, i.e. when profile is default user profile)
+
 -- user_update_username_path
 
 CREATE OR REPLACE FUNCTION user_update_username_path() RETURNS TRIGGER AS $$ BEGIN
-	UPDATE groups SET path = regexp_replace(path, OLD.username, NEW.username, 'q') WHERE root_id = NEW.personal_space_id;
-	RETURN NEW;
+  UPDATE groups SET path = regexp_replace(path, OLD.username, NEW.username, 'q') WHERE root_id = NEW.personal_space_id;
+  RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER user_update_username_path AFTER UPDATE OF username ON users FOR EACH ROW WHEN (NEW.username IS DISTINCT FROM OLD.username) EXECUTE PROCEDURE user_update_username_path();
+CREATE TRIGGER user_update_username_path AFTER UPDATE OF username ON users FOR EACH ROW WHEN (NEW.username IS DISTINCT FROM OLD.username AND pg_trigger_depth() = 0) EXECUTE PROCEDURE user_update_username_path();
 
 -- update_group_tree_path
 
-CREATE OR REPLACE FUNCTION update_group_tree_path() RETURNS TRIGGER AS $$ BEGIN
-	UPDATE groups SET path = regexp_replace(path, OLD.path, NEW.path, 'q') WHERE root_id = NEW.root_id AND id != NEW.id;
-	IF NEW.type = 'user' THEN
-		UPDATE users SET username = NEW.path WHERE personal_space_id = NEW.id;
-	END IF;
-	RETURN NEW;
+CREATE OR REPLACE FUNCTION update_group_tree_path() RETURNS TRIGGER AS $$
+DECLARE
+  parent_path text;
+  slug text;
+  new_path text;
+BEGIN
+	parent_path := substring(OLD.path, '^(.*)/');
+	slug := regexp_replace(NEW.path, '^.*/', ''); -- strip every node but last
+	new_path := concat_ws('/', parent_path, slug);
+	UPDATE groups SET path = regexp_replace(path, OLD.path, new_path, 'q') WHERE root_id = NEW.root_id AND path LIKE (OLD.path || '/%'); -- update children paths
+	NEW.path := new_path;
+  IF NEW.type = 'user' THEN
+    UPDATE users SET username = NEW.path WHERE personal_space_id = NEW.id;
+  END IF;
+  RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_group_tree_path AFTER UPDATE OF path ON groups FOR EACH ROW WHEN (NEW.path IS DISTINCT FROM OLD.path AND pg_trigger_depth() = 0) EXECUTE PROCEDURE update_group_tree_path();
+CREATE TRIGGER update_group_tree_path BEFORE UPDATE OF path ON groups FOR EACH ROW WHEN (NEW.path IS DISTINCT FROM OLD.path AND pg_trigger_depth() = 0) EXECUTE PROCEDURE update_group_tree_path();
 
 --
 

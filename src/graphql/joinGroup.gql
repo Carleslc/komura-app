@@ -10,7 +10,7 @@ mutation joinGroup($group: Int!, $user: String!) {
       profile {
         name
       }
-      type
+      role
       joined_at
     }
   }

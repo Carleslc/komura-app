@@ -1,14 +1,16 @@
-mutation createRootGroup($owner: String!, $name: String!, $slug: String!) {
+mutation createSubgroup($owner: String!, $name: String!, $slug: String!, $parent: Int!) {
   insert_groups(
     objects: {
       profile: { data: { name: $name } }
       path: $slug
+      parent_id: $parent
       members: { data: { user_id: $owner, role: owner } }
     }
   ) {
     returning {
       id
       path
+      parent_id
       is_accessible
       type
       created_at
@@ -18,6 +20,18 @@ mutation createRootGroup($owner: String!, $name: String!, $slug: String!) {
       profile {
         name
         is_public
+      }
+      root {
+        path
+        profile {
+          name
+        }
+      }
+      parent {
+        path
+        profile {
+          name
+        }
       }
     }
   }
