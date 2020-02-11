@@ -34,6 +34,8 @@ module.exports = {
 
   // add your custom rules here
   rules: {
+    'max-len': ['warn', { code: 120 }],
+
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'no-param-reassign': 'off',
     'global-require': 'off',

@@ -7,11 +7,11 @@ import 'firebase/auth';
 import 'firebase/database';
 
 // Your web app's Firebase configuration
-import { firebaseConfig } from 'src/boot/firebase-config.js';
+import { firebaseConfig } from '@/boot/firebase-config';
 
 // Initialize Firebase
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const firebaseAuth = firebaseApp.auth();
 const firebaseDb = firebaseApp.database();
 
-export { firebaseAuth, firebaseDb };
+export { firebase, firebaseAuth, firebaseDb };

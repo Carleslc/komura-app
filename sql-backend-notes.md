@@ -17,7 +17,7 @@ heroku config:get DATABASE_URL -a komura-backend
 ```sql
 CREATE EXTENSION citext;
 CREATE DOMAIN email AS citext
-  CHECK ( value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$' );
+  CHECK ( value ~ '^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?){1,}$' );
 ```
 
 - Avoid case sensitive duplication (citext stands for case-insensitive text)
@@ -150,7 +150,7 @@ END $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER join_member_set_default_profile BEFORE INSERT ON members FOR EACH ROW EXECUTE PROCEDURE member_set_default_profile();
 
--- TODO: delete_member_profile after delete on members (ignore if fkey violation, i.e. when profile is default user profile)
+-- TODO: delete_member_profile after delete on members (ignore if pkey violation, i.e. profile != user profile)
 
 -- user_update_username_path
 

@@ -1,6 +1,7 @@
 !**/.eslintrc*
 node_modules*
 dist
+src/statics
 *.svg
 *.ico
 *.json

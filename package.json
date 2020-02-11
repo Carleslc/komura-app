@@ -15,10 +15,12 @@
     "@quasar/extras": "^1.0.0",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
+    "apollo-link-context": "^1.0.19",
     "apollo-link-http": "^1.5.16",
     "apollo-link-ws": "^1.0.19",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "firebase": "^7.8.1",
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.3",
     "node-fetch": "^2.6.0",
@@ -28,7 +30,7 @@
     "vue-apollo": "^3.0.3"
   },
   "devDependencies": {
-    "@quasar/app": "^1.8.5",
+    "@quasar/app": "^1.0.0",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",

@@ -1,27 +1,32 @@
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { createHttpLink } from 'apollo-link-http';
+import { HttpLink } from 'apollo-link-http';
 import { WebSocketLink } from 'apollo-link-ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { getMainDefinition } from 'apollo-utilities';
+import { setContext } from 'apollo-link-context';
 import { split } from 'apollo-link';
 
+import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import fetch from 'node-fetch';
-
 import VueApollo from 'vue-apollo';
+
+import { AuthService } from '@/services/auth';
+
+// https://github.com/Akryum/vue-cli-plugin-apollo/blob/master/graphql-client/src/index.js
 
 const API = 'komura-backend.herokuapp.com/v1/graphql';
 
-const httpLink = createHttpLink({
+const httpLink = new HttpLink({
   uri: `https://${API}`,
   fetch
 });
 
-const wsLink = new WebSocketLink({
-  uri: `wss://${API}`,
-  options: {
-    reconnect: true
-  }
+const wsClient = new SubscriptionClient(`wss://${API}`, {
+  reconnect: true
 });
+
+const wsLink = new WebSocketLink(wsClient);
 
 const link = split(
   ({ query }) => {
@@ -32,12 +37,38 @@ const link = split(
   httpLink
 );
 
-const apolloClient = new ApolloClient({
-  link,
-  cache: new InMemoryCache()
+const authLink = setContext((_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      authorization: AuthService.getAuth()
+    }
+  };
 });
 
-const apolloProvider = new VueApollo({
+const apolloClient = new ApolloClient({
+  link: authLink.concat(link),
+  cache: new InMemoryCache(),
+  connectToDevTools: process.env.DEV
+});
+
+export function restartWebsockets() {
+  // Copy current operations
+  const operations = { ...wsClient.operations };
+
+  // Close connection
+  wsClient.close(true);
+
+  // Open a new one
+  wsClient.connect();
+
+  // Push all current operations to the new connection
+  Object.keys(operations).forEach(id => {
+    wsClient.sendMessage(id, MessageTypes.GQL_START, operations[id].options);
+  });
+}
+
+export const apolloProvider = new VueApollo({
   defaultClient: apolloClient,
   defaultOptions: {
     $loadingKey: 'loading'

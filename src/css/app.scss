@@ -1,1 +1,119 @@
-// app global css in SCSS form
+.q-toolbar {
+  .q-btn {
+    line-height: 1.2;
+  }
+}
+
+.platform-ios {
+  .q-header {
+    .q-btn,
+    .q-toolbar__title {
+      padding-top: constant(safe-area-inset-top);
+      padding-top: env(safe-area-inset-top);
+    }
+  }
+  .q-footer {
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+// Sign In
+
+#signInCard {
+  margin: 0 auto;
+  width: 100vw;
+  max-width: 500px;
+  padding: 25px;
+  z-index: 2;
+  @media (min-width: 400px) {
+    width: 95vw;
+  }
+  @media (min-width: 500px) {
+    width: 90vw;
+  }
+  @media (min-width: 600px) {
+    width: 85vw;
+    padding: 25px 30px;
+  }
+}
+
+.q-field__control {
+  color: $primary;
+}
+
+.color-background {
+  background-color: $primary;
+  background-image: url('~assets/PatternDots-AzulClaro.svg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.logo-mask {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  height: 125px;
+  width: 300px;
+  background-color: rgba($primary, 0.95);
+  box-shadow: 0px 0px 30px 30px rgba($primary, 0.95);
+  border-radius: 10%;
+  z-index: 0;
+  img {
+    z-index: 1;
+  }
+}
+
+#signInWithEmailSubmit {
+  line-height: 3vh;
+}
+
+.firebaseui-container {
+  margin: 0;
+  max-width: none;
+  .firebaseui-card-content {
+    padding: 0;
+    .firebaseui-idp-button {
+      max-width: none;
+      margin: 0 auto;
+      line-height: 4.5vh;
+    }
+  }
+}
+
+.firebaseui-idp-button,
+.mdl-button,
+.mdl-js-button,
+.mdl-button--raised,
+.firebaseui-id-idp-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: transparent;
+}
+
+.firebaseui-idp-button:hover,
+.mdl-button:hover,
+.mdl-js-button:hover,
+.mdl-button--raised:hover,
+.firebaseui-id-idp-button:hover {
+  background: rgba(gainsboro, 0.5) radial-gradient(circle, transparent 1%, gainsboro 1%) center/15000%;
+}
+
+.firebaseui-idp-text,
+.firebaseui-idp-text-long,
+.firebaseui-idp-text-short {
+  font-weight: 450;
+  font-size: 1.3em;
+  @media (max-width: 350px) {
+    font-size: 0;
+  }
+  @media (min-width: 350px) and (max-width: 500px) {
+    font-size: calc(2vw + 8px);
+  }
+}
+
+.no-wrap {
+  flex-wrap: nowrap;
+}
