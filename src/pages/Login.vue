@@ -11,10 +11,12 @@
           <q-card-section class="text-center q-pa-sm">
             <div class="text-h6">Inicia sesión</div>
           </q-card-section>
-          <q-card-actions id="social-providers" class="q-py-sm"> </q-card-actions>
-          <q-card-section class="text-center q-pt-none">
-            <div class="text-grey-6">O</div>
-          </q-card-section>
+          <div :hidden="!showSocialProviders">
+            <q-card-actions id="social-providers" class="q-py-sm"></q-card-actions>
+            <q-card-section class="text-center q-pt-none">
+              <div class="text-grey-6">O</div>
+            </q-card-section>
+          </div>
           <q-card-section class="q-pa-sm">
             <q-form>
               <q-input
@@ -50,6 +52,7 @@
 </template>
 
 <script>
+import { isEmpty } from 'lodash';
 import { firebase, firebaseAuth } from '@/boot/firebase';
 
 export default {
@@ -65,6 +68,9 @@ export default {
   computed: {
     isValidEmailFormat() {
       return this.EMAIL_REGEX.test(this.email);
+    },
+    showSocialProviders() {
+      return isEmpty(this.email);
     }
   },
   mounted() {
@@ -85,6 +91,7 @@ export default {
         this.loadSocialProviders();
       } else {
         // load firebaseuid dynamically
+        window.firebase = firebase;
         const locale = this.$q.lang.getLocale();
         const firebaseLocale = locale.split('-')[0];
         const firebaseuiScript = document.createElement('script');
@@ -94,7 +101,6 @@ export default {
       }
     },
     loadSocialProviders() {
-      window.firebase = firebase;
       const authUI = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebaseAuth);
       authUI.start('#social-providers', {
         signInSuccessUrl: '/',
@@ -105,7 +111,6 @@ export default {
         ],
         credentialHelper: firebaseui.auth.CredentialHelper.NONE
       });
-      window.firebase = undefined;
     }
   }
 };

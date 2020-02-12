@@ -9,7 +9,7 @@ module.exports = function config(ctx) {
     boot: ['apollo', 'firebase'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
-    css: ['app.scss'],
+    css: ['firebase-ui.css', 'app.scss'],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [

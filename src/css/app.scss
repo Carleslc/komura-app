@@ -78,27 +78,11 @@
       max-width: none;
       margin: 0 auto;
       line-height: 4.5vh;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
     }
   }
-}
-
-.firebaseui-idp-button,
-.mdl-button,
-.mdl-js-button,
-.mdl-button--raised,
-.firebaseui-id-idp-button {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background-color: transparent;
-}
-
-.firebaseui-idp-button:hover,
-.mdl-button:hover,
-.mdl-js-button:hover,
-.mdl-button--raised:hover,
-.firebaseui-id-idp-button:hover {
-  background: rgba(gainsboro, 0.5) radial-gradient(circle, transparent 1%, gainsboro 1%) center/15000%;
 }
 
 .firebaseui-idp-text,
