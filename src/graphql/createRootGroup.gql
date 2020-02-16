@@ -1,10 +1,6 @@
 mutation createRootGroup($owner: String!, $name: String!, $slug: String!) {
   insert_groups(
-    objects: {
-      profile: { data: { name: $name } }
-      path: $slug
-      members: { data: { user_id: $owner, role: owner } }
-    }
+    objects: { profile: { data: { name: $name } }, path: $slug, members: { data: { username: $owner, role: owner } } }
   ) {
     returning {
       id

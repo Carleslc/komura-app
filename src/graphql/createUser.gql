@@ -20,8 +20,8 @@ mutation createUser($id: String!, $email: String!, $username: String!, $name: St
           is_public
         }
         members {
-          user_id
-          type
+          username
+          role
           joined_at
         }
       }
@@ -29,9 +29,11 @@ mutation createUser($id: String!, $email: String!, $username: String!, $name: St
   }
 }
 
-# {
-#   "id": "test-1",
-#   "email": "user1@test.com",
-#   "username": "UserTest",
-#   "name": "Usuario de prueba"
-# }
+"""
+{
+  "id": "test-1",
+  "email": "user1@test.com",
+  "username": "UserTest",
+  "name": "Usuario de prueba"
+}
+"""

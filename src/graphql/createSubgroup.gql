@@ -4,7 +4,7 @@ mutation createSubgroup($owner: String!, $name: String!, $slug: String!, $parent
       profile: { data: { name: $name } }
       path: $slug
       parent_id: $parent
-      members: { data: { user_id: $owner, role: owner } }
+      members: { data: { username: $owner, role: owner } }
     }
   ) {
     returning {

@@ -23,16 +23,6 @@ CREATE DOMAIN email AS citext
 - Avoid case sensitive duplication (citext stands for case-insensitive text)
 - Check email syntax
 
-## SQL unique case insensitive
-
-```sql
-CREATE UNIQUE INDEX username_unique ON users (LOWER(username));
-```
-
-- Keep username column as case sensitive text
-
-Otherwise create username as citext and unique.
-
 ## SQL replace first occurrence
 
 ```sql
@@ -125,6 +115,15 @@ END $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER delete_group_profile AFTER DELETE ON groups FOR EACH ROW EXECUTE PROCEDURE delete_group_profile();
 
+-- user_set_personal_space_private
+
+CREATE OR REPLACE FUNCTION user_set_personal_space_private() RETURNS TRIGGER AS $$ BEGIN
+	NEW.is_accessible = FALSE;
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER user_set_personal_space_private BEFORE INSERT ON groups FOR EACH ROW WHEN (NEW.type = 'user') EXECUTE PROCEDURE user_set_personal_space_private();
+
 -- user_set_member_personal_space
 
 CREATE OR REPLACE FUNCTION user_set_member_personal_space() RETURNS TRIGGER AS $$ BEGIN
@@ -150,7 +149,7 @@ END $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER join_member_set_default_profile BEFORE INSERT ON members FOR EACH ROW EXECUTE PROCEDURE member_set_default_profile();
 
--- TODO: delete_member_profile after delete on members (ignore if pkey violation, i.e. profile != user profile)
+-- TODO: delete_member_profile after delete on members (ignore if fkey violation, i.e. if member profile = user profile, so you cannot delete user profile)
 
 -- user_update_username_path
 
@@ -286,5 +285,19 @@ ALTER TABLE ONLY public.chat_settings
 
 ```sql
 ALTER SEQUENCE groups_id_seq RESTART WITH 1; -- column id from table groups
+```
+
+## SQL select nth
+
+Select nth created group:
+
+```sql
+SELECT path FROM groups ORDER BY created_at OFFSET 2 LIMIT 1; -- offset n-1 (nth: 3)
+```
+
+Select groups with row order:
+
+```sql
+SELECT path, ROW_NUMBER() OVER (ORDER BY created_at) FROM groups;
 ```
 
