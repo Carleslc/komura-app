@@ -149,7 +149,14 @@ END $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER join_member_set_default_profile BEFORE INSERT ON members FOR EACH ROW EXECUTE PROCEDURE member_set_default_profile();
 
--- TODO: delete_member_profile after delete on members (ignore if fkey violation, i.e. if member profile = user profile, so you cannot delete user profile)
+-- delete_member_profile
+
+CREATE OR REPLACE FUNCTION delete_member_profile() RETURNS TRIGGER AS $$ BEGIN
+  DELETE FROM profiles WHERE id = OLD.profile_id AND NOT EXISTS (SELECT FROM groups WHERE groups.profile_id = OLD.profile_id); -- ignore if member profile = user profile
+  RETURN OLD;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER delete_member_profile AFTER DELETE ON members FOR EACH ROW EXECUTE PROCEDURE delete_member_profile();
 
 -- user_update_username_path
 
@@ -180,6 +187,15 @@ BEGIN
 END $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_group_tree_path BEFORE UPDATE OF path ON groups FOR EACH ROW WHEN (NEW.path IS DISTINCT FROM OLD.path AND pg_trigger_depth() = 0) EXECUTE PROCEDURE update_group_tree_path();
+
+-- delete_message_content (group_messages / member_messages / user_messages)
+
+CREATE OR REPLACE FUNCTION delete_message_content() RETURNS TRIGGER AS $$ BEGIN
+  DELETE FROM messages WHERE id = OLD.message_id;
+  RETURN OLD;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER delete_message_content AFTER DELETE ON group_messages FOR EACH ROW EXECUTE PROCEDURE delete_message_content();
 
 --
 
@@ -230,16 +246,20 @@ EXPLAIN SELECT * FROM group_messages AS g INNER JOIN messages AS m ON g.message_
 
 CREATE INDEX member_messages_key ON member_messages(group_id, sender_id, receiver_id);
 
-EXPLAIN SELECT * FROM member_messages INNER JOIN messages ON member_messages.message_id = messages.id WHERE group_id = 1 AND (sender_id = 'a' AND receiver_id = 'b')
-ORDER BY messages.created_at;
-
 EXPLAIN SELECT * FROM member_messages INNER JOIN messages ON member_messages.message_id = messages.id WHERE group_id = 1 AND ((sender_id = 'a' AND receiver_id = 'b') OR (sender_id = 'b' AND receiver_id = 'a'))
 ORDER BY messages.created_at;
 
+--
+
+CREATE INDEX user_messages_key ON user_messages(sender_id, receiver_id);
+
+EXPLAIN SELECT * FROM user_messages INNER JOIN messages ON user_messages.message_id = messages.id WHERE (sender_id = 'a' AND receiver_id = 'b') OR (sender_id = 'b' AND receiver_id = 'a')
+ORDER BY messages.created_at;
+
 EXPLAIN
-SELECT DISTINCT receiver_id AS other_id FROM member_messages WHERE sender_id = 'a'
+SELECT DISTINCT receiver_id AS other_id FROM user_messages WHERE sender_id = 'a'
 UNION
-SELECT DISTINCT sender_id AS other_id FROM member_messages WHERE receiver_id = 'a';
+SELECT DISTINCT sender_id AS other_id FROM user_messages WHERE receiver_id = 'a';
 ```
 
 To delete an index:
