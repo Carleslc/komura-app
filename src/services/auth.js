@@ -6,5 +6,8 @@ export const AuthService = {
   getAuth() {
     const token = LocalStorage.getItem(TOKEN_KEY);
     return token ? `Bearer ${token}` : undefined;
+  },
+  setAuth(token) {
+    LocalStorage.set(TOKEN_KEY, token);
   }
 };

@@ -1,72 +1,121 @@
+.btn-round {
+  text-transform: none; // no-caps
+  font-size: 1.5em;
+  font-weight: normal;
+  border-radius: 10em; // rounded
+  line-height: 4.5vh;
+
+  .q-btn__wrapper::before {
+    box-shadow: none; // unelevated
+  }
+}
+
 .q-toolbar {
   .q-btn {
     line-height: 1.2;
   }
 }
 
-.platform-ios {
-  .q-header {
-    .q-btn,
-    .q-toolbar__title {
-      padding-top: constant(safe-area-inset-top);
-      padding-top: env(safe-area-inset-top);
+// TODO: Style field rounded with icon and grey border (black 50% alpha) with active primary
+.q-field {
+  .q-field__control:hover::before {
+    border-color: $primary !important;
+  }
+  .q-field__label {
+    font-size: 1.3em;
+  }
+  input {
+    font-size: 1.3em;
+  }
+}
+
+.grey {
+  color: $grey;
+}
+
+// Login
+
+#login-form {
+  min-width: none;
+
+  .header-logo {
+    min-height: 48px;
+    width: 50%;
+
+    @media (max-width: 599px) {
+      width: 100%;
     }
   }
-  .q-footer {
-    padding-bottom: constant(safe-area-inset-bottom);
-    padding-bottom: env(safe-area-inset-bottom);
+
+  .container {
+    padding: 10vh 5vw 10vh 5vw;
+    max-width: 768px;
   }
 }
 
-// Sign In
+.carousel-overlay {
+  .q-carousel__slide {
+    h1 {
+      font-size: 6em;
+      font-weight: normal;
+    }
 
-#signInCard {
-  margin: 0 auto;
-  width: 100vw;
-  max-width: 500px;
-  padding: 25px;
-  z-index: 2;
-  @media (min-width: 400px) {
-    width: 95vw;
+    h2 {
+      font-size: 2.5em;
+    }
   }
-  @media (min-width: 500px) {
-    width: 90vw;
+  .carousel-overlay-vertical {
+    h1 {
+      font-size: 5em;
+      font-weight: normal;
+    }
+
+    h2 {
+      font-size: 2em;
+    }
   }
-  @media (min-width: 600px) {
-    width: 85vw;
-    padding: 25px 30px;
-  }
-}
 
-.q-field__control {
-  color: $primary;
-}
-
-.color-background {
-  background-color: $primary;
-  background-image: url('~assets/PatternDots-AzulClaro.svg');
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.logo-mask {
-  display: flex;
-  justify-content: center;
-  position: relative;
-  height: 125px;
-  width: 300px;
-  background-color: rgba($primary, 0.95);
-  box-shadow: 0px 0px 30px 30px rgba($primary, 0.95);
-  border-radius: 10%;
-  z-index: 0;
-  img {
+  // Overlay
+  .q-carousel__slides-container::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: adjust-color($color: $primary, $alpha: -0.15);
     z-index: 1;
   }
+
+  .q-carousel__slide {
+    padding: 0;
+    z-index: 0;
+
+    div {
+      position: absolute;
+      z-index: 2;
+      // 15% of parent
+      padding-left: 15%;
+      padding-right: 15%;
+    }
+  }
+
+  .q-carousel__navigation {
+    z-index: 2;
+  }
 }
 
-#signInWithEmailSubmit {
-  line-height: 3vh;
+.firebaseui-idp-button {
+  border-radius: 10em;
+  box-shadow: none;
+  overflow: visible !important;
+  flex-wrap: nowrap !important;
+}
+
+.firebaseui-idp-google {
+  -webkit-box-shadow: 0 1.5px 2px 1.2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 1.5px 2px 1.2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1.5px 2px 1.2px rgba(0, 0, 0, 0.1);
 }
 
 .firebaseui-container {
@@ -88,16 +137,10 @@
 .firebaseui-idp-text,
 .firebaseui-idp-text-long,
 .firebaseui-idp-text-short {
-  font-weight: 450;
-  font-size: 1.3em;
+  font-weight: normal;
+  font-size: 1.4em;
   @media (max-width: 350px) {
     font-size: 0;
+    padding: 0;
   }
-  @media (min-width: 350px) and (max-width: 500px) {
-    font-size: calc(2vw + 8px);
-  }
-}
-
-.no-wrap {
-  flex-wrap: nowrap;
 }

@@ -9,6 +9,7 @@ yarn
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
+nvm use default # node >= 10.18.1
 quasar dev
 ```
 

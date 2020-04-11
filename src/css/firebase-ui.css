@@ -34,7 +34,6 @@ dialog + .backdrop {
 /* for small devices, modal dialogs go full-screen */
 @media screen and (max-width: 540px) {
   dialog[_polyfill_modal] {
-    /* TODO: implement */
     top: 0;
     width: auto;
     margin: 1em;
@@ -2193,6 +2192,7 @@ input.firebaseui-input-invalid {
 /** CUSTOM **/
 
 .firebaseui-idp-google {
+  background-color: rgba(254, 254, 255, 0.9) !important;
   -webkit-transform: perspective(1px) translateZ(0);
   transform: perspective(1px) translateZ(0);
 }
@@ -2229,6 +2229,9 @@ input.firebaseui-input-invalid {
   transition-property: transform;
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
+}
+.firebaseui-idp-facebook:hover {
+  background: #2d4f99 radial-gradient(circle, transparent 1%, #2d4f99 1%) center/15000% !important;
 }
 .firebaseui-idp-facebook:hover .firebaseui-idp-icon,
 .firebaseui-idp-facebook:focus .firebaseui-idp-icon {
@@ -2302,4 +2305,7 @@ input.firebaseui-input-invalid {
   animation-fill-mode: forwards;
   -webkit-animation-direction: normal, alternate;
   animation-direction: normal, alternate;
+}
+.firebaseui-idp-twitter:hover {
+  background: #3ba0ed radial-gradient(circle, transparent 1%, #3ba0ed 1%) center/15000% !important;
 }

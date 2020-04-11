@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf" class="color-background">
+  <q-layout view="lHh Lpr lFf">
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -7,5 +7,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  meta: {
+    titleTemplate: title => `${title} | Komura`
+  }
+};
 </script>

@@ -9,7 +9,7 @@ module.exports = function config(ctx) {
     boot: ['apollo', 'firebase'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
-    css: ['firebase-ui.css', 'app.scss'],
+    css: ['utils.scss', 'firebase-ui.css', 'app.scss'],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
@@ -42,7 +42,11 @@ module.exports = function config(ctx) {
       directives: [],
 
       // Quasar plugins
-      plugins: ['LocalStorage']
+      plugins: ['LocalStorage', 'Meta'],
+
+      config: {
+        dark: false // [true, false, auto] avoid in SSR (modify in-app instead)
+      }
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -113,7 +117,7 @@ module.exports = function config(ctx) {
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#027be3',
+        theme_color: '#015afe',
         icons: [
           {
             src: 'statics/icons/icon-128x128.png',

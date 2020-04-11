@@ -16,7 +16,19 @@ $primary: #015afe;
 $secondary: #9b75e4;
 $accent: #512884;
 
-$dark: #1d1d1d;
+$dark: #1c1d21;
+$grey: adjust-color(
+  $color: $dark,
+  $alpha: -0.35
+);
+$grey-light: adjust-color(
+  $color: $dark,
+  $alpha: -0.8
+);
+$grey-lighter: adjust-color(
+  $color: $dark,
+  $alpha: -0.98
+);
 
 $positive: #50c5b7;
 $negative: #fd9999;

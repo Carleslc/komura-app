@@ -1,63 +1,77 @@
 <template>
-  <q-page class="flex flex-center">
-    <div class="column no-wrap">
-      <router-link to="/" class="row justify-center">
-        <div class="logo-mask">
-          <img src="~assets/KomuraLogo-Blanco.svg" style="max-width: 250px" class="q-py-lg" />
-        </div>
-      </router-link>
-      <div class="row">
-        <q-card id="signInCard" bordered class="q-pa-lg shadow-1">
-          <q-card-section class="text-center q-pa-sm">
-            <div class="text-h6">Inicia sesión</div>
-          </q-card-section>
-          <div :hidden="!showSocialProviders">
-            <q-card-actions id="social-providers" class="q-py-sm"></q-card-actions>
-            <q-card-section class="text-center q-pt-none">
-              <div class="text-grey-6">O</div>
-            </q-card-section>
-          </div>
-          <q-card-section class="q-pa-sm">
+  <q-page class="row justify-between">
+    <div id="login-form" class="row col-xs-12 col-md-5 col-lg-4 justify-center">
+      <div class="container column full-height full-width">
+        <router-link to="/" class="header-logo col-auto">
+          <img alt="Kindly Network" src="~assets/KomuraReducido-Azul.svg" />
+        </router-link>
+        <div class="column col justify-center">
+          <div class="col-shrink q-mt-xl">
+            <div>
+              <div id="social-providers" class="q-pa-none"></div>
+            </div>
+            <div class="row">
+              <q-separator class="col-4 q-my-lg" />
+              <div class="row col items-center justify-center"><p class="col-shrink grey q-ma-none">O</p></div>
+              <q-separator class="col-4 q-my-lg" />
+            </div>
             <q-form>
-              <q-input
-                v-model="email"
-                class="q-pb-none"
-                filled
-                clearable
-                type="email"
-                label="Introduce tu correo electrónico"
-                error-message="La dirección de correo electrónico está incompleta"
-                bottom-slots
-                :error="!isValidEmailFormat && showValidationError"
-              />
+              <div class="q-gutter-y-lg">
+                <q-input
+                  v-model="email"
+                  class="q-pb-none"
+                  clearable
+                  type="email"
+                  label="Introduce tu correo electrónico"
+                  error-message="La dirección de correo electrónico está incompleta"
+                  bottom-slots
+                  :error="!isValidEmailFormat && showValidationError"
+                />
+                <q-btn
+                  :disabled="!isValidEmailFormat"
+                  color="primary"
+                  class="btn-round full-width"
+                  :class="{ 'q-mt-sm': !isValidEmailFormat && showValidationError }"
+                  label="Iniciar sesión"
+                  @click="signInWithEmail"
+                />
+              </div>
             </q-form>
-          </q-card-section>
-          <q-card-actions class="q-px-sm">
-            <q-btn
-              id="signInWithEmailSubmit"
-              :disabled="!isValidEmailFormat"
-              unelevated
-              color="positive"
-              size="lg"
-              class="full-width"
-              :class="{ 'q-mt-sm': !isValidEmailFormat && showValidationError }"
-              label="Continuar"
-              @click="signInWithEmail"
-            />
-          </q-card-actions>
-        </q-card>
+          </div>
+        </div>
       </div>
+    </div>
+    <div class="xs-hide col-md-7 col-lg-8 carousel-overlay">
+      <q-carousel
+        v-model="slide"
+        navigation
+        infinite
+        autoplay
+        control-color="white"
+        navigation-icon="radio_button_unchecked"
+        class="full-height"
+      >
+        <q-carousel-slide :name="1" img-src="~assets/login-background-image-1.png">
+          <div class="row full-height content-center text-white">
+            <h1>Únete a nuestra comunidad</h1>
+            <h2>Siéntete libre haciendo lo que más te gusta</h2>
+          </div>
+        </q-carousel-slide>
+      </q-carousel>
     </div>
   </q-page>
 </template>
 
 <script>
-import { isEmpty } from 'lodash';
 import { firebase, firebaseAuth } from '@/boot/firebase';
 
 export default {
+  meta: {
+    title: 'Iniciar sesión'
+  },
   data() {
     return {
+      slide: 1,
       email: '',
       withEmailForm: false,
       // eslint-disable-next-line max-len
@@ -68,9 +82,6 @@ export default {
   computed: {
     isValidEmailFormat() {
       return this.EMAIL_REGEX.test(this.email);
-    },
-    showSocialProviders() {
-      return isEmpty(this.email);
     }
   },
   mounted() {
