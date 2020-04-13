@@ -11,9 +11,11 @@
               <div id="social-providers" class="q-pa-none"></div>
             </div>
             <div class="row">
-              <q-separator class="col-4 q-my-lg" />
-              <div class="row col items-center justify-center"><p class="col-shrink grey q-ma-none">O</p></div>
-              <q-separator class="col-4 q-my-lg" />
+              <q-separator class="col-4 q-my-xl" />
+              <div class="row col items-center justify-center">
+                <p class="col-shrink grey q-ma-none text-weight-light">O</p>
+              </div>
+              <q-separator class="col-4 q-my-xl" />
             </div>
             <q-form>
               <div class="q-gutter-y-lg">
@@ -23,15 +25,15 @@
                   clearable
                   type="email"
                   label="Introduce tu correo electrónico"
-                  error-message="La dirección de correo electrónico está incompleta"
                   bottom-slots
-                  :error="!isValidEmailFormat && showValidationError"
+                  :error-message="emailError"
+                  :error="!isValidEmailFormat && emailError"
                 />
                 <q-btn
                   :disabled="!isValidEmailFormat"
                   color="primary"
                   class="btn-round full-width"
-                  :class="{ 'q-mt-sm': !isValidEmailFormat && showValidationError }"
+                  :class="{ 'q-mt-sm': !isValidEmailFormat && emailError }"
                   label="Iniciar sesión"
                   @click="signInWithEmail"
                 />
@@ -76,7 +78,7 @@ export default {
       withEmailForm: false,
       // eslint-disable-next-line max-len
       EMAIL_REGEX: /^[a-zA-Z0-9.!#$%&''*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?){1,}$/,
-      showValidationError: false
+      emailError: null
     };
   },
   computed: {
@@ -92,7 +94,7 @@ export default {
       if (this.isValidEmailFormat) {
         this.$router.push('/');
       } else {
-        this.showValidationError = true;
+        this.emailError = 'Introduce un correo electrónico válido';
       }
     },
     /* eslint-disable no-undef */

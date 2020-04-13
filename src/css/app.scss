@@ -1,7 +1,13 @@
+@import './fonts/Volte/font.css';
+
+* {
+  font-family: 'Volte', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
+
 .btn-round {
   text-transform: none; // no-caps
   font-size: 1.5em;
-  font-weight: normal;
+  font-weight: $medium;
   border-radius: 10em; // rounded
   line-height: 4.5vh;
 
@@ -48,7 +54,7 @@
   }
 
   .container {
-    padding: 10vh 5vw 10vh 5vw;
+    padding: 10vh 5vw 0 5vw;
     max-width: 768px;
   }
 }
@@ -57,21 +63,11 @@
   .q-carousel__slide {
     h1 {
       font-size: 6em;
-      font-weight: normal;
+      font-weight: $medium;
     }
 
     h2 {
       font-size: 2.5em;
-    }
-  }
-  .carousel-overlay-vertical {
-    h1 {
-      font-size: 5em;
-      font-weight: normal;
-    }
-
-    h2 {
-      font-size: 2em;
     }
   }
 
@@ -105,6 +101,8 @@
   }
 }
 
+// Social Providers
+
 .firebaseui-idp-button {
   border-radius: 10em;
   box-shadow: none;
@@ -137,7 +135,7 @@
 .firebaseui-idp-text,
 .firebaseui-idp-text-long,
 .firebaseui-idp-text-short {
-  font-weight: normal;
+  font-weight: $medium;
   font-size: 1.4em;
   @media (max-width: 350px) {
     font-size: 0;
