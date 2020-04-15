@@ -7,7 +7,12 @@ const routes = [
   {
     path: '/login',
     component: () => import('layouts/LoginLayout.vue'),
-    children: [{ path: '', component: () => import('pages/Login.vue') }]
+    children: [{ name: 'Login', path: '', component: () => import('pages/Login.vue') }]
+  },
+  {
+    path: '/register',
+    component: () => import('layouts/LoginLayout.vue'),
+    children: [{ name: 'Register', path: '', component: () => import('pages/Login.vue') }]
   }
 ];
 

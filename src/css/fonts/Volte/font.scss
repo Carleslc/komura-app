@@ -1,0 +1,53 @@
+$light: 300;
+$medium: 500;
+
+* {
+  font-family: 'Volte', 'Helvetica', 'Arial', sans-serif;
+}
+
+input,
+textarea,
+select {
+  &:-webkit-autofill,
+  &:-webkit-autofill::first-line,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    font-family: 'Volte', 'Helvetica', 'Arial', sans-serif;
+  }
+}
+
+@font-face {
+  font-family: 'Volte';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Volte Rounded Light'), url('./fonts/Volte/VolteRounded-Light.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Volte';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Volte Rounded'), url('./fonts/Volte/VolteRounded-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Volte';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Volte Rounded Medium'), url('./fonts/Volte/VolteRounded-Medium.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Volte';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Volte Rounded Semibold'), url('./fonts/Volte/VolteRounded-Semibold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Volte';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Volte Rounded Bold'), url('./fonts/Volte/VolteRounded-Bold.otf') format('opentype');
+}

@@ -13,7 +13,7 @@ module.exports = function config(ctx) {
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
-      'material-icons',
+      'material-icons-outlined',
       // 'mdi-v4',
       // 'ionicons-v4',
       // 'fontawesome-v5',

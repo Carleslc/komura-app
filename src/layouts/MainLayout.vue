@@ -10,10 +10,10 @@
           to="/login"
           class="absolute-right q-pr-sm"
           flat
-          icon="account_circle"
+          icon="o_account_circle"
           label="Iniciar sesión"
         />
-        <q-btn v-else class="absolute-right q-pr-sm" flat icon="account_circle" @click="logoutUser">
+        <q-btn v-else class="absolute-right q-pr-sm" flat icon="o_account_circle" @click="logoutUser">
           Logout<br />
           {{ userDetails.name }}
         </q-btn>

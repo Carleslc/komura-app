@@ -1,14 +1,18 @@
-@import './fonts/Volte/font.css';
+@import './fonts/Volte/font.scss';
 
 * {
   font-family: 'Volte', 'Helvetica', 'Arial', sans-serif;
 }
 
+$roundness: 10em;
+$btn-height: 7vh;
+$btn-min-height: 3.5em;
+
 .container .q-btn {
   width: 100%;
   min-width: 10vw;
-  min-height: 3em;
-  height: 7vh;
+  min-height: $btn-min-height;
+  height: $btn-height;
   padding: 0 16px 0 16px;
   border-radius: $roundness; // rounded
   display: flex;
@@ -31,11 +35,42 @@
   }
 }
 
+.text {
+  &-sm {
+    font-size: 1.1em;
+  }
+
+  &-md {
+    font-size: 1.2em;
+  }
+
+  &-lg {
+    font-size: 1.3em;
+  }
+
+  &-xl {
+    font-size: 1.5em;
+  }
+
+  &-dark {
+    color: $dark;
+    opacity: 60%;
+  }
+
+  &-button {
+    color: $primary;
+    font-weight: $medium;
+    cursor: pointer;
+  }
+}
+
 .q-field {
+  transition: padding-bottom 0.32s ease-in;
+
   .q-field__control {
     min-width: 10vw;
-    min-height: 3em;
-    height: 7vh;
+    min-height: $btn-min-height;
+    height: $btn-height;
     padding: 0 32px 0 32px;
     border-radius: $roundness !important;
     transition: none;
@@ -56,24 +91,37 @@
       transition: opacity 0.1s ease, color 0.1s ease-in-out;
     }
 
-    input {
+    input,
+    textarea,
+    select {
       opacity: 60%;
       padding: 0;
       font-size: 1.3em;
       -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
       transition: opacity 0.1s ease, color 0.1s ease-in-out;
+
+      &:-webkit-autofill,
+      &:-webkit-autofill::first-line,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        font-size: 18px;
+        font-style: italic;
+      }
     }
-  }
 
-  .q-field__control:hover::before {
-    border-color: $primary;
-    -webkit-transition: border-color 0.1s ease-in-out;
-    transition: border-color 0.1s ease-in-out;
-  }
+    &:hover::before {
+      border-color: $primary;
+      -webkit-transition: border-color 0.1s ease-in-out;
+      transition: border-color 0.1s ease-in-out;
+    }
 
-  .q-field__control::after {
-    -webkit-transition: none;
-    transition: none;
+    &::after {
+      -webkit-transition: none;
+      transition: none;
+      min-height: $btn-min-height;
+      height: $btn-height;
+    }
   }
 
   .q-field__label {
@@ -96,7 +144,9 @@
 
   .q-field__control {
     .q-icon,
-    input {
+    input,
+    textarea,
+    select {
       opacity: 100%;
       color: $primary;
       -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
@@ -106,8 +156,18 @@
 
   &.q-field--focused {
     .q-field__control {
-      input {
+      input,
+      textarea,
+      select {
         font-weight: $medium;
+
+        &:-webkit-autofill,
+        &:-webkit-autofill::first-line,
+        &:-webkit-autofill:hover,
+        &:-webkit-autofill:focus,
+        &:-webkit-autofill:active {
+          font-weight: $medium;
+        }
       }
     }
   }
@@ -115,7 +175,9 @@
 
 .q-field--focused .q-field__control {
   .q-icon,
-  input {
+  input,
+  textarea,
+  select {
     color: $primary;
     opacity: 100%;
   }
@@ -129,7 +191,9 @@
 
 .q-field__control:hover {
   .q-icon,
-  input {
+  input,
+  textarea,
+  select {
     opacity: 100%;
     color: $primary;
     -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
@@ -141,22 +205,61 @@
   font-weight: bold;
 }
 
+.with-hint {
+  padding-bottom: 32px;
+  transition: padding-bottom 0.32s ease-out;
+}
+
 .q-field--error {
   padding-bottom: 32px;
+  transition: padding-bottom 0.32s ease-out;
 
-  .q-field__control .q-icon {
-    color: $negative;
+  &.filled.q-field--focused {
+    .q-field__control {
+      input,
+      textarea,
+      select {
+        font-weight: normal;
+      }
+    }
+    &:focus-within,
+    &:active .q-field__control {
+      input,
+      textarea,
+      select {
+        font-weight: $medium;
+      }
+    }
   }
-  .q-field__control input {
-    color: $accent;
+
+  .q-field__control {
+    .q-icon {
+      color: $negative;
+    }
+
+    input,
+    textarea,
+    select {
+      color: $accent;
+
+      &:-webkit-autofill,
+      &:-webkit-autofill::first-line,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        color: $accent;
+      }
+    }
+
+    &:hover::after {
+      border-color: $negative;
+    }
   }
 }
 
 // Login
 
 #login-form {
-  min-width: none;
-
   .header-logo {
     min-height: 48px;
     width: 50%;
@@ -172,89 +275,101 @@
   }
 
   .q-separator {
-    margin-top: 5vh;
-    margin-bottom: 5vh;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
   }
 }
 
-.q-carousel {
-  .q-carousel__slides-container {
-    .q-panel {
-      .q-carousel__slide {
-        div {
-          position: absolute;
-          // 15% of parent
-          padding-left: 15%;
-          padding-right: 15%;
-          z-index: 1;
+#login-carousel {
+  .q-carousel {
+    .q-carousel__slides-container {
+      .q-panel {
+        .q-carousel__slide {
+          div {
+            position: absolute;
+            // 15% of parent
+            padding-left: 15%;
+            padding-right: 15%;
+            z-index: 1;
 
-          h1 {
-            width: 100%;
-            font-size: 5em;
-            font-weight: $medium;
-            line-height: 1.5em;
-            margin-top: 16px;
-            margin-bottom: 16px;
+            h1 {
+              width: 100%;
+              font-size: 5em;
+              font-weight: $medium;
+              line-height: 1.5em;
+              margin-top: 16px;
+              margin-bottom: 16px;
 
-            @media (max-width: 1230px) {
-              font-size: 4em;
+              @media (max-width: 1230px) {
+                font-size: 4em;
+              }
+
+              @media (max-height: 600px) {
+                font-size: 10vh;
+              }
+
+              @media (max-height: 400px) {
+                font-size: 3em;
+              }
             }
 
-            @media (max-height: 600px) {
-              font-size: 10vh;
-            }
+            h2 {
+              width: 100%;
+              font-size: 2.5em;
+              font-weight: normal;
+              line-height: 1.5em;
+              margin-top: 16px;
+              margin-bottom: 16px;
 
-            @media (max-height: 400px) {
-              font-size: 3em;
-            }
-          }
+              @media (max-width: 1230px) {
+                font-size: 2em;
+              }
 
-          h2 {
-            width: 100%;
-            font-size: 2.5em;
-            font-weight: normal;
-            line-height: 1.5em;
-            margin-top: 16px;
-            margin-bottom: 16px;
+              @media (max-height: 600px) {
+                font-size: 5vh;
+              }
 
-            @media (max-width: 1230px) {
-              font-size: 2em;
-            }
-
-            @media (max-height: 600px) {
-              font-size: 5vh;
-            }
-
-            @media (max-height: 400px) {
-              font-size: 1.5em;
+              @media (max-height: 400px) {
+                font-size: 1.5em;
+              }
             }
           }
         }
       }
     }
+
+    .q-carousel__navigation {
+      z-index: 1;
+
+      .q-carousel__navigation-inner {
+        justify-content: center;
+        padding-left: 15%;
+        padding-right: 15%;
+      }
+    }
   }
 
-  .q-carousel__navigation {
-    z-index: 1;
-
-    .q-carousel__navigation-inner {
-      justify-content: center;
-      padding-left: 15%;
-      padding-right: 15%;
+  &.carousel-overlay {
+    .q-carousel__slide::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: adjust-color($color: $primary, $alpha: -0.15);
+      z-index: 0;
     }
   }
 }
 
-.carousel-overlay {
-  .q-carousel__slide::before {
-    content: '';
-    position: absolute;
+@media (max-width: 800px) {
+  #login-form {
     width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: adjust-color($color: $primary, $alpha: -0.15);
-    z-index: 0;
+  }
+
+  #login-carousel {
+    display: none;
   }
 }
 
@@ -268,8 +383,8 @@
   padding-left: 32px;
   padding-right: 32px;
   min-width: 10vw;
-  min-height: 3em;
-  height: 7vh;
+  min-height: $btn-min-height;
+  height: $btn-height;
   border-radius: $roundness;
   box-shadow: none;
   max-width: none;
