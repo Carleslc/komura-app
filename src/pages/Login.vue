@@ -7,7 +7,7 @@
         </router-link>
         <div class="column col justify-end">
           <div class="col-shrink q-mt-md">
-            <div id="social-providers"></div>
+            <div id="social-providers" />
             <div class="row">
               <q-separator class="col-4" />
               <div class="row col items-center justify-center">
@@ -39,18 +39,19 @@
     </div>
     <div class="xs-hide col-md-7 col-lg-8 carousel-overlay">
       <q-carousel
-        v-model="slide"
+        v-model="currentSlide"
         navigation
         infinite
-        autoplay
+        animated
+        :autoplay="10000"
         control-color="white"
         navigation-icon="radio_button_unchecked"
         class="full-height"
       >
-        <q-carousel-slide :name="1" img-src="~assets/login-background-image-1.png">
+        <q-carousel-slide v-for="(slide, i) in slides" :key="i" :name="i" :img-src="slide.path">
           <div class="row full-height content-center text-white">
-            <h1>Únete a nuestra comunidad</h1>
-            <h2>Siéntete libre haciendo lo que más te gusta</h2>
+            <h1>{{ slide.title }}</h1>
+            <h2>{{ slide.subtitle }}</h2>
             <q-icon></q-icon>
           </div>
         </q-carousel-slide>
@@ -62,6 +63,7 @@
 <script>
 import { firebase, firebaseAuth } from '@/boot/firebase';
 import { isValidEmail } from '@/utils/validations';
+import { range } from 'lodash';
 
 export default {
   meta: {
@@ -69,9 +71,21 @@ export default {
   },
   data() {
     return {
-      slide: 1,
       email: '',
-      submitted: false
+      submitted: false,
+      currentSlide: 0,
+      slides: [
+        {
+          path: 'statics/images/login-background-image-1.jpg',
+          title: 'Únete a nuestra comunidad',
+          subtitle: 'Siéntete libre haciendo lo que más te gusta'
+        },
+        {
+          path: 'statics/images/login-background-image-2.jpg',
+          title: 'Únete a nuestra comunidad',
+          subtitle: 'Organiza tu trabajo en grupo'
+        }
+      ]
     };
   },
   computed: {
@@ -83,6 +97,7 @@ export default {
     this.bindAuthUI();
   },
   methods: {
+    range,
     signInWithEmail() {
       this.submitted = true;
       this.$refs.email.validate();
