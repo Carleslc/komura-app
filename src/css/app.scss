@@ -1,12 +1,12 @@
 @import './fonts/Volte/font.scss';
 
-* {
-  font-family: 'Volte', 'Helvetica', 'Arial', sans-serif;
-}
-
 $roundness: 10em;
 $btn-height: 7vh;
 $btn-min-height: 3.5em;
+
+.page-component {
+  min-height: inherit !important;
+}
 
 .container .q-btn {
   width: 100%;
