@@ -1,6 +1,6 @@
 <template>
   <q-page class="page-component">
-    <q-form class="q-mt-md">
+    <q-form class="q-mt-md" @submit="signInWithEmail">
       <q-input
         ref="email"
         v-model="email"
@@ -44,7 +44,7 @@
         :disabled="!isValidEmail(email) || password.length < 8"
         color="primary"
         label="Iniciar sesión"
-        @click="signInWithEmail"
+        type="submit"
       />
     </q-form>
     <div class="row q-mt-md">
@@ -52,7 +52,7 @@
         <p class="col-shrink q-pr-xs q-mb-none text-dark">
           ¿No tienes cuenta todavía?
         </p>
-        <span class="col-shrink text-button" @click="$router.push('/register')">
+        <span class="col-shrink text-button" @click="toggle">
           Regístrate
         </span>
       </div>
@@ -67,9 +67,14 @@ export default {
   meta: {
     title: 'Iniciar sesión'
   },
+  props: {
+    email: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
-      email: '',
       password: '',
       showPassword: false
     };
@@ -82,6 +87,9 @@ export default {
       if (!this.$refs.email.hasError && !this.$refs.password.hasError) {
         this.$router.push('/');
       }
+    },
+    toggle() {
+      this.$router.push({ name: 'register', params: { email: !this.$refs.email.hasError ? this.email : '' } });
     }
   }
 };

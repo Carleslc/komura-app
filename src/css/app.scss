@@ -4,6 +4,17 @@ $roundness: 10em;
 $btn-height: 7vh;
 $btn-min-height: 3.5em;
 
+$breakpoint-xxxs-min: 0px;
+$breakpoint-xxxs-max: 349px;
+$breakpoint-xxs-min: 350px;
+$breakpoint-xxs-max: 449px;
+$breakpoint-xsm-min: 450px;
+$breakpoint-xsm-max: 799px;
+$breakpoint-xmd-min: 800px;
+$breakpoint-xmd-max: 1279px;
+$breakpoint-xlg-min: 1280px;
+$breakpoint-xlg-max: 1649px;
+
 .page-component {
   min-height: inherit !important;
 }
@@ -84,6 +95,14 @@ $btn-min-height: 3.5em;
       padding-right: 24px;
     }
 
+    @media (max-width: $breakpoint-xxs-max) {
+      padding: 0 16px 0 16px;
+
+      .q-field__prepend {
+        padding-right: 12px;
+      }
+    }
+
     .q-icon {
       opacity: 60%;
       -webkit-text-stroke: 0.8px white;
@@ -96,9 +115,17 @@ $btn-min-height: 3.5em;
     select {
       opacity: 60%;
       padding: 0;
-      font-size: 1.3em;
+      font-size: 1.2em;
       -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
       transition: opacity 0.1s ease, color 0.1s ease-in-out;
+
+      @media (max-width: $breakpoint-xxxs-max) {
+        font-size: 1.1em;
+      }
+
+      @media (min-width: $breakpoint-lg-min) {
+        font-size: 1.3em;
+      }
 
       &:-webkit-autofill,
       &:-webkit-autofill::first-line,
@@ -125,7 +152,15 @@ $btn-min-height: 3.5em;
   }
 
   .q-field__label {
-    font-size: 1.3em;
+    font-size: 1.2em;
+
+    @media (max-width: $breakpoint-xxxs-max) {
+      font-size: 1.1em;
+    }
+
+    @media (min-width: $breakpoint-lg-min) {
+      font-size: 1.3em;
+    }
   }
 }
 
@@ -261,17 +296,31 @@ $btn-min-height: 3.5em;
 
 #login-form {
   .header-logo {
-    min-height: 48px;
     width: 50%;
+    display: flex;
+    justify-content: center;
 
-    @media (max-width: 599px) {
+    @media (max-width: $breakpoint-xs-max) {
       width: 100%;
+    }
+
+    a {
+      img {
+        height: 100%;
+        width: 100%;
+        min-height: 48px;
+        max-height: 16vh;
+      }
     }
   }
 
   .container {
     padding: 10vh 5vw 10vh 5vw;
     max-width: 768px;
+
+    @media (max-width: $breakpoint-xs-max), (max-height: $breakpoint-xs-max) {
+      padding: 3vh 5vw 3vh 5vw;
+    }
   }
 
   .q-separator {
@@ -300,15 +349,15 @@ $btn-min-height: 3.5em;
               margin-top: 16px;
               margin-bottom: 16px;
 
-              @media (max-width: 1230px) {
+              @media (max-width: $breakpoint-xmd-max) {
                 font-size: 4em;
               }
 
-              @media (max-height: 600px) {
+              @media (max-height: $breakpoint-xs-max) {
                 font-size: 10vh;
               }
 
-              @media (max-height: 400px) {
+              @media (max-height: $breakpoint-xxxs-max) {
                 font-size: 3em;
               }
             }
@@ -321,15 +370,15 @@ $btn-min-height: 3.5em;
               margin-top: 16px;
               margin-bottom: 16px;
 
-              @media (max-width: 1230px) {
+              @media (max-width: $breakpoint-xmd-max) {
                 font-size: 2em;
               }
 
-              @media (max-height: 600px) {
+              @media (max-height: $breakpoint-xs-max) {
                 font-size: 5vh;
               }
 
-              @media (max-height: 400px) {
+              @media (max-height: $breakpoint-xxxs-max) {
                 font-size: 1.5em;
               }
             }
@@ -363,13 +412,23 @@ $btn-min-height: 3.5em;
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: $breakpoint-xsm-max) {
   #login-form {
     width: 100%;
   }
 
   #login-carousel {
     display: none;
+  }
+}
+
+@media (min-width: $breakpoint-xmd-min) and (max-width: $breakpoint-xmd-max) {
+  .q-field .q-field__control {
+    padding: 0 16px 0 16px;
+
+    .q-field__prepend {
+      padding-right: 12px;
+    }
   }
 }
 
@@ -393,7 +452,7 @@ $btn-min-height: 3.5em;
   align-items: center;
   justify-content: center;
 
-  @media (min-width: 350px) {
+  @media (min-width: $breakpoint-xxs-min) {
     .firebaseui-idp-icon-wrapper {
       margin-right: auto;
     }
@@ -422,12 +481,12 @@ $btn-min-height: 3.5em;
   white-space: nowrap;
   overflow: auto;
 
-  @media (max-width: 349px) {
+  @media (max-width: $breakpoint-xxxs-max) {
     font-size: 0;
     padding: 0;
   }
 
-  @media (min-width: 350px) {
+  @media (min-width: $breakpoint-xxs-min) {
     margin-right: auto;
   }
 }

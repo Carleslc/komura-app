@@ -2,11 +2,13 @@
   <q-layout view="lHh lpR lFf">
     <q-page-container>
       <q-page class="row full-height justify-between">
-        <div id="login-form" class="row col-xs-12 col-sm-6 col-md-5 col-lg-4 justify-center">
+        <div id="login-form" class="row col-xs-12 col-sm-6 col-md-5 col-xl-4 justify-center">
           <div class="container column full-height full-width">
-            <router-link to="/" class="header-logo col-auto">
-              <img alt="Kindly Network" src="~assets/KomuraReducido-Azul.svg" />
-            </router-link>
+            <div class="header-logo col-auto">
+              <router-link to="/">
+                <img alt="Kindly Network" src="~assets/KomuraReducido-Azul.svg" />
+              </router-link>
+            </div>
             <div class="column col justify-end">
               <div class="col-shrink q-mt-md justify-end">
                 <div id="social-providers" />
@@ -22,7 +24,7 @@
             </div>
           </div>
         </div>
-        <div id="login-carousel" class="lt-xs col-sm-6 col-md-7 col-lg-8 carousel-overlay">
+        <div id="login-carousel" class="lt-xs col-sm-6 col-md-7 col-xl-8 carousel-overlay">
           <q-carousel
             v-model="currentSlide"
             navigation
