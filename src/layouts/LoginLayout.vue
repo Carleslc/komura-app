@@ -63,12 +63,12 @@ export default {
       slides: [
         {
           path: 'statics/images/login-background-image-1.jpg',
-          title: 'Únete a nuestra comunidad',
+          title: this.$t('joinOurCommunity'),
           subtitle: 'Siéntete libre haciendo lo que más te gusta'
         },
         {
           path: 'statics/images/login-background-image-2.jpg',
-          title: 'Únete a nuestra comunidad',
+          title: this.$t('joinOurCommunity'),
           subtitle: 'Organiza tu trabajo en grupo'
         }
       ]

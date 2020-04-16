@@ -29,7 +29,8 @@
     "prettier": "^1.19.1",
     "quasar": "^1.9.14",
     "subscriptions-transport-ws": "^0.9.16",
-    "vue-apollo": "^3.0.3"
+    "vue-apollo": "^3.0.3",
+    "vue-i18n": "^8.17.0"
   },
   "devDependencies": {
     "@quasar/app": "^1.6.2",

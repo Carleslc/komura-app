@@ -6,24 +6,24 @@
         v-model="email"
         outlined
         type="email"
-        placeholder="Introduce tu correo electrónico"
+        :placeholder="$t('enterYourEmail')"
         lazy-rules
-        :rules="[email => isValidEmail(email) || 'Introduce un correo electrónico válido']"
+        :rules="[email => isValidEmail(email) || $('emailInvalid')]"
         :class="{ filled: !!email }"
       >
         <template v-slot:prepend>
           <q-icon name="o_mail" />
         </template>
       </q-input>
-      <q-btn :disabled="!isValidEmail(email)" color="primary" label="Crear cuenta" type="submit" />
+      <q-btn :disabled="!isValidEmail(email)" color="primary" :label="$t('createAccount')" type="submit" />
     </q-form>
     <div class="row q-mt-md">
       <div class="row full-width justify-start text-md">
         <p class="col-shrink q-pr-xs q-mb-none text">
-          ¿Ya tienes una cuenta?
+          {{ $t('alreadyRegistered') }}
         </p>
         <span class="col-shrink text-button" @click="toggle">
-          Inicia sesión
+          {{ $t('doLogin') }}
         </span>
       </div>
     </div>
@@ -34,14 +34,21 @@
 import { isValidEmail } from '@/utils/validations';
 
 export default {
-  meta: {
-    title: 'Registrarse'
+  meta() {
+    return {
+      title: this.$t('register')
+    };
   },
   props: {
-    email: {
+    defaultEmail: {
       type: String,
       default: ''
     }
+  },
+  data() {
+    return {
+      email: this.defaultEmail
+    };
   },
   methods: {
     isValidEmail,
@@ -52,7 +59,7 @@ export default {
       }
     },
     toggle() {
-      this.$router.push({ name: 'login', params: { email: !this.$refs.email.hasError ? this.email : '' } });
+      this.$router.push({ name: 'login', params: { defaultEmail: !this.$refs.email.hasError ? this.email : '' } });
     }
   }
 };

@@ -37,7 +37,7 @@ export default {
     title() {
       const currentPath = this.$route.fullPath;
       if (currentPath === '/login') {
-        return 'Iniciar sesión';
+        return this.$t('login');
       }
       return 'Komura';
     }
@@ -46,7 +46,7 @@ export default {
     logoutUser() {
       this.$q.notify({
         color: 'info',
-        message: 'Has cerrado la sesión'
+        message: this.$t('sessionClosed')
       });
     }
   }

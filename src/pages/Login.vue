@@ -6,9 +6,9 @@
         v-model="email"
         outlined
         type="email"
-        placeholder="Introduce tu correo electrónico"
+        :placeholder="$t('enterYourEmail')"
         lazy-rules
-        :rules="[email => isValidEmail(email) || 'Introduce un correo electrónico válido']"
+        :rules="[email => isValidEmail(email) || $t('emailInvalid')]"
         :class="{ filled: !!email }"
       >
         <template v-slot:prepend>
@@ -20,12 +20,12 @@
         v-model="password"
         outlined
         :type="showPassword ? 'text' : 'password'"
-        placeholder="Introduce tu contraseña"
-        :hint="!!password && password.length < 8 ? 'Introduce una contraseña con al menos 8 caracteres' : ''"
+        :placeholder="$t('enterYourPassword')"
+        :hint="!!password && password.length < 8 ? $t('invalidPassword') : ''"
         lazy-rules
         :rules="[
-          password => !!password || 'Introduce una contraseña',
-          password => password.length >= 8 || 'Introduce una contraseña con al menos 8 caracteres'
+          password => !!password || $t('enterPassword'),
+          password => password.length >= 8 || $t('invalidPassword')
         ]"
         :class="{ filled: !!password, 'with-hint': !!password && password.length < 8 }"
       >
@@ -43,17 +43,17 @@
       <q-btn
         :disabled="!isValidEmail(email) || password.length < 8"
         color="primary"
-        label="Iniciar sesión"
+        :label="$t('login')"
         type="submit"
       />
     </q-form>
     <div class="row q-mt-md">
       <div class="row full-width justify-start text-md">
         <p class="col-shrink q-pr-xs q-mb-none text">
-          ¿No tienes cuenta todavía?
+          {{ $t('notRegistered') }}
         </p>
         <span class="col-shrink text-button" @click="toggle">
-          Regístrate
+          {{ $t('doRegister') }}
         </span>
       </div>
     </div>
@@ -64,11 +64,13 @@
 import { isValidEmail } from '@/utils/validations';
 
 export default {
-  meta: {
-    title: 'Iniciar sesión'
+  meta() {
+    return {
+      title: this.$t('login')
+    };
   },
   props: {
-    email: {
+    defaultEmail: {
       type: String,
       default: ''
     }
@@ -76,7 +78,8 @@ export default {
   data() {
     return {
       password: '',
-      showPassword: false
+      showPassword: false,
+      email: this.defaultEmail
     };
   },
   methods: {
@@ -89,7 +92,7 @@ export default {
       }
     },
     toggle() {
-      this.$router.push({ name: 'register', params: { email: !this.$refs.email.hasError ? this.email : '' } });
+      this.$router.push({ name: 'register', params: { defaultEmail: !this.$refs.email.hasError ? this.email : '' } });
     }
   }
 };
