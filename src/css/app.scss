@@ -47,6 +47,9 @@ $breakpoint-xlg-max: 1649px;
 }
 
 .text {
+  color: $dark;
+  opacity: 60%;
+
   &-sm {
     font-size: 1.1em;
   }
@@ -61,11 +64,6 @@ $breakpoint-xlg-max: 1649px;
 
   &-xl {
     font-size: 1.5em;
-  }
-
-  &-dark {
-    color: $dark;
-    opacity: 60%;
   }
 
   &-button {

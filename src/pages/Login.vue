@@ -1,5 +1,5 @@
 <template>
-  <q-page class="page-component">
+  <q-page class="hidden page-component">
     <q-form class="q-mt-md" @submit="signInWithEmail">
       <q-input
         ref="email"
@@ -49,7 +49,7 @@
     </q-form>
     <div class="row q-mt-md">
       <div class="row full-width justify-start text-md">
-        <p class="col-shrink q-pr-xs q-mb-none text-dark">
+        <p class="col-shrink q-pr-xs q-mb-none text">
           ¿No tienes cuenta todavía?
         </p>
         <span class="col-shrink text-button" @click="toggle">

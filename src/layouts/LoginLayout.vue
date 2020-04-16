@@ -9,10 +9,11 @@
                 <img alt="Kindly Network" src="~assets/KomuraReducido-Azul.svg" />
               </router-link>
             </div>
-            <div class="column col justify-end">
+            <div class="column col justify-center">
               <div class="col-shrink q-mt-md justify-end">
                 <div id="social-providers" />
-                <div class="row">
+                <!-- ENABLE LOGIN / REGISTER with email -->
+                <div class="row hidden">
                   <q-separator class="col-4" />
                   <div class="row col items-center justify-center">
                     <p class="col-shrink text-grey-6 q-ma-none">O</p>
@@ -98,9 +99,9 @@ export default {
       authUI.start('#social-providers', {
         signInSuccessUrl: '/',
         signInOptions: [
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-          firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-          firebase.auth.TwitterAuthProvider.PROVIDER_ID
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID
+          // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+          // firebase.auth.TwitterAuthProvider.PROVIDER_ID
         ],
         credentialHelper: firebaseui.auth.CredentialHelper.NONE
       });

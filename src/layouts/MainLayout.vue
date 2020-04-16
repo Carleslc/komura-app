@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh lpR lFf">
-    <q-header elevated>
+    <q-header>
       <q-toolbar>
         <a href="/" class="q-py-md">
           <img id="toolbar-logo" src="~assets/KomuraLogo-Blanco.svg" style="width: 150px" />
