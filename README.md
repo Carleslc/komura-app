@@ -1,4 +1,4 @@
-# Komura (komura)
+# Komura
 
 Kindly Network
 
