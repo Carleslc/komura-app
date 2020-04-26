@@ -1,20 +1,30 @@
 mutation createRootGroup($owner: String!, $name: String!, $slug: String!) {
   insert_groups(
-    objects: { profile: { data: { name: $name } }, path: $slug, members: { data: { username: $owner, role: owner } } }
+    objects: { name: $name, path: $slug, owner_id: $owner }
   ) {
     returning {
       id
       path
-      is_accessible
+      name
       type
+      is_public
+      is_accessible
       created_at
       chat_settings {
         is_public
       }
-      profile {
+      members {
+        user_id
         name
-        is_public
       }
     }
   }
 }
+
+"""
+{
+  "owner": "test-1",
+  "name": "Test Group",
+  "slug": "test"
+}
+"""

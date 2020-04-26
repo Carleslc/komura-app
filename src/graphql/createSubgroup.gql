@@ -1,38 +1,34 @@
-mutation createSubgroup($owner: String!, $name: String!, $slug: String!, $parent: Int!) {
-  insert_groups(
-    objects: {
-      profile: { data: { name: $name } }
-      path: $slug
-      parent_id: $parent
-      members: { data: { username: $owner, role: owner } }
-    }
-  ) {
+mutation createSubgroup($owner: String!, $name: String!, $slug: String!, $parent: bigint!) {
+  insert_groups(objects: { name: $name, path: $slug, parent_id: $parent, owner_id: $owner }) {
     returning {
       id
       path
       parent_id
+      name
+      is_public
       is_accessible
       type
       created_at
       chat_settings {
         is_public
       }
-      profile {
-        name
-        is_public
-      }
       root {
         path
-        profile {
-          name
-        }
+        name
       }
       parent {
         path
-        profile {
-          name
-        }
+        name
       }
     }
   }
 }
+
+"""
+{
+  "owner": "test-1",
+  "name": "Test Subgroup",
+  "slug": "subgroup",
+  "parent": 84109545630073942
+}
+"""

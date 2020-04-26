@@ -1,26 +1,21 @@
-mutation createUser($id: String!, $email: String!, $username: String!, $name: String!) {
+mutation createUser($id: String!, $email: String!, $name: String!, $username: String!) {
   insert_users(
     objects: {
       id: $id
       email: $email
-      username: $username
-      personal_space: { data: { path: $username, type: user, profile: { data: { name: $name } } } }
+      personal_space: { data: { path: $username, type: user, name: $name, owner_id: $id } }
     }
   ) {
     returning {
       id
       email
-      username
       created_at
       personal_space {
-        path
-        profile {
-          name
-          image
-          is_public
-        }
+        username: path
+        name
+        is_public
         members {
-          username
+          name
           role
           joined_at
         }
