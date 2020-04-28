@@ -1,5 +1,5 @@
-mutation joinGroup($group: Int!, $user: String!) {
-  insert_members(objects: { group_id: $group, user_id: $user }) {
+mutation joinGroup($user: String!, $group: bigint!) {
+  insert_members(objects: { user_id: $user, group_id: $group }) {
     returning {
       name
       role
@@ -11,3 +11,10 @@ mutation joinGroup($group: Int!, $user: String!) {
     }
   }
 }
+
+"""
+{
+  "user": "test-2",
+  "group": 85531844811949080
+}
+"""
