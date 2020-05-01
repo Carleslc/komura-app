@@ -6,7 +6,7 @@ module.exports = function config(ctx) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ['i18n', 'apollo', 'firebase'],
+    boot: ['i18n', 'firebase', 'auth', 'apollo'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ['utils.scss', 'firebase-ui.css', 'app.scss'],
@@ -67,6 +67,21 @@ module.exports = function config(ctx) {
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
+      chainWebpack(chain) {
+        chain.module
+          .rule('vue')
+          .use('vue-loader')
+          .loader('vue-loader')
+          .tap(options => {
+            options.transpileOptions = {
+              transforms: {
+                dangerousTaggedTemplateString: true
+              }
+            };
+            return options;
+          });
+      },
+
       extendWebpack(cfg) {
         cfg.module.rules.push(
           {
@@ -87,6 +102,11 @@ module.exports = function config(ctx) {
           ...cfg.resolve.alias,
           '@': require('path').resolve(__dirname, 'src')
         };
+      },
+
+      uglifyOptions: {
+        drop_debugger: !ctx.dev,
+        drop_console: !ctx.dev
       }
     },
 

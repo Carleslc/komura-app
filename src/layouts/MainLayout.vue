@@ -6,7 +6,7 @@
           <img id="toolbar-logo" src="~assets/KomuraLogo-Blanco.svg" style="width: 150px" />
         </a>
         <q-btn
-          v-if="!userDetails.userId"
+          v-if="!isLoggedIn"
           to="/login"
           class="absolute-right q-pr-sm"
           flat
@@ -15,7 +15,7 @@
         />
         <q-btn v-else class="absolute-right q-pr-sm" flat icon="o_account_circle" @click="logoutUser">
           Logout<br />
-          {{ userDetails.name }}
+          {{ displayName }}
         </q-btn>
       </q-toolbar>
     </q-header>
@@ -28,26 +28,20 @@
 
 <script>
 export default {
-  data() {
-    return {
-      userDetails: {}
-    };
+  meta: {
+    titleTemplate: title => `${title} | Komura`
   },
   computed: {
-    title() {
-      const currentPath = this.$route.fullPath;
-      if (currentPath === '/login') {
-        return this.$t('login');
-      }
-      return 'Komura';
+    isLoggedIn() {
+      return this.$auth.isLoggedIn();
+    },
+    displayName() {
+      return this.$auth.getFirebaseUser().displayName;
     }
   },
   methods: {
     logoutUser() {
-      this.$q.notify({
-        color: 'info',
-        message: this.$t('sessionClosed')
-      });
+      this.$auth.logout();
     }
   }
 };

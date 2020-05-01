@@ -19,5 +19,7 @@ export default {
   returnHome: 'Return home',
 
   // Home
+  home: 'Home',
+  welcome: 'Welcome',
   sessionClosed: 'Session closed'
 };

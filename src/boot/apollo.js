@@ -14,6 +14,7 @@ import VueApollo from 'vue-apollo';
 import { AuthService } from '@/services/auth';
 
 // https://github.com/Akryum/vue-cli-plugin-apollo/blob/master/graphql-client/src/index.js
+// Can be updated to https://github.com/quasarframework/app-extension-apollo/
 
 const API = 'komura-backend.herokuapp.com/v1/graphql';
 
@@ -46,7 +47,7 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const apolloClient = new ApolloClient({
+export const apolloClient = new ApolloClient({
   link: authLink.concat(link),
   cache: new InMemoryCache(),
   connectToDevTools: process.env.DEV
@@ -68,12 +69,17 @@ export function restartWebsockets() {
   });
 }
 
-export const apolloProvider = new VueApollo({
+const providerConfig = {
   defaultClient: apolloClient,
   defaultOptions: {
-    $loadingKey: 'loading'
-  },
-  errorHandler({ graphQLErrors, networkError }) {
+    $query: {
+      loadingKey: 'loading'
+    }
+  }
+};
+
+if (process.env.DEV) {
+  providerConfig.errorHandler = function errorHandler({ graphQLErrors, networkError }) {
     if (graphQLErrors) {
       graphQLErrors.map(({ message, locations, path }) =>
         console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
@@ -82,10 +88,11 @@ export const apolloProvider = new VueApollo({
     if (networkError) {
       console.log(`[Network error]: ${networkError}`);
     }
-  }
-});
+  };
+}
 
 export default ({ app, Vue }) => {
   Vue.use(VueApollo);
-  app.apolloProvider = apolloProvider;
+
+  app.apolloProvider = new VueApollo(providerConfig);
 };

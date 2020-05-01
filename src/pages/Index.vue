@@ -7,7 +7,8 @@
 <script>
 export default {
   meta: {
-    title: 'Komura'
+    title: 'Komura',
+    titleTemplate: ''
   }
 };
 </script>

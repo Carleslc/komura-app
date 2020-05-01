@@ -23,6 +23,12 @@ yarn run lint
 quasar build
 ```
 
+### Serve production app
+
+```bash
+quasar serve -o --history dist/spa
+```
+
 ### Upgrade Quasar
 
 ```bash
