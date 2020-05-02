@@ -9,6 +9,9 @@ export default {
   meta: {
     title: 'Komura',
     titleTemplate: ''
+  },
+  mounted() {
+    this.$auth.redirectOnLoggedIn = { name: 'home' };
   }
 };
 </script>

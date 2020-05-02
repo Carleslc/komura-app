@@ -8,7 +8,7 @@
 export default {
   computed: {
     displayName() {
-      return this.$auth.getFirebaseUser().displayName;
+      return this.$auth.firebaseUser.displayName;
     }
   },
   meta() {

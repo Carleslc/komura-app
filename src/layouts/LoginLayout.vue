@@ -71,10 +71,12 @@ export default {
           title: this.$t('joinOurCommunity'),
           subtitle: 'Organiza tu trabajo en grupo'
         }
-      ]
+      ],
+      isPendingRedirect: false
     };
   },
   mounted() {
+    this.$auth.redirectOnLoggedIn = this.$route.query.signInSuccessUrl || { name: 'home' };
     this.bindAuthUI();
   },
   methods: {
@@ -96,14 +98,17 @@ export default {
     },
     loadSocialProviders() {
       const authUI = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebaseAuth);
+      this.isPendingRedirect = authUI.isPendingRedirect();
       authUI.start('#social-providers', {
-        signInSuccessUrl: '/',
+        signInSuccessUrl: this.$route.query.signInSuccessUrl,
         signInOptions: [
           firebase.auth.GoogleAuthProvider.PROVIDER_ID
           // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
           // firebase.auth.TwitterAuthProvider.PROVIDER_ID
         ],
-        credentialHelper: firebaseui.auth.CredentialHelper.NONE
+        callbacks: {
+          signInSuccessWithAuthResult: this.$auth.socialSignInSuccess.bind(this.$auth)
+        }
       });
     }
   }

@@ -11,7 +11,7 @@ import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 import fetch from 'node-fetch';
 import VueApollo from 'vue-apollo';
 
-import { AuthService } from '@/services/auth';
+import AuthService from '@/services/auth';
 
 // https://github.com/Akryum/vue-cli-plugin-apollo/blob/master/graphql-client/src/index.js
 // Can be updated to https://github.com/quasarframework/app-extension-apollo/
@@ -42,7 +42,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: AuthService.getAuth()
+      authorization: AuthService.instance.header
     }
   };
 });

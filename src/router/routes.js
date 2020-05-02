@@ -19,12 +19,19 @@ const routes = [
   {
     path: '/login',
     component: () => import('layouts/LoginLayout.vue'),
-    children: [{ name: 'login', path: '', props: true, component: () => import('pages/Login.vue') }]
+    children: [{ name: 'login', path: '', props: true, component: () => import('pages/Login.vue') }],
+    meta: { auth: false, redirect: { name: 'home' } }
   },
   {
     path: '/register',
     component: () => import('layouts/LoginLayout.vue'),
-    children: [{ name: 'register', path: '', props: true, component: () => import('pages/Register.vue') }]
+    children: [{ name: 'register', path: '', props: true, component: () => import('pages/Register.vue') }],
+    meta: { auth: false, redirect: { name: 'home' } }
+  },
+  {
+    path: '/restricted',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', props: true, component: () => import('pages/Home.vue'), meta: { auth: true } }]
   }
 ];
 

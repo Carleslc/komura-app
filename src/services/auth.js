@@ -1,43 +1,100 @@
 import { LocalStorage } from 'quasar';
-import { firebaseAuth } from '@/boot/firebase';
+import { asUsername } from '@/utils/strings';
 
-const TOKEN_KEY = 'ACCESS_TOKEN';
 const USER_KEY = 'CACHE_USER';
+const LAST_LOGIN = 'LAST_LOGIN';
 const REFRESH_TOKEN_ENDPOINT = 'https://europe-west1-komura-app.cloudfunctions.net/refreshToken';
 
-export const AuthService = {
+export default class AuthService {
+  static instance;
+
+  constructor(firebaseAuth, router) {
+    AuthService.instance = this;
+    this.firebaseAuth = firebaseAuth;
+    this.router = router;
+    this.additionalUserInfo = {
+      isNewUser: false,
+      profile: {}
+    };
+    this.load();
+  }
+
+  get firebaseUser() {
+    return LocalStorage.getItem(USER_KEY) || this.firebaseAuth.currentUser;
+  }
+
+  get header() {
+    return this.token ? `Bearer ${this.token}` : undefined;
+  }
+
   isLoggedIn() {
-    return !!AuthService.getFirebaseUser();
-  },
-  getAuth() {
-    const token = LocalStorage.getItem(TOKEN_KEY);
-    return token ? `Bearer ${token}` : undefined;
-  },
-  getFirebaseUser() {
-    return firebaseAuth.currentUser || LocalStorage.getItem(USER_KEY);
-  },
+    return !!this.firebaseUser;
+  }
+
   logout() {
-    firebaseAuth.signOut();
-    // TODO: Set hasura user last_exit to now
-    LocalStorage.remove(USER_KEY);
-    LocalStorage.remove(TOKEN_KEY);
-  },
-  requireAuth(record) {
-    return 'meta' in record && record.meta.auth && !AuthService.isLoggedIn();
-  },
-  ensureUnauthenticatedRoute(router) {
-    if (AuthService.requireAuth(router.currentRoute)) {
-      router.ensure({ name: 'index' });
+    this.firebaseAuth.signOut();
+  }
+
+  // Cache some fields to load authenticated pages faster avoiding redirects
+  cacheUser(firebaseUser) {
+    if (!LocalStorage.has(USER_KEY)) {
+      LocalStorage.set(USER_KEY, {
+        displayName: this.additionalUserInfo.profile.given_name || firebaseUser.displayName
+      });
     }
-  },
-  load(router) {
+  }
+
+  socialSignInSuccess(authResult, redirectUrl) {
+    this.additionalUserInfo = authResult.additionalUserInfo;
+    this.cacheUser(authResult.user);
+    this.router.push(redirectUrl || { name: 'home' });
+    this.redirectOnLoggedIn = undefined;
+    return false; // redirect already handled
+  }
+
+  static registerUser(id, email, name, username) {
+    // TODO: Create hasura user
+  }
+
+  static updateLastLogin(id) {
+    // TODO: Update hasura last_login
+  }
+
+  load() {
+    function loginUser(firebaseUser, validToken) {
+      this.token = validToken;
+      const lastLogin = firebaseUser.metadata.lastSignInTime;
+      if (LocalStorage.getItem(LAST_LOGIN) !== lastLogin) {
+        LocalStorage.set(LAST_LOGIN, lastLogin);
+        if (this.additionalUserInfo.isNewUser) {
+          const name = this.additionalUserInfo.profile.given_name || firebaseUser.displayName;
+          const username = this.additionalUserInfo.username || asUsername(firebaseUser.displayName);
+          AuthService.registerUser(firebaseUser.uid, firebaseUser.email, name, username);
+          console.log('Create hasura user');
+        } else {
+          AuthService.updateLastLogin(firebaseUser.uid);
+          console.log('Update hasura last_login');
+        }
+      }
+      if (this.redirectOnLoggedIn) {
+        this.router.ensure(this.redirectOnLoggedIn);
+      }
+    }
+
+    function logoutUser() {
+      LocalStorage.remove(USER_KEY);
+      this.token = undefined;
+      if (this.router.currentRoute.meta.auth) {
+        this.router.ensure({ name: 'index' });
+      }
+    }
+
     return new Promise(resolve => {
-      firebaseAuth.onAuthStateChanged(firebaseUser => {
+      this.firebaseAuth.onAuthStateChanged(firebaseUser => {
         resolve();
         if (firebaseUser) {
           // User is logged in
-          // Cache some fields to load authenticated pages faster in the future
-          LocalStorage.set(USER_KEY, { displayName: firebaseUser.displayName });
+          this.cacheUser(firebaseUser);
           firebaseUser
             .getIdToken() // retrieve or refresh if expired
             .then(token =>
@@ -56,15 +113,17 @@ export const AuthService = {
               })
             )
             .then(validToken => {
-              LocalStorage.set(TOKEN_KEY, validToken);
-              // TODO: Set hasura user last_login to now and retrieve fields
+              loginUser.call(this, firebaseUser, validToken);
             })
-            .catch(console.error);
+            .catch(e => {
+              console.error(e);
+              logoutUser.call(this);
+            });
         } else {
           // User is logged out
-          AuthService.ensureUnauthenticatedRoute(router);
+          logoutUser.call(this);
         }
       });
     });
   }
-};
+}
