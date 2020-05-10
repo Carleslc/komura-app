@@ -2,8 +2,8 @@ import { firebaseAuth } from '@/boot/firebase';
 import AuthService from '@/services/auth';
 
 // eslint-disable-next-line no-unused-vars
-export default ({ router, store, Vue }) => {
-  const auth = new AuthService(firebaseAuth, router);
+export default ({ app, router, store, Vue }) => {
+  const auth = new AuthService(app, firebaseAuth, router);
 
   router.beforeEach((to, from, next) => {
     const record = to.matched.find(r => r.meta.auth !== undefined);

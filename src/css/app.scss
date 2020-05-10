@@ -285,4 +285,6 @@
   }
 }
 
-@import './login.scss';
+.with-line-breaks {
+  white-space: pre-line;
+}

@@ -8,8 +8,9 @@ const REFRESH_TOKEN_ENDPOINT = 'https://europe-west1-komura-app.cloudfunctions.n
 export default class AuthService {
   static instance;
 
-  constructor(firebaseAuth, router) {
+  constructor(app, firebaseAuth, router) {
     AuthService.instance = this;
+    this.app = app;
     this.firebaseAuth = firebaseAuth;
     this.router = router;
     this.additionalUserInfo = {
@@ -53,7 +54,7 @@ export default class AuthService {
   }
 
   static registerUser(id, email, name, username) {
-    // TODO: Create hasura user
+    // TODO: Create hasura user (app.apollo)
   }
 
   static updateLastLogin(id) {

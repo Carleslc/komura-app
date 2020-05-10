@@ -5,4 +5,6 @@ export function apolloClientBeforeCreate({ apolloClientConfigObj }) {
   // apolloClientConfigObj.cache
 }
 
-export function apolloClientAfterCreate(/* { apolloClient, app, router, store, ssrContext, urlPath, redirect } */) {}
+export function apolloClientAfterCreate({ apolloClient, app }) {
+  app.apollo = apolloClient;
+}
