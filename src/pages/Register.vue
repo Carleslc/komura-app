@@ -8,7 +8,7 @@
         type="email"
         :placeholder="$t('enterYourEmail')"
         lazy-rules
-        :rules="[email => isValidEmail(email) || $('emailInvalid')]"
+        :rules="[email => isValidEmail(email) || $t('emailInvalid')]"
         :class="{ filled: !!email }"
       >
         <template v-slot:prepend>

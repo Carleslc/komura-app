@@ -34,7 +34,15 @@ module.exports = {
 
   // add your custom rules here
   rules: {
-    'max-len': ['warn', { code: 120 }],
+    'max-len': [
+      'warn',
+      {
+        code: 120,
+        ignorePattern: 'https?://.+'
+      }
+    ],
+
+    'prefer-destructuring': ['error', { object: true, array: false }],
 
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'no-param-reassign': 'off',

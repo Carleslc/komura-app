@@ -17,5 +17,10 @@
   </head>
   <body>
     <div id="q-app"></div>
+  
+    <% // added by 'quasar-app-extension-apollo' %>
+    <% if (htmlWebpackPlugin.options.ctx.mode.ssr) { %>
+      {{{ renderState({ contextKey: 'apolloState', windowKey: '__APOLLO_STATE__' }) }}}
+    <% } %>
   </body>
 </html>

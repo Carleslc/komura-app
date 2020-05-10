@@ -1,0 +1,186 @@
+#login-form {
+  .header-logo {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+
+    @media (max-width: $breakpoint-xs-max) {
+      width: 100%;
+    }
+
+    a {
+      img {
+        height: 100%;
+        width: 100%;
+        min-height: 48px;
+        max-height: 16vh;
+      }
+    }
+  }
+
+  .container {
+    padding: 10vh 5vw 10vh 5vw;
+    max-width: 768px;
+
+    @media (max-width: $breakpoint-xs-max), (max-height: $breakpoint-xs-max) {
+      padding: 3vh 5vw 3vh 5vw;
+    }
+  }
+
+  .q-separator {
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+  }
+}
+
+#login-carousel {
+  .q-carousel {
+    .q-carousel__slides-container {
+      .q-panel {
+        .q-carousel__slide {
+          div {
+            position: absolute;
+            // 15% of parent
+            padding-left: 15%;
+            padding-right: 15%;
+            z-index: 1;
+
+            h1 {
+              width: 100%;
+              font-size: 5em;
+              font-weight: $medium;
+              line-height: 1.5em;
+              margin-top: 16px;
+              margin-bottom: 16px;
+
+              @media (max-width: $breakpoint-xmd-max) {
+                font-size: 4em;
+              }
+
+              @media (max-height: $breakpoint-xs-max) {
+                font-size: 10vh;
+              }
+
+              @media (max-height: $breakpoint-xxxs-max) {
+                font-size: 3em;
+              }
+            }
+
+            h2 {
+              width: 100%;
+              font-size: 2.5em;
+              font-weight: normal;
+              line-height: 1.5em;
+              margin-top: 16px;
+              margin-bottom: 16px;
+
+              @media (max-width: $breakpoint-xmd-max) {
+                font-size: 2em;
+              }
+
+              @media (max-height: $breakpoint-xs-max) {
+                font-size: 5vh;
+              }
+
+              @media (max-height: $breakpoint-xxxs-max) {
+                font-size: 1.5em;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .q-carousel__navigation {
+      z-index: 1;
+
+      .q-carousel__navigation-inner {
+        justify-content: center;
+        padding-left: 15%;
+        padding-right: 15%;
+      }
+    }
+  }
+
+  &.carousel-overlay {
+    .q-carousel__slide::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: adjust-color($color: $primary, $alpha: -0.15);
+      z-index: 0;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-xsm-max) {
+  #login-form {
+    width: 100%;
+  }
+
+  #login-carousel {
+    display: none;
+  }
+}
+
+// Social Providers
+
+.firebaseui-idp-list > .firebaseui-list-item {
+  margin-bottom: 16px;
+}
+
+.firebaseui-idp-button {
+  padding-left: 32px;
+  padding-right: 32px;
+  min-width: 10vw;
+  min-height: $btn-min-height;
+  height: $btn-height;
+  border-radius: $roundness;
+  box-shadow: none;
+  max-width: none;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: $breakpoint-xxs-min) {
+    .firebaseui-idp-icon-wrapper {
+      margin-right: auto;
+    }
+  }
+}
+
+.firebaseui-idp-google {
+  -webkit-box-shadow: 0 1.5px 2px 1.2px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 1.5px 2px 1.2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1.5px 2px 1.2px rgba(0, 0, 0, 0.1);
+}
+
+.firebaseui-container {
+  margin: 0;
+  max-width: none;
+  .firebaseui-card-content {
+    padding: 0;
+  }
+}
+
+.firebaseui-idp-text,
+.firebaseui-idp-text-long,
+.firebaseui-idp-text-short {
+  font-weight: $medium;
+  font-size: 1.3em;
+  white-space: nowrap;
+  overflow: auto;
+
+  @media (max-width: $breakpoint-xxxs-max) {
+    font-size: 0;
+    padding: 0;
+  }
+
+  @media (min-width: $breakpoint-xxs-min) {
+    margin-right: auto;
+  }
+}
