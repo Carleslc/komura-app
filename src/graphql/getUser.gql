@@ -1,0 +1,14 @@
+query getUser($id: String!) {
+  users_by_pk(id: $id) {
+    id
+    personal_space {
+      username: path
+    }
+    main_profile {
+      name
+      description
+      image
+      banner
+    }
+  }
+}

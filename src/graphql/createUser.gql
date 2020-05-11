@@ -8,17 +8,15 @@ mutation createUser($id: String!, $email: String!, $name: String!, $username: St
   ) {
     returning {
       id
-      email
       created_at
       personal_space {
         username: path
+      }
+      main_profile {
         name
-        is_public
-        members {
-          name
-          role
-          joined_at
-        }
+        description
+        image
+        banner
       }
     }
   }

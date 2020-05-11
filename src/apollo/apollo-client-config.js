@@ -1,3 +1,4 @@
+import { typeDefs, resolvers } from '@/graphql/client';
 import { httpLinkConfig } from './link.js';
 
 export default function(/* { app, router, store, ssrContext, urlPath, redirect } */) {
@@ -11,7 +12,10 @@ export default function(/* { app, router, store, ssrContext, urlPath, redirect }
 
       // additional config for apollo client
       // https://github.com/apollographql/apollo-client/blob/version-2.6/docs/source/api/apollo-client.mdx#optional-fields
-      additionalConfig: {}
+      additionalConfig: {
+        typeDefs,
+        resolvers
+      }
     },
 
     // you can add more options or override the default config for a specific

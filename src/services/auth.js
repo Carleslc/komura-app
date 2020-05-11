@@ -54,7 +54,7 @@ export default class AuthService {
   }
 
   static registerUser(id, email, name, username) {
-    // TODO: Create hasura user (app.apollo)
+    // TODO: Create hasura user (this.app.apolloClient)
   }
 
   static updateLastLogin(id) {
@@ -65,11 +65,11 @@ export default class AuthService {
     function loginUser(firebaseUser, validToken) {
       this.token = validToken;
       const lastLogin = firebaseUser.metadata.lastSignInTime;
+      const name = this.additionalUserInfo.profile.given_name || firebaseUser.displayName;
+      const username = this.additionalUserInfo.username || asUsername(firebaseUser.displayName);
       if (LocalStorage.getItem(LAST_LOGIN) !== lastLogin) {
         LocalStorage.set(LAST_LOGIN, lastLogin);
         if (this.additionalUserInfo.isNewUser) {
-          const name = this.additionalUserInfo.profile.given_name || firebaseUser.displayName;
-          const username = this.additionalUserInfo.username || asUsername(firebaseUser.displayName);
           AuthService.registerUser(firebaseUser.uid, firebaseUser.email, name, username);
           console.log('Create hasura user');
         } else {
@@ -80,6 +80,21 @@ export default class AuthService {
       if (this.redirectOnLoggedIn) {
         this.router.ensure(this.redirectOnLoggedIn);
       }
+      this.app.apolloClient.writeQuery({
+        query: require('@/graphql/client/getCurrentUser.gql'),
+        data: {
+          user: {
+            __typename: 'User',
+            id: firebaseUser.uid,
+            created_at: firebaseUser.metadata.creationTime,
+            username,
+            name,
+            description: null,
+            image: null,
+            banner: null
+          }
+        }
+      });
     }
 
     function logoutUser() {

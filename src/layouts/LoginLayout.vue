@@ -50,10 +50,6 @@
   </q-layout>
 </template>
 
-<style lang="scss">
-@import 'css/login.scss';
-</style>
-
 <script>
 export default {
   meta: {

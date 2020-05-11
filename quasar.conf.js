@@ -86,14 +86,15 @@ module.exports = function config(ctx) {
           {
             enforce: 'pre',
             test: /\.(js|vue)$/,
-            loader: 'eslint-loader',
             exclude: /node_modules/,
+            loader: 'eslint-loader',
             options: {
               formatter: require('eslint').CLIEngine.getFormatter('stylish')
             }
           },
           {
             test: /\.(graphql|gql)$/,
+            exclude: /node_modules/,
             loader: 'graphql-tag/loader'
           }
         );

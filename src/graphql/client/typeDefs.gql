@@ -1,0 +1,12 @@
+scalar BigInt
+scalar DateTime
+
+type User {
+  id: ID!
+  created_at: DateTime!
+  username: String!
+  name: String!
+  description: String
+  image: String
+  banner: String
+}
