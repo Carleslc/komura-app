@@ -1,7 +1,8 @@
 import { persistCache } from 'apollo-cache-persist';
 import { Platform } from 'quasar';
-import cache from './cache.js';
+import { catchUndefined } from '@/utils/errors.js';
 import { withAuthAndWebSockets } from './link.js';
+import cache from './cache.js';
 
 export function apolloClientBeforeCreate({ apolloClientConfigObj }) {
   apolloClientConfigObj.link = withAuthAndWebSockets(apolloClientConfigObj.link);
@@ -16,5 +17,6 @@ export function apolloClientBeforeCreate({ apolloClientConfigObj }) {
 }
 
 export function apolloClientAfterCreate({ apolloClient, app }) {
+  apolloClient.readQuery = catchUndefined(apolloClient.readQuery.bind(apolloClient));
   app.apolloClient = apolloClient;
 }

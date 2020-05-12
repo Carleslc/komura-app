@@ -1,9 +1,10 @@
 import { LocalStorage } from 'quasar';
 import { asUsername } from '@/utils/strings';
 
-const USER_KEY = 'CACHE_USER';
 const LAST_LOGIN = 'LAST_LOGIN';
 const REFRESH_TOKEN_ENDPOINT = 'https://europe-west1-komura-app.cloudfunctions.net/refreshToken';
+
+const CURRENT_USER_QUERY = require('@/graphql/client/getCurrentUser.gql');
 
 export default class AuthService {
   static instance;
@@ -21,67 +22,35 @@ export default class AuthService {
   }
 
   get firebaseUser() {
-    return LocalStorage.getItem(USER_KEY) || this.firebaseAuth.currentUser;
+    return this.firebaseAuth.currentUser;
   }
 
   get header() {
     return this.token ? `Bearer ${this.token}` : undefined;
   }
 
+  get user() {
+    return this.app.apolloClient.readQuery({ query: CURRENT_USER_QUERY }).user;
+  }
+
   isLoggedIn() {
-    return !!this.firebaseUser;
+    return !!this.firebaseUser || LocalStorage.has(LAST_LOGIN);
   }
 
   logout() {
-    this.firebaseAuth.signOut();
+    this.app.apolloClient.clearStore().then(() => {
+      LocalStorage.remove('apollo-cache-persist');
+      this.firebaseAuth.signOut();
+    });
   }
 
-  // Cache some fields to load authenticated pages faster avoiding redirects
-  cacheUser(firebaseUser) {
-    if (!LocalStorage.has(USER_KEY)) {
-      LocalStorage.set(USER_KEY, {
-        displayName: this.additionalUserInfo.profile.given_name || firebaseUser.displayName
-      });
-    }
-  }
-
-  socialSignInSuccess(authResult, redirectUrl) {
-    this.additionalUserInfo = authResult.additionalUserInfo;
-    this.cacheUser(authResult.user);
-    this.router.push(redirectUrl || { name: 'home' });
-    this.redirectOnLoggedIn = undefined;
-    return false; // redirect already handled
-  }
-
-  static registerUser(id, email, name, username) {
-    // TODO: Create hasura user (this.app.apolloClient)
-  }
-
-  static updateLastLogin(id) {
-    // TODO: Update hasura last_login
-  }
-
-  load() {
-    function loginUser(firebaseUser, validToken) {
-      this.token = validToken;
-      const lastLogin = firebaseUser.metadata.lastSignInTime;
+  setCurrentUser(firebaseUser) {
+    const currentUser = this.app.apolloClient.readQuery({ query: CURRENT_USER_QUERY });
+    if (!currentUser || currentUser.id !== firebaseUser.uid) {
       const name = this.additionalUserInfo.profile.given_name || firebaseUser.displayName;
       const username = this.additionalUserInfo.username || asUsername(firebaseUser.displayName);
-      if (LocalStorage.getItem(LAST_LOGIN) !== lastLogin) {
-        LocalStorage.set(LAST_LOGIN, lastLogin);
-        if (this.additionalUserInfo.isNewUser) {
-          AuthService.registerUser(firebaseUser.uid, firebaseUser.email, name, username);
-          console.log('Create hasura user');
-        } else {
-          AuthService.updateLastLogin(firebaseUser.uid);
-          console.log('Update hasura last_login');
-        }
-      }
-      if (this.redirectOnLoggedIn) {
-        this.router.ensure(this.redirectOnLoggedIn);
-      }
       this.app.apolloClient.writeQuery({
-        query: require('@/graphql/client/getCurrentUser.gql'),
+        query: CURRENT_USER_QUERY,
         data: {
           user: {
             __typename: 'User',
@@ -96,10 +65,50 @@ export default class AuthService {
         }
       });
     }
+  }
+
+  socialSignInSuccess(authResult, redirectUrl) {
+    this.additionalUserInfo = authResult.additionalUserInfo;
+    this.setCurrentUser(authResult.user);
+    this.router.push(redirectUrl || { name: 'home' });
+    this.redirectOnLoggedIn = undefined;
+    return false; // redirect already handled
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  registerUser(id, email, name, username) {
+    // TODO: Create hasura user (this.app.apolloClient)
+    console.log('Create hasura user');
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  updateLastLogin(id) {
+    // TODO: Update hasura last_login
+    console.log('Update hasura last_login');
+  }
+
+  load() {
+    function loginUser(firebaseUser, validToken) {
+      this.token = validToken;
+      const lastLogin = firebaseUser.metadata.lastSignInTime;
+      if (LocalStorage.getItem(LAST_LOGIN) !== lastLogin) {
+        // new login
+        LocalStorage.set(LAST_LOGIN, lastLogin);
+        if (this.additionalUserInfo.isNewUser) {
+          const { name, username } = this.user;
+          this.registerUser(firebaseUser.uid, firebaseUser.email, name, username);
+        } else {
+          this.updateLastLogin(firebaseUser.uid);
+        }
+      }
+      if (this.redirectOnLoggedIn) {
+        this.router.ensure(this.redirectOnLoggedIn);
+      }
+    }
 
     function logoutUser() {
-      LocalStorage.remove(USER_KEY);
       this.token = undefined;
+      LocalStorage.remove(LAST_LOGIN);
       if (this.router.currentRoute.meta.auth) {
         this.router.ensure({ name: 'index' });
       }
@@ -110,7 +119,7 @@ export default class AuthService {
         resolve();
         if (firebaseUser) {
           // User is logged in
-          this.cacheUser(firebaseUser);
+          this.setCurrentUser(firebaseUser);
           firebaseUser
             .getIdToken() // retrieve or refresh if expired
             .then(token =>
