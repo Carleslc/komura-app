@@ -11,10 +11,3 @@ mutation joinGroup($user: String!, $group: bigint!) {
     }
   }
 }
-
-"""
-{
-  "user": "test-2",
-  "group": 85531844811949080
-}
-"""

@@ -1,7 +1,5 @@
 mutation createRootGroup($owner: String!, $name: String!, $slug: String!) {
-  insert_groups(
-    objects: { name: $name, path: $slug, owner_id: $owner }
-  ) {
+  insert_groups(objects: { name: $name, path: $slug, owner_id: $owner }) {
     returning {
       id
       path
@@ -20,11 +18,3 @@ mutation createRootGroup($owner: String!, $name: String!, $slug: String!) {
     }
   }
 }
-
-"""
-{
-  "owner": "test-1",
-  "name": "Test Group",
-  "slug": "test"
-}
-"""

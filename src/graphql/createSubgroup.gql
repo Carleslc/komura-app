@@ -23,12 +23,3 @@ mutation createSubgroup($owner: String!, $name: String!, $slug: String!, $parent
     }
   }
 }
-
-"""
-{
-  "owner": "test-1",
-  "name": "Test Subgroup",
-  "slug": "subgroup",
-  "parent": 84109545630073942
-}
-"""

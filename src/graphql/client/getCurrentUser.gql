@@ -1,11 +1,12 @@
 query getCurrentUser {
   user @client {
     id
-    created_at
     username
     name
     description
     image
     banner
+    created_at
+    last_login
   }
 }

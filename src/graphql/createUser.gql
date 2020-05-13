@@ -9,24 +9,7 @@ mutation createUser($id: String!, $email: String!, $name: String!, $username: St
     returning {
       id
       created_at
-      personal_space {
-        username: path
-      }
-      main_profile {
-        name
-        description
-        image
-        banner
-      }
+      last_login
     }
   }
 }
-
-"""
-{
-  "id": "test-1",
-  "email": "user1@test.com",
-  "username": "UserTest",
-  "name": "Usuario de prueba"
-}
-"""

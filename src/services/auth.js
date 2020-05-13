@@ -1,7 +1,9 @@
 import { LocalStorage } from 'quasar';
+import { DateTime } from 'luxon';
 import { asUsername } from '@/utils/strings';
+import { hoursElapsed, toISO } from '@/utils/dates';
 
-const LAST_LOGIN = 'LAST_LOGIN';
+const USER_KEY = 'current-user';
 const REFRESH_TOKEN_ENDPOINT = 'https://europe-west1-komura-app.cloudfunctions.net/refreshToken';
 
 const CURRENT_USER_QUERY = require('@/graphql/client/getCurrentUser.gql');
@@ -9,9 +11,8 @@ const CURRENT_USER_QUERY = require('@/graphql/client/getCurrentUser.gql');
 export default class AuthService {
   static instance;
 
-  constructor(app, firebaseAuth, router) {
+  constructor(firebaseAuth, router) {
     AuthService.instance = this;
-    this.app = app;
     this.firebaseAuth = firebaseAuth;
     this.router = router;
     this.additionalUserInfo = {
@@ -19,6 +20,11 @@ export default class AuthService {
       profile: {}
     };
     this.load();
+  }
+
+  onApolloReady(apolloClient) {
+    this.apollo = apolloClient;
+    this.updateCurrentUser(LocalStorage.getItem(USER_KEY), false);
   }
 
   get firebaseUser() {
@@ -30,39 +36,43 @@ export default class AuthService {
   }
 
   get user() {
-    return this.app.apolloClient.readQuery({ query: CURRENT_USER_QUERY }).user;
+    const userData = this.apollo.readQuery({ query: CURRENT_USER_QUERY });
+    return userData ? userData.user : undefined;
   }
 
   isLoggedIn() {
-    return !!this.firebaseUser || LocalStorage.has(LAST_LOGIN);
+    return !!this.firebaseUser || !!this.user;
   }
 
   logout() {
-    this.app.apolloClient.clearStore().then(() => {
-      LocalStorage.remove('apollo-cache-persist');
-      this.firebaseAuth.signOut();
-    });
+    this.firebaseAuth.signOut();
+    this.apollo.clearStore();
+  }
+
+  updateCurrentUser(user, persist = true) {
+    if (user) {
+      this.apollo.writeQuery({
+        query: CURRENT_USER_QUERY,
+        data: {
+          user: { __typename: 'User', description: null, image: null, banner: null, ...this.user, ...user }
+        }
+      });
+      if (persist) {
+        LocalStorage.set(USER_KEY, { ...LocalStorage.getItem(USER_KEY), ...user });
+      }
+    }
   }
 
   setCurrentUser(firebaseUser) {
-    const currentUser = this.app.apolloClient.readQuery({ query: CURRENT_USER_QUERY });
+    const currentUser = this.user;
     if (!currentUser || currentUser.id !== firebaseUser.uid) {
-      const name = this.additionalUserInfo.profile.given_name || firebaseUser.displayName;
-      const username = this.additionalUserInfo.username || asUsername(firebaseUser.displayName);
-      this.app.apolloClient.writeQuery({
-        query: CURRENT_USER_QUERY,
-        data: {
-          user: {
-            __typename: 'User',
-            id: firebaseUser.uid,
-            created_at: firebaseUser.metadata.creationTime,
-            username,
-            name,
-            description: null,
-            image: null,
-            banner: null
-          }
-        }
+      console.log('Set Current User');
+      this.updateCurrentUser({
+        id: firebaseUser.uid,
+        username: this.additionalUserInfo.username || asUsername(firebaseUser.displayName),
+        name: this.additionalUserInfo.profile.given_name || firebaseUser.displayName,
+        created_at: toISO(firebaseUser.metadata.creationTime),
+        last_login: toISO(firebaseUser.metadata.lastSignInTime)
       });
     }
   }
@@ -75,30 +85,69 @@ export default class AuthService {
     return false; // redirect already handled
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  registerUser(id, email, name, username) {
-    // TODO: Create hasura user (this.app.apolloClient)
+  registerUser(firebaseUser) {
     console.log('Create hasura user');
+    const { name, username } = this.user;
+    this.apollo
+      .mutate({
+        mutation: require('@/graphql/createUser.gql'),
+        variables: {
+          id: firebaseUser.uid,
+          email: firebaseUser.email,
+          name,
+          username
+        }
+      })
+      .then(({ data }) => {
+        const inserted = data.insert_users.returning[0];
+        if (inserted) {
+          this.updateCurrentUser({
+            created_at: inserted.created_at,
+            last_login: inserted.last_login
+          });
+        }
+      });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  updateLastLogin(id) {
-    // TODO: Update hasura last_login
+  updateLastLogin(firebaseUser) {
     console.log('Update hasura last_login');
+    const lastLogin = DateTime.local().toISO();
+    this.apollo
+      .mutate({
+        mutation: require('@/graphql/updateLastLogin.gql'),
+        variables: {
+          id: firebaseUser.uid,
+          lastLogin
+        }
+      })
+      .then(({ data }) => {
+        const user = data.update_users.returning[0];
+        if (user) {
+          this.updateCurrentUser({
+            id: user.id,
+            username: user.personal_space.username,
+            name: user.main_profile.name,
+            description: user.main_profile.description,
+            image: user.main_profile.image,
+            banner: user.main_profile.banner,
+            created_at: user.created_at,
+            last_login: user.last_login
+          });
+        } else {
+          this.registerUser(firebaseUser);
+        }
+      });
   }
 
   load() {
     function loginUser(firebaseUser, validToken) {
       this.token = validToken;
-      const lastLogin = firebaseUser.metadata.lastSignInTime;
-      if (LocalStorage.getItem(LAST_LOGIN) !== lastLogin) {
-        // new login
-        LocalStorage.set(LAST_LOGIN, lastLogin);
+      const currentUser = this.user;
+      if (!currentUser || hoursElapsed(DateTime.fromISO(currentUser.last_login)) >= 1) {
         if (this.additionalUserInfo.isNewUser) {
-          const { name, username } = this.user;
-          this.registerUser(firebaseUser.uid, firebaseUser.email, name, username);
+          this.registerUser(firebaseUser);
         } else {
-          this.updateLastLogin(firebaseUser.uid);
+          this.updateLastLogin(firebaseUser);
         }
       }
       if (this.redirectOnLoggedIn) {
@@ -108,7 +157,7 @@ export default class AuthService {
 
     function logoutUser() {
       this.token = undefined;
-      LocalStorage.remove(LAST_LOGIN);
+      LocalStorage.remove(USER_KEY);
       if (this.router.currentRoute.meta.auth) {
         this.router.ensure({ name: 'index' });
       }
