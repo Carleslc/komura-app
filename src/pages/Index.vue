@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <img alt="Komura logo" src="~assets/KomuraSloganAbajo-Azul.svg" />
+    <h1>Kindly Network</h1>
   </q-page>
 </template>
 

@@ -1,43 +1,29 @@
 <template>
   <q-layout view="hhh LpR fFf">
-    <q-header>
-      <q-toolbar class="row justify-start">
+    <q-header class="header">
+      <q-toolbar class="row justify-start q-px-md">
         <q-btn flat class="col-auto q-py-sm q-mr-auto" @click="toggleMenu">
-          <img id="toolbar-logo" src="~assets/logo-icon.svg" style="width: 36px" />
+          <img src="~assets/logo-icon.svg" style="width: 36px" />
         </q-btn>
-        <h3 v-if="user.name" class="col-auto ellipsis gt-xs">
+        <h4 v-if="user.name" class="col-auto ellipsis gt-xs">
           <span class="text-medium">{{ `${$t('welcome')}, ` }}</span>
           <span class="text-light">{{ user.name }}</span>
-        </h3>
-        <div class="col-auto q-ml-auto">
-          <q-btn
-            v-if="!isLoggedIn"
-            flat
-            to="/login"
-            class="q-pa-sm"
-            color="primary"
-            icon="o_account_circle"
-            label="Iniciar sesión"
-          />
-          <q-btn
-            v-else
-            flat
-            class="q-pa-sm"
-            color="primary"
-            icon="img:statics/icons/exit.svg"
-            label="Salir"
-            @click="$auth.logout()"
-          />
-        </div>
+        </h4>
+        <div class="col-auto q-ml-auto"></div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="menu" show-if-above side="left" class="bg-grey">
-      Hello
+    <q-drawer v-if="isLoggedIn" v-model="menu" :breakpoint="800" show-if-above side="left">
+      <div class="menu-section">
+        <menu-btn icon="img:statics/icons/exit.svg" @click="$auth.logout()">
+          <p>Salir</p>
+          <p class="text-light">de la plataforma</p>
+        </menu-btn>
+      </div>
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view class="content" />
     </q-page-container>
   </q-layout>
 </template>
@@ -46,6 +32,9 @@
 export default {
   meta: {
     titleTemplate: title => `${title} | Komura`
+  },
+  components: {
+    'menu-btn': require('components/MenuButton.vue').default
   },
   data() {
     return {
@@ -72,7 +61,9 @@ export default {
   },
   methods: {
     toggleMenu() {
-      this.menu = !this.menu;
+      if (this.isLoggedIn) {
+        this.menu = !this.menu;
+      }
     }
   }
 };

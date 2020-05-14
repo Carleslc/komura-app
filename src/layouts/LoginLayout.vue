@@ -40,7 +40,6 @@
               <div class="row full-height content-center text-white">
                 <h1>{{ slide.title }}</h1>
                 <h2>{{ slide.subtitle }}</h2>
-                <q-icon></q-icon>
               </div>
             </q-carousel-slide>
           </q-carousel>

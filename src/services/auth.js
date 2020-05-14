@@ -44,6 +44,7 @@ export default class AuthService {
     return !!this.firebaseUser || !!this.user;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   logout() {
     this.firebaseAuth.signOut();
     this.apollo.clearStore();

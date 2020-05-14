@@ -13,7 +13,7 @@ const routes = [
   },
   {
     path: '/',
-    component: () => import('layouts/HomeLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
     children: [{ name: 'index', path: '', component: () => import('pages/Index.vue') }]
   },
   {
@@ -27,11 +27,6 @@ const routes = [
     component: () => import('layouts/LoginLayout.vue'),
     children: [{ name: 'register', path: '', props: true, component: () => import('pages/Register.vue') }],
     meta: { auth: false, redirect: { name: 'home' } }
-  },
-  {
-    path: '/restricted',
-    component: () => import('layouts/HomeLayout.vue'),
-    children: [{ path: '', props: true, component: () => import('pages/Home.vue'), meta: { auth: true } }]
   }
 ];
 
@@ -39,7 +34,7 @@ const routes = [
 if (process.env.MODE !== 'ssr') {
   routes.push({
     path: '*',
-    component: () => import('layouts/HomeLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/Error404.vue') }]
   });
 }
