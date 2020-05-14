@@ -49,7 +49,7 @@
     </q-form>
     <div class="row q-mt-md">
       <div class="row full-width justify-start text-md">
-        <p class="col-shrink q-pr-xs q-mb-none text">
+        <p class="col-shrink q-pr-xs text">
           {{ $t('notRegistered') }}
         </p>
         <span class="col-shrink text-button" @click="toggle">

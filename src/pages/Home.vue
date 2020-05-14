@@ -1,7 +1,7 @@
 <template>
-  <div class="container fixed-center text-center">
-    <p v-if="user.name" class="text text-xl">{{ `${$t('welcome')}, ${user.name}` }}</p>
-  </div>
+  <q-page class="row justify-center items-center">
+    <p class="col-auto text text-xl">Home</p>
+  </q-page>
 </template>
 
 <script>
@@ -10,16 +10,6 @@ export default {
     return {
       title: this.$t('home')
     };
-  },
-  data() {
-    return {
-      user: {}
-    };
-  },
-  apollo: {
-    user: {
-      query: require('@/graphql/client/getCurrentUser.gql')
-    }
   }
 };
 </script>
