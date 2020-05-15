@@ -3,11 +3,13 @@ scalar DateTime
 
 type User {
   id: ID!
+  given_name: String
   username: String!
   name: String!
   description: String
   image: String
   banner: String
+  provider_picture: String
   created_at: DateTime!
   last_login: DateTime!
 }

@@ -1,8 +1,17 @@
-mutation createUser($id: String!, $email: String!, $name: String!, $username: String!) {
+mutation createUser(
+  $id: String!
+  $email: String!
+  $name: String!
+  $username: String!
+  $givenName: String
+  $providerPicture: String
+) {
   insert_users(
     objects: {
       id: $id
       email: $email
+      given_name: $givenName
+      provider_picture: $providerPicture
       personal_space: { data: { path: $username, type: user, name: $name, owner_id: $id } }
     }
   ) {

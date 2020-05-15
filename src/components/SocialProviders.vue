@@ -37,7 +37,14 @@ export default {
       authUI.start('#social-providers', {
         signInSuccessUrl: this.$route.query.signInSuccessUrl,
         signInOptions: [
-          firebase.auth.GoogleAuthProvider.PROVIDER_ID
+          {
+            provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+            scopes: [
+              'https://www.googleapis.com/auth/user.gender.read'
+              // 'https://www.googleapis.com/auth/profile.agerange.read',
+              // 'https://www.googleapis.com/auth/contacts.readonly'
+            ]
+          }
           // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
           // firebase.auth.TwitterAuthProvider.PROVIDER_ID
         ],

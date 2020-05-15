@@ -1,6 +1,9 @@
 query getUser($id: String!) {
   users_by_pk(id: $id) {
     id
+    given_name
+    provider_picture
+    gender
     personal_space {
       username: path
     }

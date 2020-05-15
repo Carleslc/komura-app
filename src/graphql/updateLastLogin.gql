@@ -4,6 +4,9 @@ mutation updateLastLogin($id: String!, $lastLogin: timestamptz!) {
       id
       created_at
       last_login
+      given_name
+      provider_picture
+      gender
       personal_space {
         username: path
       }

@@ -1,11 +1,13 @@
 query getCurrentUser {
   user @client {
     id
+    given_name
     username
     name
     description
     image
     banner
+    provider_picture
     created_at
     last_login
   }

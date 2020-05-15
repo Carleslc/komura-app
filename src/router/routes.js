@@ -27,6 +27,12 @@ const routes = [
     component: () => import('layouts/LoginLayout.vue'),
     children: [{ name: 'register', path: '', props: true, component: () => import('pages/Register.vue') }],
     meta: { auth: false, redirect: { name: 'home' } }
+  },
+  {
+    path: '/groups/new',
+    component: () => import('layouts/HomeLayout.vue'),
+    children: [{ name: 'new-group', path: '', component: () => import('pages/Index.vue') }],
+    meta: { auth: true }
   }
 ];
 

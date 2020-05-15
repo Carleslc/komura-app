@@ -16,13 +16,17 @@
   padding: 4vw 3.33vw 4vw 3.33vw;
 }
 
-.q-drawer__content {
+.q-drawer {
   padding: 4vw 0 4vw 2vw;
 
   @media (max-width: $breakpoint-xmd-min) {
     // drawer mobile
     padding: 2.5vw;
     transition: padding 0.3s ease-in;
+  }
+
+  .q-drawer__content {
+    max-width: 100%;
   }
 }
 
@@ -39,7 +43,7 @@
 .q-btn {
   border-radius: $roundness; // rounded
   display: flex;
-  align-items: start;
+  align-items: flex-start;
 
   .q-btn__wrapper {
     padding: 0;
@@ -74,6 +78,9 @@ p {
   color: $dark;
   margin-bottom: 0;
   line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 h1,

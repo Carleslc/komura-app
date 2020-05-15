@@ -17,7 +17,11 @@ export default class AuthService {
     this.router = router;
     this.additionalUserInfo = {
       isNewUser: false,
-      profile: {}
+      profile: {
+        username: null,
+        given_name: null,
+        picture: null
+      }
     };
     this.load();
   }
@@ -46,8 +50,17 @@ export default class AuthService {
 
   // eslint-disable-next-line class-methods-use-this
   logout() {
+    this.onLoggedOut();
     this.firebaseAuth.signOut();
     this.apollo.clearStore();
+  }
+
+  onLoggedOut() {
+    this.token = undefined;
+    LocalStorage.remove(USER_KEY);
+    if (this.router.currentRoute.meta.auth) {
+      this.router.ensure({ name: 'index' });
+    }
   }
 
   updateCurrentUser(user, persist = true) {
@@ -70,8 +83,10 @@ export default class AuthService {
       console.log('Set Current User');
       this.updateCurrentUser({
         id: firebaseUser.uid,
+        given_name: this.additionalUserInfo.profile.given_name,
         username: this.additionalUserInfo.username || asUsername(firebaseUser.displayName),
-        name: this.additionalUserInfo.profile.given_name || firebaseUser.displayName,
+        name: firebaseUser.displayName,
+        provider_picture: this.additionalUserInfo.profile.picture,
         created_at: toISO(firebaseUser.metadata.creationTime),
         last_login: toISO(firebaseUser.metadata.lastSignInTime)
       });
@@ -96,7 +111,9 @@ export default class AuthService {
           id: firebaseUser.uid,
           email: firebaseUser.email,
           name,
-          username
+          username,
+          givenName: this.additionalUserInfo.profile.given_name,
+          providerPicture: this.additionalUserInfo.profile.picture
         }
       })
       .then(({ data }) => {
@@ -126,11 +143,13 @@ export default class AuthService {
         if (user) {
           this.updateCurrentUser({
             id: user.id,
+            given_name: user.given_name,
             username: user.personal_space.username,
             name: user.main_profile.name,
             description: user.main_profile.description,
             image: user.main_profile.image,
             banner: user.main_profile.banner,
+            provider_picture: user.provider_picture,
             created_at: user.created_at,
             last_login: user.last_login
           });
@@ -141,7 +160,7 @@ export default class AuthService {
   }
 
   load() {
-    function loginUser(firebaseUser, validToken) {
+    function onLoggedIn(firebaseUser, validToken) {
       this.token = validToken;
       const currentUser = this.user;
       if (!currentUser || hoursElapsed(DateTime.fromISO(currentUser.last_login)) >= 1) {
@@ -153,14 +172,6 @@ export default class AuthService {
       }
       if (this.redirectOnLoggedIn) {
         this.router.ensure(this.redirectOnLoggedIn);
-      }
-    }
-
-    function logoutUser() {
-      this.token = undefined;
-      LocalStorage.remove(USER_KEY);
-      if (this.router.currentRoute.meta.auth) {
-        this.router.ensure({ name: 'index' });
       }
     }
 
@@ -188,15 +199,15 @@ export default class AuthService {
               })
             )
             .then(validToken => {
-              loginUser.call(this, firebaseUser, validToken);
+              onLoggedIn.call(this, firebaseUser, validToken);
             })
             .catch(e => {
               console.error(e);
-              logoutUser.call(this);
+              this.onLoggedOut();
             });
         } else {
           // User is logged out
-          logoutUser.call(this);
+          this.onLoggedOut();
         }
       });
     });
