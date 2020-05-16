@@ -13,6 +13,8 @@ export default {
   enterYourPassword: 'Introduce tu contraseña',
   invalidPassword: 'Introduce una contraseña con al menos 8 caracteres',
   joinOurCommunity: 'Únete a nuestra comunidad',
+  logout: 'Cerrar sesión',
+  sessionClosed: 'Has cerrado la sesión',
 
   // 404
   lost: 'Oops, parece que te has perdido.',
@@ -20,6 +22,10 @@ export default {
 
   // Home
   home: 'Inicio',
-  welcome: 'Bienvenido/a',
-  sessionClosed: 'Has cerrado la sesión'
+  welcome: {
+    neutral: 'Bienvenido/a',
+    male: 'Bienvenido',
+    female: 'Bienvenida'
+  },
+  newGroup: 'Crear grupo'
 };

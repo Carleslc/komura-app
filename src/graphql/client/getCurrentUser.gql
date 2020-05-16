@@ -8,6 +8,7 @@ query getCurrentUser {
     image
     banner
     provider_picture
+    gender
     created_at
     last_login
   }

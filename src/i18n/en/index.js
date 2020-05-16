@@ -13,6 +13,8 @@ export default {
   enterYourPassword: 'Password',
   invalidPassword: 'Enter a password with at least 8 characters',
   joinOurCommunity: 'Join our community',
+  logout: 'Log out',
+  sessionClosed: 'Session closed',
 
   // 404
   lost: "Oops, looks like you've lost.",
@@ -20,6 +22,10 @@ export default {
 
   // Home
   home: 'Home',
-  welcome: 'Welcome',
-  sessionClosed: 'Session closed'
+  welcome: {
+    neutral: 'Welcome',
+    male: '@:welcome.neutral',
+    female: '@:welcome.neutral'
+  },
+  newGroup: 'New group'
 };

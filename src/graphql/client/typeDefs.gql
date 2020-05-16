@@ -10,6 +10,7 @@ type User {
   image: String
   banner: String
   provider_picture: String
-  created_at: DateTime!
-  last_login: DateTime!
+  gender: String
+  created_at: DateTime
+  last_login: DateTime
 }

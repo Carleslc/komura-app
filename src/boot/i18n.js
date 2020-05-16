@@ -13,6 +13,16 @@ const i18n = new VueI18n({
   messages
 });
 
+Vue.prototype.$tg = function translateWithGender(key, gender) {
+  let genderKey = 'neutral';
+  if (gender === 'm') {
+    genderKey = 'male';
+  } else if (gender === 'f') {
+    genderKey = 'female';
+  }
+  return i18n.t(`${key}.${genderKey}`);
+};
+
 export default ({ app }) => {
   app.i18n = i18n;
 };

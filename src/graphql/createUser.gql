@@ -5,11 +5,13 @@ mutation createUser(
   $username: String!
   $givenName: String
   $providerPicture: String
+  $gender: char
 ) {
   insert_users(
     objects: {
       id: $id
       email: $email
+      gender: $gender
       given_name: $givenName
       provider_picture: $providerPicture
       personal_space: { data: { path: $username, type: user, name: $name, owner_id: $id } }

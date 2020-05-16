@@ -5,7 +5,7 @@ module.exports = function config(ctx) {
   return {
     // app boot file (/src/boot)
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ['i18n', 'firebase', 'auth'],
+    boot: ['i18n', 'firebase', 'auth', 'axios'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ['utils.scss', 'firebase-ui.css', 'app.scss'],

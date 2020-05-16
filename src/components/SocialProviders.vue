@@ -41,6 +41,7 @@ export default {
             provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
             scopes: [
               'https://www.googleapis.com/auth/user.gender.read'
+              // PRIVATE SCOPES (Needs verification: https://support.google.com/cloud/answer/7454865)
               // 'https://www.googleapis.com/auth/profile.agerange.read',
               // 'https://www.googleapis.com/auth/contacts.readonly'
             ]
@@ -51,6 +52,8 @@ export default {
         callbacks: {
           signInSuccessWithAuthResult: this.$auth.socialSignInSuccess.bind(this.$auth)
         }
+        // tosUrl: 'url',
+        // privacyPolicyUrl: 'url'
       });
     }
   }

@@ -6,7 +6,7 @@
           <img src="~assets/logo-icon.svg" style="width: 36px" />
         </q-btn>
         <h4 v-if="displayName" class="col-auto ellipsis gt-xs">
-          <span class="text-medium">{{ `${$t('welcome')}, ` }}</span>
+          <span class="text-medium">{{ `${$tg('welcome', user.gender)}, ` }}</span>
           <span class="text-light">{{ displayName }}</span>
         </h4>
         <div class="col-auto q-ml-auto"></div>
@@ -20,14 +20,13 @@
         </div>
         <div class="col-auto menu-section">
           <menu-btn icon="img:statics/icons/exit.svg" @click="$auth.logout()">
-            <p>Salir</p>
-            <p class="text-light">de la plataforma</p>
+            <p>{{ $t('logout') }}</p>
           </menu-btn>
         </div>
         <div class="col-auto column justify-between q-gutter-y-lg">
           <div class="menu-section">
             <menu-btn icon="o_group_add" :to="{ name: 'new-group' }">
-              <p>Crear grupo</p>
+              <p>{{ $t('newGroup') }}</p>
             </menu-btn>
           </div>
           <div class="menu-section">

@@ -1,12 +1,17 @@
+import axios from 'axios';
 import { LocalStorage } from 'quasar';
 import { DateTime } from 'luxon';
 import { asUsername } from '@/utils/strings';
-import { hoursElapsed, toISO } from '@/utils/dates';
+import { hoursElapsed } from '@/utils/dates';
 
 const USER_KEY = 'current-user';
 const REFRESH_TOKEN_ENDPOINT = 'https://europe-west1-komura-app.cloudfunctions.net/refreshToken';
 
 const CURRENT_USER_QUERY = require('@/graphql/client/getCurrentUser.gql');
+
+const Providers = {
+  GOOGLE: 'google.com'
+};
 
 export default class AuthService {
   static instance;
@@ -17,11 +22,7 @@ export default class AuthService {
     this.router = router;
     this.additionalUserInfo = {
       isNewUser: false,
-      profile: {
-        username: null,
-        given_name: null,
-        picture: null
-      }
+      profile: {}
     };
     this.load();
   }
@@ -35,20 +36,39 @@ export default class AuthService {
     return this.firebaseAuth.currentUser;
   }
 
-  get header() {
-    return this.token ? `Bearer ${this.token}` : undefined;
-  }
-
   get user() {
     const userData = this.apollo.readQuery({ query: CURRENT_USER_QUERY });
     return userData ? userData.user : undefined;
+  }
+
+  get provider() {
+    return this.firebaseAuth.currentUser.providerData[0].providerId;
+  }
+
+  static buildAuthHeader(token) {
+    return token ? `Bearer ${token}` : undefined;
+  }
+
+  /**
+   * @param {String} token Firebase Id Token
+   */
+  set token(token) {
+    this.header = AuthService.buildAuthHeader(token);
+  }
+
+  /**
+   * Authorize calls to provider API
+   * @param {String} accessToken Provider OAuth2 Token
+   */
+  set providerToken(accessToken) {
+    this.providerHeader = AuthService.buildAuthHeader(accessToken);
+    axios.defaults.headers.common.Authorization = this.providerHeader;
   }
 
   isLoggedIn() {
     return !!this.firebaseUser || !!this.user;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   logout() {
     this.onLoggedOut();
     this.firebaseAuth.signOut();
@@ -68,7 +88,14 @@ export default class AuthService {
       this.apollo.writeQuery({
         query: CURRENT_USER_QUERY,
         data: {
-          user: { __typename: 'User', description: null, image: null, banner: null, ...this.user, ...user }
+          user: {
+            __typename: 'User',
+            description: null,
+            image: null,
+            banner: null,
+            ...this.user,
+            ...user
+          }
         }
       });
       if (persist) {
@@ -81,50 +108,85 @@ export default class AuthService {
     const currentUser = this.user;
     if (!currentUser || currentUser.id !== firebaseUser.uid) {
       console.log('Set Current User');
+
       this.updateCurrentUser({
         id: firebaseUser.uid,
-        given_name: this.additionalUserInfo.profile.given_name,
         username: this.additionalUserInfo.username || asUsername(firebaseUser.displayName),
         name: firebaseUser.displayName,
-        provider_picture: this.additionalUserInfo.profile.picture,
-        created_at: toISO(firebaseUser.metadata.creationTime),
-        last_login: toISO(firebaseUser.metadata.lastSignInTime)
+        given_name: this.additionalUserInfo.profile.given_name || null,
+        provider_picture: this.additionalUserInfo.profile.picture || null,
+        gender: this.additionalUserInfo.profile.gender || null,
+        created_at: null,
+        last_login: null
       });
     }
   }
 
   socialSignInSuccess(authResult, redirectUrl) {
     this.additionalUserInfo = authResult.additionalUserInfo;
+    this.providerToken = authResult.credential.accessToken;
     this.setCurrentUser(authResult.user);
     this.router.push(redirectUrl || { name: 'home' });
     this.redirectOnLoggedIn = undefined;
     return false; // redirect already handled
   }
 
+  loadGender() {
+    return new Promise(resolve => {
+      switch (this.provider) {
+        case Providers.GOOGLE:
+          axios
+            .get('https://people.googleapis.com/v1/people/me?personFields=genders')
+            .then(({ data }) => {
+              // https://developers.google.com/people/api/rest/v1/people#gender
+              let gender = data.genders[0];
+              gender = gender.addressMeAs || gender.value;
+              if (gender === 'male') {
+                this.updateCurrentUser({ gender: 'm' });
+              } else if (gender === 'female') {
+                this.updateCurrentUser({ gender: 'f' });
+              }
+              // gender 'other' or 'unspecified' does not set gender (null)
+            })
+            .catch(e => {
+              console.error(e);
+            })
+            .finally(resolve);
+          break;
+        default:
+          resolve();
+      }
+    });
+  }
+
   registerUser(firebaseUser) {
     console.log('Create hasura user');
-    const { name, username } = this.user;
-    this.apollo
-      .mutate({
-        mutation: require('@/graphql/createUser.gql'),
-        variables: {
-          id: firebaseUser.uid,
-          email: firebaseUser.email,
-          name,
-          username,
-          givenName: this.additionalUserInfo.profile.given_name,
-          providerPicture: this.additionalUserInfo.profile.picture
-        }
-      })
-      .then(({ data }) => {
-        const inserted = data.insert_users.returning[0];
-        if (inserted) {
-          this.updateCurrentUser({
-            created_at: inserted.created_at,
-            last_login: inserted.last_login
-          });
-        }
-      });
+    this.loadGender().then(() => {
+      const { name, username, gender } = this.user;
+      this.apollo
+        .mutate({
+          mutation: require('@/graphql/createUser.gql'),
+          variables: {
+            id: firebaseUser.uid,
+            email: firebaseUser.email,
+            name,
+            username,
+            givenName: this.additionalUserInfo.profile.given_name,
+            providerPicture: this.additionalUserInfo.profile.picture,
+            gender
+          }
+        })
+        .then(({ data }) => {
+          const inserted = data.insert_users.returning[0];
+          if (inserted) {
+            this.updateCurrentUser({
+              created_at: inserted.created_at,
+              last_login: inserted.last_login
+            });
+          }
+        })
+        .catch(console.error);
+    });
   }
 
   updateLastLogin(firebaseUser) {
@@ -150,6 +212,7 @@ export default class AuthService {
             image: user.main_profile.image,
             banner: user.main_profile.banner,
             provider_picture: user.provider_picture,
+            gender: user.gender,
             created_at: user.created_at,
             last_login: user.last_login
           });
@@ -162,8 +225,8 @@ export default class AuthService {
   load() {
     function onLoggedIn(firebaseUser, validToken) {
       this.token = validToken;
-      const currentUser = this.user;
-      if (!currentUser || hoursElapsed(DateTime.fromISO(currentUser.last_login)) >= 1) {
+      const lastLogin = this.user.last_login;
+      if (!lastLogin || hoursElapsed(DateTime.fromISO(lastLogin)) >= 1) {
         if (this.additionalUserInfo.isNewUser) {
           this.registerUser(firebaseUser);
         } else {

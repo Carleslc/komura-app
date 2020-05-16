@@ -11,7 +11,7 @@ export default {
     titleTemplate: ''
   },
   mounted() {
-    // this.$auth.redirectOnLoggedIn = { name: 'home' };
+    this.$auth.redirectOnLoggedIn = { name: 'home' };
   }
 };
 </script>
