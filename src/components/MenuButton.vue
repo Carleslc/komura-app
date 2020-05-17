@@ -1,11 +1,11 @@
 <template>
-  <q-btn flat align="left" color="primary" class="menu-button q-pa-lg" :to="to" @click="$emit('click')">
-    <div class="row items-center no-wrap">
-      <div class="q-mr-lg">
+  <q-btn flat align="left" color="primary" class="menu-button q-pa-lg q-pr-sm" :to="to" @click="$emit('click')">
+    <div class="row items-center no-wrap full-width" :class="{ 'justify-center': center }">
+      <div :class="{ 'q-mr-md': fit, 'q-mr-lg': !fit }">
         <q-icon v-if="icon" :name="icon" />
         <slot v-else name="icon" />
       </div>
-      <div style="text-align: start">
+      <div class="overflow-hidden text-left">
         <slot />
       </div>
     </div>
@@ -22,6 +22,14 @@ export default {
     to: {
       type: Object,
       default: undefined
+    },
+    fit: {
+      type: Boolean,
+      default: false
+    },
+    center: {
+      type: Boolean,
+      default: false
     }
   }
 };

@@ -31,6 +31,7 @@
 }
 
 .menu-section {
+  width: 100%;
   background-color: $grey-lighter;
   border-radius: 20px;
 
@@ -42,8 +43,6 @@
 
 .q-btn {
   border-radius: $roundness; // rounded
-  display: flex;
-  align-items: flex-start;
 
   .q-btn__wrapper {
     padding: 0;
@@ -74,13 +73,19 @@
   }
 }
 
+.text-break {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: horizontal; // vertical for ellipsis
+  -webkit-line-clamp: 1;
+  line-height: 1.2em;
+  max-height: 1.2em;
+}
+
 p {
   color: $dark;
   margin-bottom: 0;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  line-height: 1.2em;
 }
 
 h1,

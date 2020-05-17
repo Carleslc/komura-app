@@ -23,19 +23,19 @@
             <p>{{ $t('logout') }}</p>
           </menu-btn>
         </div>
-        <div class="col-auto column justify-between q-gutter-y-lg">
+        <div class="col-auto column justify-between q-gutter-y-lg full-width">
           <div class="menu-section">
             <menu-btn icon="o_group_add" :to="{ name: 'new-group' }">
               <p>{{ $t('newGroup') }}</p>
             </menu-btn>
           </div>
           <div class="menu-section">
-            <menu-btn>
+            <menu-btn fit>
               <q-avatar v-if="user.provider_picture" slot="icon">
                 <img :src="user.provider_picture" />
               </q-avatar>
-              <p>{{ user.name }}</p>
-              <p class="text-light">@{{ user.username }}</p>
+              <p class="text-break">{{ user.name }}</p>
+              <p class="ellipsis text-light">@{{ user.username }}</p>
             </menu-btn>
           </div>
         </div>
