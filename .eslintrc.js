@@ -46,6 +46,7 @@ module.exports = {
 
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
     'no-param-reassign': 'off',
+    'object-shorthand': 'off',
     'global-require': 'off',
     'no-unused-vars': 'warn',
 

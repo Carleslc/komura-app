@@ -31,7 +31,7 @@ const routes = [
   {
     path: '/groups/new',
     component: () => import('layouts/HomeLayout.vue'),
-    children: [{ name: 'new-group', path: '', component: () => import('pages/Index.vue') }],
+    children: [{ name: 'newGroup', path: '', component: () => import('pages/AddGroup.vue') }],
     meta: { auth: true }
   }
 ];

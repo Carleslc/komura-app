@@ -3,20 +3,31 @@
     <q-header class="header">
       <q-toolbar class="row justify-start q-px-md">
         <q-btn flat class="col-auto q-py-sm q-mr-auto" @click="toggleMenu">
-          <img src="~assets/logo-icon.svg" style="width: 36px" />
+          <div class="logo-menu">
+            <img src="~assets/logo-icon.svg" style="width: 36px" />
+          </div>
         </q-btn>
-        <h4 v-if="displayName" class="col-auto ellipsis gt-xs">
-          <span class="text-medium">{{ `${$tg('welcome', user.gender)}, ` }}</span>
-          <span class="text-light">{{ displayName }}</span>
+        <h4 class="col-auto ellipsis gt-xs">
+          <div v-if="displayName && $route.name === 'home'">
+            <span class="text-medium">{{ `${$tg('welcome', user.gender)}, ` }}</span>
+            <span class="text-light">{{ displayName }}</span>
+          </div>
+          <div v-else-if="$route.name !== 'home'">
+            <span class="text-medium">{{ $t($route.name) }}</span>
+          </div>
         </h4>
         <div class="col-auto q-ml-auto"></div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="menu" persistent :breakpoint="800" show-if-above side="left">
-      <div class="column justify-between full-height">
+    <q-drawer v-model="menu" side="left" :width="350" :breakpoint="815" show-if-above>
+      <div class="column justify-between no-wrap full-height">
         <div class="col-4 menu-section">
-          Menu
+          <div class="menu-section">
+            <menu-btn icon="o_home" :to="{ name: 'home' }">
+              <p :class="{ 'text-primary': $route.name === 'home' }">{{ $t('home') }}</p>
+            </menu-btn>
+          </div>
         </div>
         <div class="col-auto menu-section">
           <menu-btn icon="img:statics/icons/exit.svg" @click="$auth.logout()">
@@ -25,12 +36,12 @@
         </div>
         <div class="col-auto column justify-between q-gutter-y-lg full-width">
           <div class="menu-section">
-            <menu-btn icon="o_group_add" :to="{ name: 'new-group' }">
+            <menu-btn icon="o_group_add" :to="{ name: 'newGroup' }" class="q-py-xl">
               <p>{{ $t('newGroup') }}</p>
             </menu-btn>
           </div>
           <div class="menu-section">
-            <menu-btn fit>
+            <menu-btn>
               <q-avatar v-if="user.provider_picture" slot="icon">
                 <img :src="user.provider_picture" />
               </q-avatar>
@@ -43,7 +54,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view class="content" />
+      <router-view ref="child" class="content" />
     </q-page-container>
   </q-layout>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <q-page class="row justify-center items-center">
-    <p class="col-auto text text-xl">{{ this.$t('home') }}</p>
+    <p class="col-auto text text-xl">{{ this.$t('newGroup') }}</p>
   </q-page>
 </template>
 
@@ -8,7 +8,7 @@
 export default {
   meta() {
     return {
-      title: this.$t('home')
+      title: this.$t('newGroup')
     };
   }
 };
