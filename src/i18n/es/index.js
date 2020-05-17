@@ -27,5 +27,5 @@ export default {
     male: 'Bienvenido',
     female: 'Bienvenida'
   },
-  newGroup: 'Crear grupo'
+  newGroup: 'Nuevo grupo'
 };

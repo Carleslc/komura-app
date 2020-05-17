@@ -8,11 +8,11 @@
           </div>
         </q-btn>
         <h4 class="col-auto ellipsis gt-xs">
-          <div v-if="displayName && $route.name === 'home'">
+          <div v-if="isHomePage && displayName">
             <span class="text-medium">{{ `${$tg('welcome', user.gender)}, ` }}</span>
             <span class="text-light">{{ displayName }}</span>
           </div>
-          <div v-else-if="$route.name !== 'home'">
+          <div v-else-if="!isHomePage">
             <span class="text-medium">{{ $t($route.name) }}</span>
           </div>
         </h4>
@@ -24,8 +24,8 @@
       <div class="column justify-between no-wrap full-height">
         <div class="col-4 menu-section">
           <div class="menu-section">
-            <menu-btn icon="o_home" :to="{ name: 'home' }">
-              <p :class="{ 'text-primary': $route.name === 'home' }">{{ $t('home') }}</p>
+            <menu-btn dense icon="img:statics/icons/home.svg" :to="{ name: 'home' }">
+              <p :class="{ 'text-primary': isHomePage }">{{ $t('home') }}</p>
             </menu-btn>
           </div>
         </div>
@@ -34,9 +34,9 @@
             <p>{{ $t('logout') }}</p>
           </menu-btn>
         </div>
-        <div class="col-auto column justify-between q-gutter-y-lg full-width">
+        <div class="col-4 column justify-between q-gutter-y-lg full-width">
           <div class="menu-section">
-            <menu-btn icon="o_group_add" :to="{ name: 'newGroup' }" class="q-py-xl">
+            <menu-btn v-if="$route.name !== 'newGroup'" icon="o_group_add" :to="{ name: 'newGroup' }" padding="48px lg">
               <p>{{ $t('newGroup') }}</p>
             </menu-btn>
           </div>
@@ -54,7 +54,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view ref="child" class="content" />
+      <router-view class="content" />
     </q-page-container>
   </q-layout>
 </template>
@@ -76,6 +76,9 @@ export default {
   computed: {
     displayName() {
       return this.user.given_name || this.user.name;
+    },
+    isHomePage() {
+      return this.$route.name === 'home';
     }
   },
   apollo: {

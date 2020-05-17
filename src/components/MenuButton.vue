@@ -1,5 +1,5 @@
 <template>
-  <q-btn flat align="left" color="primary" class="menu-button q-pa-lg q-pr-sm" :to="to" @click="$emit('click')">
+  <q-btn flat align="left" :padding="padding" color="primary" class="menu-button" :to="to" @click="$emit('click')">
     <div class="row items-center no-wrap full-width" :class="{ 'justify-center': center }">
       <div class="q-mr-lg">
         <q-icon v-if="icon" :name="icon" />
@@ -26,6 +26,14 @@ export default {
     center: {
       type: Boolean,
       default: false
+    },
+    dense: {
+      type: Boolean,
+      default: false
+    },
+    padding: {
+      type: String,
+      default: 'lg'
     }
   }
 };
