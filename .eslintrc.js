@@ -38,7 +38,8 @@ module.exports = {
       'warn',
       {
         code: 120,
-        ignorePattern: 'https?://.+'
+        ignoreUrls: true,
+        ignoreStrings: true
       }
     ],
 

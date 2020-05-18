@@ -1,11 +1,20 @@
 <template>
-  <q-btn flat align="left" :padding="padding" color="primary" class="menu-button" :to="to" @click="$emit('click')">
+  <q-btn
+    flat
+    align="left"
+    :padding="big ? '42px lg' : 'lg'"
+    :ripple="false"
+    class="menu-button"
+    :class="{ dense: dense, selected: selected }"
+    :to="to"
+    @click="$emit('click')"
+  >
     <div class="row items-center no-wrap full-width" :class="{ 'justify-center': center }">
       <div class="q-mr-lg">
-        <q-icon v-if="icon" :name="icon" />
+        <q-icon v-if="icon" :name="icon" :size="big ? '28px' : '24px'" />
         <slot v-else name="icon" />
       </div>
-      <div class="overflow-hidden text-left">
+      <div class="menu-label overflow-hidden text-left">
         <slot />
       </div>
     </div>
@@ -17,24 +26,28 @@ export default {
   props: {
     icon: {
       type: String,
-      default: ''
+      default: '',
     },
     to: {
       type: Object,
-      default: undefined
+      default: undefined,
     },
     center: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    big: {
+      type: Boolean,
+      default: false,
     },
     dense: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    padding: {
-      type: String,
-      default: 'lg'
-    }
-  }
+    selected: {
+      type: Boolean,
+      default: false,
+    },
+  },
 };
 </script>

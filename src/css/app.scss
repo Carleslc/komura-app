@@ -8,16 +8,16 @@
 
 .header {
   background-color: transparent;
-  padding: 3.33vw;
+  padding: 6vh 3.33vw;
   padding-bottom: 0;
 }
 
 .content {
-  padding: 3.33vw 2vw 2vw 3.33vw;
+  padding: 6vh 2vw 4vh 3.33vw;
 }
 
 .q-drawer {
-  padding: 3.33vw 0 2vw 2vw;
+  padding: 6vh 0 4vh 2vw;
 
   @media (max-width: $breakpoint-xmd-min) {
     // drawer mobile
@@ -31,13 +31,84 @@
 }
 
 .menu-section {
+  $border-radius: 20px;
+
   width: 100%;
   background-color: $grey-lighter;
-  border-radius: 20px;
+  border-radius: $border-radius;
 
   .menu-button {
     width: 100%;
-    border-radius: 20px;
+    border-radius: $border-radius;
+    background: transparent;
+    color: $primary;
+
+    .q-icon {
+      color: $primary;
+    }
+
+    &.q-hoverable:hover,
+    &.q-hoverable:focus {
+      .q-focus-helper {
+        opacity: 0.1;
+      }
+    }
+
+    &.q-hoverable:active {
+      .q-focus-helper {
+        opacity: 0.2;
+      }
+    }
+
+    &.dense {
+      .q-icon,
+      .menu-label > p {
+        color: $grey-light;
+      }
+
+      &:hover,
+      &:focus {
+        .menu-label > p {
+          color: $dark;
+        }
+        .q-icon {
+          color: $primary;
+        }
+      }
+
+      &.selected {
+        .q-icon {
+          color: $primary;
+        }
+        .menu-label > p {
+          color: $dark;
+        }
+      }
+
+      &.q-hoverable {
+        .q-focus-helper {
+          border-radius: 3px;
+          opacity: 0.05;
+        }
+        &:active {
+          .q-focus-helper {
+            opacity: 0.1;
+          }
+        }
+        &.first {
+          .q-focus-helper {
+            border-top-left-radius: $border-radius;
+            border-top-right-radius: $border-radius;
+          }
+        }
+        &.last {
+          .q-focus-helper {
+            border-bottom-left-radius: $border-radius;
+            border-bottom-right-radius: $border-radius;
+          }
+        }
+      }
+    }
   }
 }
 

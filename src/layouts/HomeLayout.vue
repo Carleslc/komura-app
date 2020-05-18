@@ -22,21 +22,30 @@
 
     <q-drawer v-model="menu" side="left" :width="350" :breakpoint="815" show-if-above>
       <div class="column justify-between no-wrap full-height">
-        <div class="col-4 menu-section">
-          <div class="menu-section">
-            <menu-btn dense icon="img:statics/icons/home.svg" :to="{ name: 'home' }">
-              <p :class="{ 'text-primary': isHomePage }">{{ $t('home') }}</p>
-            </menu-btn>
-          </div>
+        <div class="col-auto menu-section">
+          <menu-btn
+            dense
+            icon="k:home"
+            :selected="isHomePage"
+            :to="{ name: 'home' }"
+            class="first last"
+          >
+            <p>{{ $t('home') }}</p>
+          </menu-btn>
         </div>
         <div class="col-auto menu-section">
           <menu-btn icon="img:statics/icons/exit.svg" @click="$auth.logout()">
             <p>{{ $t('logout') }}</p>
           </menu-btn>
         </div>
-        <div class="col-4 column justify-between q-gutter-y-lg full-width">
+        <div class="col-4 column justify-between q-gutter-y-lg full-width no-wrap">
           <div class="menu-section">
-            <menu-btn v-if="$route.name !== 'newGroup'" icon="o_group_add" :to="{ name: 'newGroup' }" padding="48px lg">
+            <menu-btn
+              v-if="$route.name !== 'newGroup'"
+              big
+              icon="o_group_add"
+              :to="{ name: 'newGroup' }"
+            >
               <p>{{ $t('newGroup') }}</p>
             </menu-btn>
           </div>
@@ -62,15 +71,15 @@
 <script>
 export default {
   meta: {
-    titleTemplate: title => `${title} | Komura`
+    titleTemplate: title => `${title} | Komura`,
   },
   components: {
-    'menu-btn': require('components/MenuButton.vue').default
+    'menu-btn': require('components/MenuButton.vue').default,
   },
   data() {
     return {
       user: {},
-      menu: true
+      menu: true,
     };
   },
   computed: {
@@ -79,17 +88,17 @@ export default {
     },
     isHomePage() {
       return this.$route.name === 'home';
-    }
+    },
   },
   apollo: {
     user: {
-      query: require('@/graphql/client/getCurrentUser.gql')
-    }
+      query: require('@/graphql/client/getCurrentUser.gql'),
+    },
   },
   methods: {
     toggleMenu() {
       this.menu = !this.menu;
-    }
-  }
+    },
+  },
 };
 </script>
