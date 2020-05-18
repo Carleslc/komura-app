@@ -92,7 +92,10 @@ export default {
       }
     },
     toggle() {
-      this.$router.push({ name: 'register', params: { defaultEmail: !this.$refs.email.hasError ? this.email : '' } });
+      this.$router.push({
+        name: 'register',
+        params: { defaultEmail: !this.$refs.email.hasError ? this.email : '' }
+      });
     }
   }
 };

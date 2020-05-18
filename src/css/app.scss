@@ -9,15 +9,24 @@
 .header {
   background-color: transparent;
   padding: 6vh 3.33vw;
-  padding-bottom: 0;
 }
 
 .content {
-  padding: 6vh 2vw 4vh 3.33vw;
+  padding: 0 2vw 4vh 3.33vw;
+}
+
+.q-page-container {
+  min-height: calc(100vh - (56px + 12vh)) !important;
+  padding-top: calc(56px + 12vh) !important; // header height + header padding
+
+  .q-page {
+    min-height: calc(100vh - (56px + 12vh)) !important;
+  }
 }
 
 .q-drawer {
-  padding: 6vh 0 4vh 2vw;
+  top: calc(56px + 12vh) !important; // header height + header padding
+  padding: 0 0 4vh 2vw;
 
   @media (max-width: $breakpoint-xmd-min) {
     // drawer mobile

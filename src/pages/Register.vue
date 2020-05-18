@@ -15,7 +15,12 @@
           <q-icon name="o_mail" />
         </template>
       </q-input>
-      <q-btn :disabled="!isValidEmail(email)" color="primary" :label="$t('createAccount')" type="submit" />
+      <q-btn
+        :disabled="!isValidEmail(email)"
+        color="primary"
+        :label="$t('createAccount')"
+        type="submit"
+      />
     </q-form>
     <div class="row q-mt-md">
       <div class="row full-width justify-start text-md">
@@ -59,7 +64,10 @@ export default {
       }
     },
     toggle() {
-      this.$router.push({ name: 'login', params: { defaultEmail: !this.$refs.email.hasError ? this.email : '' } });
+      this.$router.push({
+        name: 'login',
+        params: { defaultEmail: !this.$refs.email.hasError ? this.email : '' }
+      });
     }
   }
 };

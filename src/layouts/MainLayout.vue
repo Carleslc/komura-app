@@ -6,7 +6,14 @@
           <img src="~assets/KomuraLogo-Azul.svg" />
         </router-link>
         <div v-if="!isLoggedIn" class="col-auto q-ml-auto">
-          <q-btn flat to="/login" class="q-pa-sm" color="primary" icon="o_account_circle" :label="$t('login')" />
+          <q-btn
+            flat
+            to="/login"
+            class="q-pa-sm"
+            color="primary"
+            icon="o_account_circle"
+            :label="$t('login')"
+          />
         </div>
       </q-toolbar>
     </q-header>
@@ -29,9 +36,11 @@ export default {
     };
   },
   mounted() {
-    this.unsubscribeonAuthStateChanged = this.$auth.firebaseAuth.onAuthStateChanged(firebaseUser => {
-      this.isLoggedIn = !!firebaseUser;
-    });
+    this.unsubscribeonAuthStateChanged = this.$auth.firebaseAuth.onAuthStateChanged(
+      firebaseUser => {
+        this.isLoggedIn = !!firebaseUser;
+      }
+    );
   },
   beforeDestroy() {
     if (this.unsubscribeonAuthStateChanged) {

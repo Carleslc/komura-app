@@ -71,15 +71,15 @@
 <script>
 export default {
   meta: {
-    titleTemplate: title => `${title} | Komura`,
+    titleTemplate: title => `${title} | Komura`
   },
   components: {
-    'menu-btn': require('components/MenuButton.vue').default,
+    'menu-btn': require('components/MenuButton.vue').default
   },
   data() {
     return {
       user: {},
-      menu: true,
+      menu: true
     };
   },
   computed: {
@@ -88,17 +88,17 @@ export default {
     },
     isHomePage() {
       return this.$route.name === 'home';
-    },
+    }
   },
   apollo: {
     user: {
-      query: require('@/graphql/client/getCurrentUser.gql'),
-    },
+      query: require('@/graphql/client/getCurrentUser.gql')
+    }
   },
   methods: {
     toggleMenu() {
       this.menu = !this.menu;
-    },
-  },
+    }
+  }
 };
 </script>

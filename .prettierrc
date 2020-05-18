@@ -1,12 +1,18 @@
 {
   "printWidth": 100,
   "singleQuote": true,
-  "trailingComma": "es5",
   "overrides": [
     {
       "files": "src/assets/icons.js",
       "options": {
+        "trailingComma": "es5",
         "printWidth": 2000
+      }
+    },
+    {
+      "files": "src/i18n/**",
+      "options": {
+        "trailingComma": "es5"
       }
     }
   ]

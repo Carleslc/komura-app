@@ -25,7 +25,7 @@ export default {
   welcome: {
     neutral: 'Welcome',
     male: '@:welcome.neutral',
-    female: '@:welcome.neutral'
+    female: '@:welcome.neutral',
   },
-  newGroup: 'New group'
+  newGroup: 'New group',
 };
