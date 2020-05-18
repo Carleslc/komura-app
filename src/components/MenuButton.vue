@@ -2,7 +2,7 @@
   <q-btn
     flat
     align="left"
-    :padding="big ? '42px lg' : 'lg'"
+    :padding="padding"
     :ripple="false"
     class="menu-button"
     :class="{ dense: dense, selected: selected }"
@@ -26,28 +26,36 @@ export default {
   props: {
     icon: {
       type: String,
-      default: '',
+      default: ''
     },
     to: {
       type: Object,
-      default: undefined,
+      default: undefined
     },
     center: {
       type: Boolean,
-      default: false,
+      default: false
     },
     big: {
       type: Boolean,
-      default: false,
+      default: false
     },
     dense: {
       type: Boolean,
-      default: false,
+      default: false
     },
     selected: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
+  computed: {
+    padding() {
+      if (this.$q.screen.height <= 420) {
+        return this.big ? 'md lg' : 'sm lg';
+      }
+      return this.big ? '42px lg' : 'lg';
+    }
+  }
 };
 </script>
