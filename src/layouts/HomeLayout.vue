@@ -1,13 +1,19 @@
 <template>
-  <q-layout view="hhh LpR fFf">
-    <q-header class="header">
+  <q-layout view="hhh LpR lFf" class="home-layout" :class="{ 'drawer-hidden': fit }">
+    <q-header>
       <q-toolbar class="row justify-start q-px-md">
-        <q-btn flat :ripple="false" class="col-auto q-py-sm q-mr-auto" @click="toggleMenu">
+        <q-btn
+          v-if="!fit"
+          flat
+          :ripple="false"
+          class="col-auto q-py-sm q-mr-auto"
+          @click="toggleMenu"
+        >
           <div class="logo-menu">
             <img src="~assets/logo-icon.svg" style="width: 36px" />
           </div>
         </q-btn>
-        <h4 class="col-auto ellipsis gt-xs">
+        <h4 class="col-auto ellipsis gt-xxxs">
           <div v-if="isHomePage && displayName">
             <span class="text-medium">{{ `${$tg('welcome', user.gender)}, ` }}</span>
             <span class="text-light">{{ displayName }}</span>
@@ -16,42 +22,33 @@
             <span class="text-medium">{{ $t($route.name) }}</span>
           </div>
         </h4>
-        <div class="col-auto q-ml-auto"></div>
+        <div class="col-auto q-ml-auto">
+          <user-profile-btn v-if="fit" avatar :user="user" />
+        </div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="menu" side="left" :width="350" :breakpoint="breakpoint" show-if-above>
+    <q-drawer v-if="!fit" v-model="menu" :width="320" :breakpoint="breakpoint" show-if-above>
       <div class="column justify-between no-wrap full-height q-gutter-y-md">
         <div class="col-auto menu-section">
           <menu-btn
-            dense
-            icon="k:home"
+            nav
+            :icon="tabs.home"
             :selected="isHomePage"
             :to="{ name: 'home' }"
+            label="home"
             class="first last"
-          >
-            <p>{{ $t('home') }}</p>
-          </menu-btn>
+          />
         </div>
         <div class="col-auto menu-section">
-          <menu-btn icon="img:statics/icons/exit.svg" @click="$auth.logout()">
-            <p>{{ $t('logout') }}</p>
-          </menu-btn>
+          <menu-btn icon="img:statics/icons/exit.svg" label="logout" @click="$auth.logout()" />
         </div>
         <div class="col-auto column justify-between q-gutter-y-md full-width no-wrap">
           <div class="menu-section">
-            <menu-btn big icon="o_group_add" :to="{ name: 'newGroup' }">
-              <p>{{ $t('newGroup') }}</p>
-            </menu-btn>
+            <menu-btn big icon="o_group_add" label="newGroup" :to="{ name: 'newGroup' }" />
           </div>
           <div class="menu-section">
-            <menu-btn>
-              <q-avatar v-if="user.provider_picture" slot="icon">
-                <img :src="user.provider_picture" />
-              </q-avatar>
-              <p class="text-break">{{ user.name }}</p>
-              <p class="ellipsis text-light">@{{ user.username }}</p>
-            </menu-btn>
+            <user-profile-btn :user="user" />
           </div>
         </div>
       </div>
@@ -60,6 +57,21 @@
     <q-page-container>
       <router-view class="content page-component" />
     </q-page-container>
+
+    <q-footer v-if="fit">
+      <div class="row justify-center shadow-up-4">
+        <menu-btn
+          v-for="(icon, tab) in tabs"
+          :key="tab"
+          nav
+          fit
+          :selected="$route.name === tab"
+          :icon="icon"
+          :to="{ name: tab }"
+          :label="$t(tab)"
+        />
+      </div>
+    </q-footer>
   </q-layout>
 </template>
 
@@ -69,13 +81,17 @@ export default {
     titleTemplate: title => `${title} | Komura`
   },
   components: {
-    'menu-btn': require('components/MenuButton.vue').default
+    'menu-btn': require('components/MenuButton.vue').default,
+    'user-profile-btn': require('components/UserProfileButton.vue').default
   },
   data() {
     this.breakpoint = 800;
     return {
       user: {},
-      menu: this.$q.screen.width > this.breakpoint
+      menu: this.$q.screen.width > this.breakpoint,
+      tabs: {
+        home: 'k:home'
+      }
     };
   },
   computed: {
@@ -84,6 +100,9 @@ export default {
     },
     isHomePage() {
       return this.$route.name === 'home';
+    },
+    fit() {
+      return this.$q.screen.width <= this.breakpoint;
     }
   },
   apollo: {
@@ -98,3 +117,47 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.q-header {
+  background-color: transparent;
+  padding: 6vh 3.33vw 0 3.33vw;
+}
+
+.q-page-container {
+  padding-top: calc(56px + 6vh) !important; // header height + header padding
+  min-height: calc(100vh - (56px + 6vh)) !important;
+
+  .content {
+    padding: 6vh 3.33vw 2vh 3.33vw;
+  }
+}
+
+.drawer-hidden .q-page-container {
+  padding-bottom: calc(48px + 5vh) !important; // footer height + footer padding
+  min-height: calc(100vh - (56px + 6vh) - (48px + 5vh)) !important;
+}
+
+.q-drawer {
+  &.q-drawer--standard {
+    padding: 6vh 0 4vh 2vw;
+    top: calc(56px + 6vh) !important; // header height + header padding
+  }
+  &.q-drawer--mobile {
+    padding: 2.5vw;
+  }
+  .q-drawer__content {
+    max-width: 100%;
+  }
+}
+
+.q-footer {
+  background-color: transparent;
+  padding-top: 12px; // shadow
+  overflow: hidden;
+
+  > div {
+    padding: 2.5vh 16px;
+  }
+}
+</style>

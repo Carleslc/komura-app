@@ -1,9 +1,10 @@
 <template>
   <q-layout view="hhh LpR fFf">
-    <q-header class="bg-transparent q-pa-lg">
+    <q-header class="bg-transparent" :class="$q.screen.gt.xs ? 'q-pa-lg' : 'q-pa-md'">
       <q-toolbar class="row justify-start">
-        <router-link to="/" class="col-auto">
-          <img src="~assets/KomuraLogo-Azul.svg" />
+        <router-link to="/" class="col-auto row items-center">
+          <img v-if="$q.screen.gt.xs" src="~assets/KomuraLogo-Azul.svg" />
+          <img v-else src="~assets/logo-icon.svg" width="36px" />
         </router-link>
         <div v-if="!isLoggedIn" class="col-auto q-ml-auto">
           <q-btn

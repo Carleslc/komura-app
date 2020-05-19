@@ -5,17 +5,18 @@
     :padding="padding"
     :ripple="false"
     class="menu-button"
-    :class="{ dense: dense, selected: selected }"
+    :class="{ nav: nav, selected: selected }"
     :to="to"
     @click="$emit('click')"
   >
     <div class="row items-center no-wrap full-width" :class="{ 'justify-center': center }">
-      <div class="q-mr-lg">
+      <div :class="fit ? 'q-mr-md' : 'q-mr-lg'">
         <q-icon v-if="icon" :name="icon" :size="big ? '28px' : '24px'" />
         <slot v-else name="icon" />
       </div>
-      <div class="menu-label overflow-hidden text-left">
-        <slot />
+      <div class="overflow-hidden text-left">
+        <p v-if="label" class="menu-label">{{ $t(label) }}</p>
+        <slot v-else />
       </div>
     </div>
   </q-btn>
@@ -27,6 +28,10 @@ export default {
     icon: {
       type: String,
       default: ''
+    },
+    label: {
+      type: String,
+      default: undefined
     },
     to: {
       type: Object,
@@ -40,7 +45,11 @@ export default {
       type: Boolean,
       default: false
     },
-    dense: {
+    nav: {
+      type: Boolean,
+      default: false
+    },
+    fit: {
       type: Boolean,
       default: false
     },
@@ -51,7 +60,7 @@ export default {
   },
   computed: {
     padding() {
-      if (this.$q.screen.height <= 420) {
+      if (this.$q.screen.height <= 512) {
         return this.big ? 'md lg' : 'sm lg';
       }
       return this.big ? '42px lg' : 'lg';

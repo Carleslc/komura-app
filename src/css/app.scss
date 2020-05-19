@@ -6,97 +6,21 @@
   min-height: inherit !important;
 }
 
-.header {
-  background-color: transparent;
-  padding: 6vh 3.33vw 0 3.33vw;
-}
-
-.content {
-  padding: 6vh 2vw 4vh 3.33vw;
-}
-
-.q-page-container {
-  padding-top: calc(56px + 6vh) !important; // header height + header padding
-  min-height: calc(100vh - (56px + 6vh)) !important;
-}
-
-.q-drawer {
-  &.q-drawer--standard {
-    padding: 6vh 0 4vh 2vw;
-    top: calc(56px + 6vh) !important; // header height + header padding
-  }
-  &.q-drawer--mobile {
-    padding: 2.5vw;
-  }
-  .q-drawer__content {
-    max-width: 100%;
-  }
-}
-
 .menu-section {
   $border-radius: 20px;
 
   width: 100%;
-  background-color: $grey-lighter;
   border-radius: $border-radius;
 
   .menu-button {
     width: 100%;
-    border-radius: $border-radius;
-    background: transparent;
     color: $primary;
+    border-radius: $border-radius;
 
-    .q-icon {
-      color: $primary;
-    }
-
-    &.q-hoverable:hover,
-    &.q-hoverable:focus {
-      .q-focus-helper {
-        opacity: 0.1;
-      }
-    }
-
-    &.q-hoverable:active {
-      .q-focus-helper {
-        opacity: 0.2;
-      }
-    }
-
-    &.dense {
-      .q-icon,
-      .menu-label > p {
-        color: $grey-light;
-      }
-
-      &:hover,
-      &:focus {
-        .menu-label > p {
-          color: $dark;
-        }
-        .q-icon {
-          color: $primary;
-        }
-      }
-
-      &.selected {
-        .q-icon {
-          color: $primary;
-        }
-        .menu-label > p {
-          color: $dark;
-        }
-      }
-
+    .nav {
       &.q-hoverable {
         .q-focus-helper {
           border-radius: 3px;
-          opacity: 0.05;
-        }
-        &:active {
-          .q-focus-helper {
-            opacity: 0.1;
-          }
         }
         &.first {
           .q-focus-helper {
@@ -110,6 +34,40 @@
             border-bottom-right-radius: $border-radius;
           }
         }
+      }
+    }
+  }
+}
+
+.menu-button {
+  background-color: $grey-lighter;
+
+  .q-icon {
+    color: $primary;
+  }
+
+  &.nav {
+    .q-icon,
+    .menu-label {
+      color: $grey-light;
+    }
+
+    &:hover,
+    &:focus {
+      .menu-label {
+        color: $dark;
+      }
+      .q-icon {
+        color: $primary;
+      }
+    }
+
+    &.selected {
+      .q-icon {
+        color: $primary;
+      }
+      .menu-label {
+        color: $dark;
       }
     }
   }
@@ -152,9 +110,12 @@
     transition: transform 0.3s ease-in-out;
     -webkit-transition: transform 0.3s ease-in-out;
   }
-  .logo-menu:hover > img {
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
+  .q-btn:hover,
+  .q-btn:focus {
+    .logo-menu > img {
+      -webkit-transform: rotate(-45deg);
+      transform: rotate(-45deg);
+    }
   }
 }
 
@@ -164,7 +125,7 @@
   -webkit-box-orient: horizontal; // vertical for ellipsis
   -webkit-line-clamp: 1;
   line-height: 1.2em;
-  max-height: 1.2em;
+  max-height: 1.2em !important;
 }
 
 p {
@@ -244,6 +205,26 @@ h4 {
     color: $primary;
     font-weight: $medium;
     cursor: pointer;
+  }
+}
+
+.shadow {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 5px 10px 2px rgba(0, 0, 0, 0.14);
+}
+.q-focusable:focus {
+  .shadow {
+    transition: box-shadow 0.32s ease-in;
+    box-shadow: 0 1px 10px 2px rgba(0, 0, 0, 0.3), 0 3px 17px 4px rgba(0, 0, 0, 0.14), 0 5px 22px 6px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.q-tooltip {
+  background-color: $grey;
+
+  p,
+  div {
+    font-size: 16px;
+    color: white;
   }
 }
 
@@ -476,4 +457,21 @@ h4 {
 
 .with-line-breaks {
   white-space: pre-line;
+}
+
+.gt-xxxs {
+  @media (max-width: $breakpoint-xxxs-max) {
+    display: none;
+  }
+}
+
+// less than drawer menu breakpoint
+// see also: mobile-only
+.on-hidden-drawer {
+  display: none;
+}
+.drawer-hidden {
+  .on-hidden-drawer {
+    display: inherit;
+  }
 }
