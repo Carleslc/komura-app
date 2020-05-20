@@ -2,15 +2,15 @@
   <q-btn
     flat
     align="left"
-    :padding="padding"
+    :padding="padding || defaultPadding"
     :ripple="false"
     class="menu-button"
-    :class="{ nav: nav, selected: selected }"
+    :class="{ selected: selected }"
     :to="to"
     @click="$emit('click')"
   >
     <div class="row items-center no-wrap full-width" :class="{ 'justify-center': center }">
-      <div :class="fit ? 'q-mr-md' : 'q-mr-lg'">
+      <div class="menu-icon" :class="fit ? 'q-mr-md' : 'q-mr-lg'">
         <q-icon v-if="icon" :name="icon" :size="big ? '28px' : '24px'" />
         <slot v-else name="icon" />
       </div>
@@ -45,10 +45,6 @@ export default {
       type: Boolean,
       default: false
     },
-    nav: {
-      type: Boolean,
-      default: false
-    },
     fit: {
       type: Boolean,
       default: false
@@ -56,10 +52,14 @@ export default {
     selected: {
       type: Boolean,
       default: false
+    },
+    padding: {
+      type: String,
+      default: undefined
     }
   },
   computed: {
-    padding() {
+    defaultPadding() {
       if (this.$q.screen.height <= 512) {
         return this.big ? 'md lg' : 'sm lg';
       }

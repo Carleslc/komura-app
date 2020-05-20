@@ -32,12 +32,11 @@
       <div class="column justify-between no-wrap full-height q-gutter-y-md">
         <div class="col-auto menu-section">
           <menu-btn
-            nav
-            :icon="tabs.home"
+            :icon="tabs.home.icon"
             :selected="isHomePage"
-            :to="{ name: 'home' }"
-            label="home"
-            class="first last"
+            :to="{ name: tabs.home.key }"
+            :label="tabs.home.key"
+            class="nav first last"
           />
         </div>
         <div class="col-auto menu-section">
@@ -59,17 +58,18 @@
     </q-page-container>
 
     <q-footer v-if="fit">
-      <div class="row justify-center shadow-up-4">
-        <menu-btn
-          v-for="(icon, tab) in tabs"
-          :key="tab"
-          nav
-          fit
-          :selected="$route.name === tab"
-          :icon="icon"
-          :to="{ name: tab }"
-          :label="$t(tab)"
-        />
+      <div class="row justify-around shadow-up-4">
+        <template v-for="tab of tabs">
+          <menu-btn
+            :key="tab.key"
+            :icon="tab.icon"
+            :to="{ name: tab.key }"
+            :label="tab.key"
+            :selected="isTab(tab)"
+            padding="12px lg"
+            class="nav nav-bottom"
+          />
+        </template>
       </div>
     </q-footer>
   </q-layout>
@@ -90,7 +90,10 @@ export default {
       user: {},
       menu: this.$q.screen.width > this.breakpoint,
       tabs: {
-        home: 'k:home'
+        home: {
+          key: 'home',
+          icon: 'k:home'
+        }
       }
     };
   },
@@ -99,7 +102,7 @@ export default {
       return this.user.given_name || this.user.name;
     },
     isHomePage() {
-      return this.$route.name === 'home';
+      return this.isTab(this.tabs.home);
     },
     fit() {
       return this.$q.screen.width <= this.breakpoint;
@@ -113,6 +116,9 @@ export default {
   methods: {
     toggleMenu() {
       this.menu = !this.menu;
+    },
+    isTab(tab) {
+      return this.$route.name === tab.key;
     }
   }
 };

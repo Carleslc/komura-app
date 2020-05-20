@@ -70,6 +70,55 @@
         color: $dark;
       }
     }
+
+    &.nav-bottom {
+      max-height: 48px;
+      background-color: transparent;
+
+      .menu-icon {
+        margin-right: 0;
+      }
+
+      .menu-label {
+        display: none;
+      }
+
+      &.selected,
+      &:hover,
+      &:focus {
+        background-color: $grey-lighter;
+        transition: background-color 0.2s ease-in;
+
+        .menu-icon {
+          margin-right: 16px;
+        }
+
+        .menu-label {
+          display: inherit;
+          max-width: 64px;
+        }
+      }
+
+      &:not(.selected) {
+        &:hover,
+        &:focus {
+          .q-icon,
+          .menu-label {
+            color: $grey;
+          }
+
+          .menu-label {
+            animation: fade_in 0.2s;
+          }
+
+          @keyframes fade_in {
+            0% {
+              max-width: 0;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
