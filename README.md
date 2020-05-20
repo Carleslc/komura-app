@@ -2,20 +2,8 @@
 
 Kindly Network
 
-### Setup Firebase config in .env file
-
-```bash
-API_KEY = 'AIza***'
-AUTH_DOMAIN = '***.firebaseapp.com'
-DATABASE_URL = 'https://***.firebaseio.com'
-PROJECT_ID = '***'
-STORAGE_BUCKET = '***.appspot.com'
-MESSAGING_SENDER_ID = '***'
-APP_ID = '***'
-MEASUREMENT_ID = '***'
-```
-
 ## Install the dependencies
+
 ```bash
 yarn
 ```
@@ -28,11 +16,13 @@ quasar dev
 ```
 
 ### Lint the files
+
 ```bash
 yarn run lint
 ```
 
 ### Build the app for production
+
 ```bash
 quasar build
 ```

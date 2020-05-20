@@ -6,14 +6,14 @@ import 'firebase/auth';
 import 'firebase/database';
 
 const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  databaseURL: process.env.DATABASE_URL,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MESSAGING_SENDER_ID,
-  appId: process.env.APP_ID,
-  measurementId: process.env.MEASUREMENT_ID
+  apiKey: 'AIzaSyAjFIyCp-dsix1cyFv9gk2XYsOpRU-S2qI',
+  authDomain: 'komura-app.firebaseapp.com',
+  databaseURL: 'https://komura-app.firebaseio.com',
+  projectId: 'komura-app',
+  storageBucket: 'komura-app.appspot.com',
+  messagingSenderId: '271844254809',
+  appId: '1:271844254809:web:02bf8fcbfd3cce8b333d48',
+  measurementId: 'G-EQKMW6SJY6'
 };
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
