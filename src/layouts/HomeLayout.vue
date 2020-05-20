@@ -124,45 +124,47 @@ export default {
 </script>
 
 <style lang="scss">
-.q-header {
-  background-color: transparent;
-  padding: 6vh 3.33vw 0 3.33vw;
-}
-
-.q-page-container {
-  padding-top: calc(56px + 6vh) !important; // header height + header padding
-  min-height: calc(100vh - (56px + 6vh)) !important;
-
-  .content {
-    padding: 6vh 3.33vw 2vh 3.33vw;
+.home-layout {
+  .q-header {
+    background-color: transparent;
+    padding: 6vh 3.33vw 0 3.33vw;
   }
-}
 
-.drawer-hidden .q-page-container {
-  padding-bottom: calc(48px + 5vh) !important; // footer height + footer padding
-  min-height: calc(100vh - (56px + 6vh) - (48px + 5vh)) !important;
-}
+  .q-page-container {
+    padding-top: calc(56px + 6vh) !important; // header height + header padding
+    min-height: calc(100vh - (56px + 6vh)) !important;
 
-.q-drawer {
-  &.q-drawer--standard {
-    padding: 6vh 0 4vh 2vw;
-    top: calc(56px + 6vh) !important; // header height + header padding
+    .content {
+      padding: 6vh 3.33vw 2vh 3.33vw;
+    }
   }
-  &.q-drawer--mobile {
-    padding: 2.5vw;
-  }
-  .q-drawer__content {
-    max-width: 100%;
-  }
-}
 
-.q-footer {
-  background-color: transparent;
-  padding-top: 12px; // shadow
-  overflow: hidden;
+  .drawer-hidden .q-page-container {
+    padding-bottom: calc(48px + 5vh) !important; // footer height + footer padding
+    min-height: calc(100vh - (56px + 6vh) - (48px + 5vh)) !important;
+  }
 
-  > div {
-    padding: 2.5vh 16px;
+  .q-drawer {
+    &.q-drawer--standard {
+      padding: 6vh 0 4vh 2vw;
+      top: calc(56px + 6vh) !important; // header height + header padding
+    }
+    &.q-drawer--mobile {
+      padding: 2.5vw;
+    }
+    .q-drawer__content {
+      max-width: 100%;
+    }
+  }
+
+  .q-footer {
+    background-color: transparent;
+    padding-top: 12px; // shadow
+    overflow: hidden;
+
+    > div {
+      padding: 2.5vh 16px;
+    }
   }
 }
 </style>
