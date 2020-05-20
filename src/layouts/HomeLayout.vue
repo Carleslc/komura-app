@@ -14,16 +14,16 @@
           </div>
         </q-btn>
         <h4 class="col-auto ellipsis gt-xxxs">
-          <div v-if="isHomePage && displayName">
-            <span class="text-medium">{{ `${$tg('welcome', user.gender)}, ` }}</span>
+          <div v-if="greetings && displayName">
+            <span class="text-medium">{{ `${$tg('welcome', currentUser.gender)}, ` }}</span>
             <span class="text-light">{{ displayName }}</span>
           </div>
-          <div v-else-if="!isHomePage">
+          <div v-else-if="!greetings">
             <span class="text-medium">{{ $t($route.name) }}</span>
           </div>
         </h4>
         <div class="col-auto q-ml-auto">
-          <user-profile-btn v-if="fit" avatar :user="user" />
+          <user-profile-btn v-if="fit" avatar :user="currentUser" />
         </div>
       </q-toolbar>
     </q-header>
@@ -33,7 +33,7 @@
         <div class="col-auto menu-section">
           <menu-btn
             :icon="tabs.home.icon"
-            :selected="isHomePage"
+            :selected="isTab(tabs.home)"
             :to="{ name: tabs.home.key }"
             :label="tabs.home.key"
             class="nav first last"
@@ -47,7 +47,7 @@
             <menu-btn big icon="o_group_add" label="newGroup" :to="{ name: 'newGroup' }" />
           </div>
           <div class="menu-section">
-            <user-profile-btn :user="user" />
+            <user-profile-btn :user="currentUser" />
           </div>
         </div>
       </div>
@@ -58,10 +58,9 @@
     </q-page-container>
 
     <q-footer v-if="fit">
-      <div class="row justify-around shadow-up-4">
-        <template v-for="tab of tabs">
+      <div class="row shadow-up">
+        <div v-for="tab of tabs" :key="tab.key" class="col-12 row justify-center">
           <menu-btn
-            :key="tab.key"
             :icon="tab.icon"
             :to="{ name: tab.key }"
             :label="tab.key"
@@ -69,13 +68,15 @@
             padding="12px lg"
             class="nav nav-bottom"
           />
-        </template>
+        </div>
       </div>
     </q-footer>
   </q-layout>
 </template>
 
 <script>
+import { CurrentUser } from '@/mixins/CurrentUser';
+
 export default {
   meta: {
     titleTemplate: title => `${title} | Komura`
@@ -84,10 +85,10 @@ export default {
     'menu-btn': require('components/MenuButton.vue').default,
     'user-profile-btn': require('components/UserProfileButton.vue').default
   },
+  mixins: [CurrentUser],
   data() {
     this.breakpoint = 800;
     return {
-      user: {},
       menu: this.$q.screen.width > this.breakpoint,
       tabs: {
         home: {
@@ -99,18 +100,16 @@ export default {
   },
   computed: {
     displayName() {
-      return this.user.given_name || this.user.name;
+      return this.currentUser.given_name || this.currentUser.name;
     },
     isHomePage() {
       return this.isTab(this.tabs.home);
     },
     fit() {
       return this.$q.screen.width <= this.breakpoint;
-    }
-  },
-  apollo: {
-    user: {
-      query: require('@/graphql/client/getCurrentUser.gql')
+    },
+    greetings() {
+      return [this.tabs.home.key, 'userProfile'].includes(this.$route.name);
     }
   },
   methods: {

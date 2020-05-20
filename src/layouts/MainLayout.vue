@@ -6,14 +6,14 @@
           <img v-if="$q.screen.gt.xs" src="~assets/KomuraLogo-Azul.svg" />
           <img v-else src="~assets/logo-icon.svg" width="36px" />
         </router-link>
-        <div v-if="!isLoggedIn" class="col-auto q-ml-auto">
+        <div class="col-auto q-ml-auto">
           <q-btn
             flat
-            to="/login"
-            class="q-pa-sm"
+            padding="md lg"
             color="primary"
-            icon="o_account_circle"
-            :label="$t('login')"
+            :icon="isLoggedIn ? 'k:home' : 'o_account_circle'"
+            :label="$t(loginKey)"
+            :to="{ name: loginKey }"
           />
         </div>
       </q-toolbar>
@@ -35,6 +35,11 @@ export default {
       isLoggedIn: this.$auth.isLoggedIn(),
       unsubscribeonAuthStateChanged: undefined
     };
+  },
+  computed: {
+    loginKey() {
+      return this.isLoggedIn ? 'home' : 'login';
+    }
   },
   mounted() {
     this.unsubscribeonAuthStateChanged = this.$auth.firebaseAuth.onAuthStateChanged(

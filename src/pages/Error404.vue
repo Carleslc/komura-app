@@ -1,10 +1,8 @@
 <template>
-  <div class="container fixed-center text-center">
-    <p>
-      <img src="~assets/sad.svg" style="width:30vw;max-width:150px;" />
-    </p>
-    <p class="text text-xl">{{ $t('lost') }}</p>
-    <q-btn color="primary" to="/" :label="$t('returnHome')" />
+  <div class="container fixed-center text-center q-gutter-y-lg">
+    <span class="em-xl em-sweat" />
+    <p class="text text-xl">{{ $t('404') }}</p>
+    <q-btn flat color="primary" to="/" :label="$t('returnHome')" />
   </div>
 </template>
 

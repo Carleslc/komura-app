@@ -1,6 +1,6 @@
 <template>
   <q-page class="row justify-center items-center">
-    <p class="col-auto text text-xl">{{ this.$t('newGroup') }}</p>
+    <p class="col-auto text text-xl">{{ $t('newGroup') }}</p>
   </q-page>
 </template>
 

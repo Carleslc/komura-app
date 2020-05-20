@@ -115,7 +115,10 @@ module.exports = function config(ctx) {
     devServer: {
       https: false,
       port: 8080,
-      open: true // opens browser window automatically
+      open: true, // opens browser window automatically
+      historyApiFallback: {
+        disableDotRule: true
+      }
     },
 
     // animations: 'all', // --- includes all animations

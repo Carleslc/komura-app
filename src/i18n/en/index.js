@@ -16,8 +16,8 @@ export default {
   logout: 'Log out',
   sessionClosed: 'Session closed',
 
-  // 404
-  lost: "Oops, looks like you've lost.",
+  // Routing
+  '404': "Oops, looks like you've lost.",
   returnHome: 'Return home',
 
   // Home

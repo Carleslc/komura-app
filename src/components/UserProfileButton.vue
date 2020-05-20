@@ -1,5 +1,5 @@
 <template>
-  <q-btn v-if="avatar" round>
+  <q-btn v-if="avatar" round :to="userProfile">
     <q-avatar v-if="picture" size="48px" class="shadow">
       <img :src="picture" />
       <q-tooltip :delay="300">
@@ -7,8 +7,8 @@
       </q-tooltip>
     </q-avatar>
   </q-btn>
-  <menu-btn v-else fit>
-    <q-avatar v-if="picture" slot="icon">
+  <menu-btn v-else :to="userProfile">
+    <q-avatar v-if="picture" slot="icon" class="q-mr-md">
       <img :src="picture" />
     </q-avatar>
     <about :name="user.name" :username="user.username" />
@@ -34,6 +34,9 @@ export default {
   computed: {
     picture() {
       return this.user.provider_picture;
+    },
+    userProfile() {
+      return { name: 'userProfile', params: { username: this.user.username } };
     }
   }
 };

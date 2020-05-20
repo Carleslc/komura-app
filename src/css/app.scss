@@ -2,6 +2,8 @@
 
 @import './login.scss';
 
+@import './emoji.scss';
+
 .page-component {
   min-height: inherit !important;
 }
@@ -42,12 +44,13 @@
 .menu-button {
   background-color: $grey-lighter;
 
-  .q-icon {
+  .menu-icon {
     color: $primary;
+    margin-right: 24px;
   }
 
   &.nav {
-    .q-icon,
+    .menu-icon,
     .menu-label {
       color: $grey-light;
     }
@@ -57,13 +60,13 @@
       .menu-label {
         color: $dark;
       }
-      .q-icon {
+      .menu-icon {
         color: $primary;
       }
     }
 
     &.selected {
-      .q-icon {
+      .menu-icon {
         color: $primary;
       }
       .menu-label {
@@ -102,7 +105,7 @@
       &:not(.selected) {
         &:hover,
         &:focus {
-          .q-icon,
+          .menu-icon,
           .menu-label {
             color: $grey;
           }
@@ -258,7 +261,11 @@ h4 {
 }
 
 .shadow {
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 5px 10px 2px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2), 0 6px 12px rgba(0, 0, 0, 0.16);
+
+  &-up {
+    box-shadow: 0 9px 18px rgba(0, 0, 0, 0.2);
+  }
 }
 .q-focusable:focus {
   .shadow {

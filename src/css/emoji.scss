@@ -1,0 +1,11 @@
+.em {
+  &-md {
+    font-size: 48px;
+  }
+  &-xl {
+    font-size: 128px;
+  }
+  &-sweat::after {
+    content: '😥';
+  }
+}

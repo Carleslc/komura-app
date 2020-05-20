@@ -38,7 +38,7 @@ export default class AuthService {
 
   get user() {
     const userData = this.apollo.readQuery({ query: CURRENT_USER_QUERY });
-    return userData ? userData.user : undefined;
+    return userData ? userData.currentUser : undefined;
   }
 
   get provider() {
@@ -70,7 +70,6 @@ export default class AuthService {
   }
 
   logout() {
-    this.onLoggedOut();
     this.firebaseAuth.signOut();
     this.apollo.clearStore();
   }
@@ -78,6 +77,7 @@ export default class AuthService {
   onLoggedOut() {
     this.token = undefined;
     LocalStorage.remove(USER_KEY);
+
     if (this.router.currentRoute.meta.auth) {
       this.router.ensure({ name: 'index' });
     }
@@ -88,7 +88,7 @@ export default class AuthService {
       this.apollo.writeQuery({
         query: CURRENT_USER_QUERY,
         data: {
-          user: {
+          currentUser: {
             __typename: 'User',
             description: null,
             image: null,
@@ -107,8 +107,6 @@ export default class AuthService {
   setCurrentUser(firebaseUser) {
     const currentUser = this.user;
     if (!currentUser || currentUser.id !== firebaseUser.uid) {
-      console.log('Set Current User');
-
       this.updateCurrentUser({
         id: firebaseUser.uid,
         username: this.additionalUserInfo.username || asUsername(firebaseUser.displayName),

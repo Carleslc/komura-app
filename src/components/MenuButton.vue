@@ -9,11 +9,9 @@
     :to="to"
     @click="$emit('click')"
   >
-    <div class="row items-center no-wrap full-width" :class="{ 'justify-center': center }">
-      <div class="menu-icon" :class="fit ? 'q-mr-md' : 'q-mr-lg'">
-        <q-icon v-if="icon" :name="icon" :size="big ? '28px' : '24px'" />
-        <slot v-else name="icon" />
-      </div>
+    <div class="row items-center no-wrap full-width">
+      <q-icon v-if="icon" :name="icon" class="menu-icon" />
+      <slot v-else name="icon" />
       <div class="overflow-hidden text-left">
         <p v-if="label" class="menu-label">{{ $t(label) }}</p>
         <slot v-else />
@@ -27,7 +25,7 @@ export default {
   props: {
     icon: {
       type: String,
-      default: ''
+      default: undefined
     },
     label: {
       type: String,
@@ -37,15 +35,7 @@ export default {
       type: Object,
       default: undefined
     },
-    center: {
-      type: Boolean,
-      default: false
-    },
     big: {
-      type: Boolean,
-      default: false
-    },
-    fit: {
       type: Boolean,
       default: false
     },

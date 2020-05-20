@@ -10,8 +10,18 @@ export default {
     title: 'Komura',
     titleTemplate: ''
   },
+  props: {
+    redirectOnLoggedIn: {
+      type: Boolean,
+      default: true
+    }
+  },
   mounted() {
-    this.$auth.redirectOnLoggedIn = { name: 'home' };
+    console.log('redirectOnLoggedIn', this.redirectOnLoggedIn);
+
+    if (this.redirectOnLoggedIn) {
+      this.$auth.redirectOnLoggedIn = { name: 'home' };
+    }
   }
 };
 </script>

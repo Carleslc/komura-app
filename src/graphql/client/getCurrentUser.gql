@@ -1,5 +1,5 @@
 query getCurrentUser {
-  user @client {
+  currentUser @client {
     id
     given_name
     username
