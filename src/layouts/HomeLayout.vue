@@ -139,7 +139,7 @@ export default {
     }
   }
 
-  .drawer-hidden .q-page-container {
+  &.drawer-hidden .q-page-container {
     padding-bottom: calc(48px + 5vh) !important; // footer height + footer padding
     min-height: calc(100vh - (56px + 6vh) - (48px + 5vh)) !important;
   }
