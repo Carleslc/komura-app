@@ -158,7 +158,7 @@ export default class AuthService {
   }
 
   registerUser(firebaseUser) {
-    console.log('Create hasura user');
+    // console.log('Create hasura user');
     this.loadGender().then(() => {
       const { name, username, gender } = this.user;
       this.apollo
@@ -188,7 +188,7 @@ export default class AuthService {
   }
 
   updateLastLogin(firebaseUser) {
-    console.log('Update hasura last_login');
+    // console.log('Update hasura last_login');
     const lastLogin = DateTime.local().toISO();
     this.apollo
       .mutate({

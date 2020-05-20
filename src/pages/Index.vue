@@ -17,8 +17,6 @@ export default {
     }
   },
   mounted() {
-    console.log('redirectOnLoggedIn', this.redirectOnLoggedIn);
-
     if (this.redirectOnLoggedIn) {
       this.$auth.redirectOnLoggedIn = { name: 'home' };
     }
