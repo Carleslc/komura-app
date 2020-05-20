@@ -7,7 +7,7 @@ import 'firebase/database';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAjFIyCp-dsix1cyFv9gk2XYsOpRU-S2qI',
-  authDomain: 'komura-app.firebaseapp.com',
+  authDomain: 'komura.netlify.app',
   databaseURL: 'https://komura-app.firebaseio.com',
   projectId: 'komura-app',
   storageBucket: 'komura-app.appspot.com',
