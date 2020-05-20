@@ -1,6 +1,8 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 module.exports = function config(ctx) {
   return {
     // app boot file (/src/boot)
@@ -103,6 +105,7 @@ module.exports = function config(ctx) {
           ...cfg.resolve.alias,
           '@': require('path').resolve(__dirname, 'src')
         };
+        cfg.plugins.push(new CopyWebpackPlugin([{ from: './_redirects', to: '' }]));
       },
 
       uglifyOptions: {
