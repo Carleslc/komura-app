@@ -9,7 +9,7 @@
         :placeholder="$t('enterYourEmail')"
         lazy-rules
         :rules="[email => isValidEmail(email) || $t('emailInvalid')]"
-        :class="{ filled: !!email }"
+        :class="{ filled: !!email, 'with-message': $refs.email && $refs.email.hasError }"
       >
         <template v-slot:prepend>
           <q-icon name="o_mail" />

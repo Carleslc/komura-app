@@ -250,7 +250,7 @@ h4 {
   }
 
   &-bold {
-    font-weight: $bold;
+    font-weight: bold;
   }
 
   &-button {
@@ -269,7 +269,7 @@ h4 {
 }
 .q-focusable:focus {
   .shadow {
-    transition: box-shadow 0.32s ease-in;
+    transition: box-shadow 0.3s ease-in;
     box-shadow: 0 1px 10px 2px rgba(0, 0, 0, 0.3), 0 3px 17px 4px rgba(0, 0, 0, 0.14), 0 5px 22px 6px rgba(0, 0, 0, 0.12);
   }
 }
@@ -285,15 +285,12 @@ h4 {
 }
 
 .q-field {
-  transition: padding-bottom 0.32s ease-in;
+  transition: padding-bottom 0.3s ease-in;
 
   .q-field__control {
     min-width: 10vw;
-    min-height: $btn-min-height;
-    height: $btn-height;
-    padding: 0 32px 0 32px;
-    border-radius: $roundness !important;
-    transition: none;
+    overflow: hidden;
+    border-radius: 10px;
     align-items: center;
 
     .q-field__marginal {
@@ -302,12 +299,8 @@ h4 {
 
     .q-field__prepend {
       padding-right: 24px;
-    }
 
-    @media (max-width: $breakpoint-xxs-max) {
-      padding: 0 16px 0 16px;
-
-      .q-field__prepend {
+      @media (max-width: $breakpoint-xs-max) {
         padding-right: 12px;
       }
     }
@@ -317,6 +310,77 @@ h4 {
       -webkit-text-stroke: 0.8px white;
       -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
       transition: opacity 0.1s ease, color 0.1s ease-in-out;
+    }
+
+    input,
+    textarea,
+    select {
+      font-size: 1.1em;
+
+      @media (max-width: $breakpoint-xxxs-max) {
+        font-size: 1em;
+      }
+
+      @media (min-width: $breakpoint-lg-min) {
+        font-size: 1.2em;
+      }
+
+      &:-webkit-autofill,
+      &:-webkit-autofill::first-line,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        font-size: 18px;
+        font-style: italic;
+      }
+    }
+  }
+
+  .q-field__label {
+    font-size: 1.2em;
+
+    @media (max-width: $breakpoint-xxxs-max) {
+      font-size: 1.1em;
+    }
+
+    @media (min-width: $breakpoint-lg-min) {
+      font-size: 1.3em;
+    }
+  }
+
+  &.q-field--focused {
+    .q-field__control::after {
+      border-color: $primary;
+    }
+  }
+
+  .q-field__bottom {
+    font-weight: bold;
+  }
+}
+
+.q-field--outlined {
+  .q-field__control {
+    min-height: $btn-min-height;
+    height: $btn-height;
+    padding: 0 32px;
+    border-radius: $roundness !important;
+    transition: none;
+
+    .q-field__prepend {
+      padding-right: 24px;
+
+      @media (min-width: $breakpoint-xmd-min) and (max-width: $breakpoint-xmd-max) {
+        padding-right: 12px;
+      }
+    }
+
+    @media (max-width: $breakpoint-xxs-max) {
+      padding: 0 32px;
+
+      .q-field__prepend {
+        padding-right: 12px;
+      }
     }
 
     input,
@@ -342,14 +406,25 @@ h4 {
       &:-webkit-autofill:focus,
       &:-webkit-autofill:active {
         font-size: 18px;
-        font-style: italic;
       }
     }
 
-    &:hover::before {
-      border-color: $primary;
-      -webkit-transition: border-color 0.1s ease-in-out;
-      transition: border-color 0.1s ease-in-out;
+    &:hover {
+      .q-icon,
+      input,
+      textarea,
+      select {
+        opacity: 100%;
+        color: $primary;
+        -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
+        transition: opacity 0.1s ease, color 0.1s ease-in-out;
+      }
+
+      &::before {
+        border-color: $primary;
+        -webkit-transition: border-color 0.1s ease-in-out;
+        transition: border-color 0.1s ease-in-out;
+      }
     }
 
     &::after {
@@ -360,153 +435,155 @@ h4 {
     }
   }
 
-  .q-field__label {
-    font-size: 1.2em;
-
-    @media (max-width: $breakpoint-xxxs-max) {
-      font-size: 1.1em;
-    }
-
-    @media (min-width: $breakpoint-lg-min) {
-      font-size: 1.3em;
-    }
-  }
-}
-
-.filled {
-  .q-field__control::before {
-    border-color: $primary;
-    -webkit-transition: border-color 0.1s ease-in-out;
-    transition: border-color 0.1s ease-in-out;
-  }
-
-  .q-field__control:hover::after {
-    border-color: $primary;
-    -webkit-transition: border-color 0.1s ease-in-out;
-    transition: border-color 0.1s ease-in-out;
-  }
-
-  .q-field__control {
-    .q-icon,
-    input,
-    textarea,
-    select {
-      opacity: 100%;
-      color: $primary;
-      -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
-      transition: opacity 0.1s ease, color 0.1s ease-in-out;
-    }
-  }
-
   &.q-field--focused {
     .q-field__control {
+      .q-icon,
       input,
       textarea,
       select {
-        font-weight: $medium;
+        color: $primary;
+        opacity: 100%;
+      }
+    }
 
-        &:-webkit-autofill,
-        &:-webkit-autofill::first-line,
-        &:-webkit-autofill:hover,
-        &:-webkit-autofill:focus,
-        &:-webkit-autofill:active {
+    .q-field__control::after {
+      -webkit-transition: none;
+      transition: none;
+    }
+  }
+
+  &.filled {
+    .q-field__control {
+      .q-icon,
+      input,
+      textarea,
+      select {
+        opacity: 100%;
+        color: $primary;
+        -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
+        transition: opacity 0.1s ease, color 0.1s ease-in-out;
+      }
+    }
+
+    .q-field__control::before {
+      border-color: $primary;
+      -webkit-transition: border-color 0.1s ease-in-out;
+      transition: border-color 0.1s ease-in-out;
+    }
+
+    .q-field__control:hover::after {
+      border-color: $primary;
+      -webkit-transition: border-color 0.1s ease-in-out;
+      transition: border-color 0.1s ease-in-out;
+    }
+
+    &.q-field--focused {
+      .q-field__control {
+        input,
+        textarea,
+        select {
           font-weight: $medium;
+
+          &:-webkit-autofill,
+          &:-webkit-autofill::first-line,
+          &:-webkit-autofill:hover,
+          &:-webkit-autofill:focus,
+          &:-webkit-autofill:active {
+            font-weight: $medium;
+          }
         }
       }
     }
   }
 }
 
-.q-field--focused .q-field__control {
-  .q-icon,
-  input,
-  textarea,
-  select {
-    color: $primary;
-    opacity: 100%;
-  }
-}
-
-.q-field--focused .q-field__control::after {
-  border-color: $primary;
-  -webkit-transition: none;
-  transition: none;
-}
-
-.q-field__control:hover {
-  .q-icon,
-  input,
-  textarea,
-  select {
-    opacity: 100%;
-    color: $primary;
-    -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
-    transition: opacity 0.1s ease, color 0.1s ease-in-out;
-  }
-}
-
-.q-field__bottom {
-  font-weight: bold;
-}
-
-.with-hint {
-  padding-bottom: 32px;
-  transition: padding-bottom 0.32s ease-out;
-}
-
-.q-field--error {
-  padding-bottom: 32px;
-  transition: padding-bottom 0.32s ease-out;
-
-  &.filled.q-field--focused {
-    .q-field__control {
-      input,
-      textarea,
-      select {
-        font-weight: normal;
-      }
-    }
-    &:focus-within,
-    &:active .q-field__control {
-      input,
-      textarea,
-      select {
-        font-weight: $medium;
-      }
-    }
-  }
-
+.q-field--filled {
   .q-field__control {
-    .q-icon {
-      color: $negative;
-    }
+    background: $grey-lighter;
 
     input,
     textarea,
     select {
-      color: $accent;
+      font-weight: $medium;
 
       &:-webkit-autofill,
       &:-webkit-autofill::first-line,
       &:-webkit-autofill:hover,
       &:-webkit-autofill:focus,
       &:-webkit-autofill:active {
-        color: $accent;
+        font-weight: $medium;
       }
     }
 
-    &:hover::after {
-      border-color: $negative;
+    &::before {
+      background: $grey-hover;
+      border-bottom: none;
+    }
+  }
+
+  &.q-field--focused {
+    .q-field__control::before {
+      background: $grey-hover;
     }
   }
 }
 
-@media (min-width: $breakpoint-xmd-min) and (max-width: $breakpoint-xmd-max) {
-  .q-field .q-field__control {
-    padding: 0 16px 0 16px;
+.q-field {
+  &.q-field--outlined,
+  &.q-field--filled {
+    &.q-field--with-bottom {
+      padding-bottom: 16px;
+      transition: padding-bottom 0.3s ease-out;
 
-    .q-field__prepend {
-      padding-right: 12px;
+      &.with-message {
+        margin-bottom: 12px;
+        padding-bottom: 24px;
+        transition: margin-bottom 0.3s ease-out;
+      }
+    }
+
+    &.q-field--error {
+      &.filled.q-field--focused {
+        .q-field__control {
+          input,
+          textarea,
+          select {
+            font-weight: normal;
+          }
+        }
+        &:focus-within,
+        &:active .q-field__control {
+          input,
+          textarea,
+          select {
+            font-weight: $medium;
+          }
+        }
+      }
+
+      .q-field__control {
+        .q-icon {
+          color: $negative;
+        }
+
+        input,
+        textarea,
+        select {
+          color: $accent;
+
+          &:-webkit-autofill,
+          &:-webkit-autofill::first-line,
+          &:-webkit-autofill:hover,
+          &:-webkit-autofill:focus,
+          &:-webkit-autofill:active {
+            color: $accent;
+          }
+        }
+
+        &::after {
+          border-color: $negative;
+        }
+      }
     }
   }
 }

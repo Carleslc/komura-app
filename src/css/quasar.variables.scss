@@ -16,6 +16,10 @@ $grey-light: adjust-color(
   $color: $dark,
   $alpha: -0.8
 );
+$grey-hover: adjust-color(
+  $color: $dark,
+  $alpha: -0.95
+);
 $grey-lighter: adjust-color(
   $color: $dark,
   $alpha: -0.975

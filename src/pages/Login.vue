@@ -9,7 +9,7 @@
         :placeholder="$t('enterYourEmail')"
         lazy-rules
         :rules="[email => isValidEmail(email) || $t('emailInvalid')]"
-        :class="{ filled: !!email }"
+        :class="{ filled: !!email, 'with-message': $refs.email && $refs.email.hasError }"
       >
         <template v-slot:prepend>
           <q-icon name="o_mail" />
@@ -27,7 +27,11 @@
           password => !!password || $t('enterPassword'),
           password => password.length >= 8 || $t('invalidPassword')
         ]"
-        :class="{ filled: !!password, 'with-hint': !!password && password.length < 8 }"
+        :class="{
+          filled: !!password,
+          'with-message':
+            ($refs.password && $refs.password.hasError) || (!!password && password.length < 8)
+        }"
       >
         <template v-slot:prepend>
           <q-icon name="o_vpn_key" />
@@ -66,7 +70,8 @@ import { isValidEmail } from '@/utils/validations';
 export default {
   meta() {
     return {
-      title: this.$t('login')
+      title: this.$t('login'),
+      validated: false
     };
   },
   props: {
@@ -87,6 +92,7 @@ export default {
     signInWithEmail() {
       this.$refs.email.validate();
       this.$refs.password.validate();
+
       if (!this.$refs.email.hasError && !this.$refs.password.hasError) {
         this.$router.push('/');
       }
