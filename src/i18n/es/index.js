@@ -28,4 +28,9 @@ export default {
     female: 'Bienvenida',
   },
   newGroup: 'Nuevo grupo',
+
+  // Create group
+  name: 'Nombre',
+  description: 'Descripción',
+  createGroup: '¡Listo!',
 };

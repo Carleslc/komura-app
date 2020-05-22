@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import { fitHeight } from '@/utils/responsive.js';
+
 export default {
   props: {
     icon: {
@@ -50,7 +52,7 @@ export default {
   },
   computed: {
     defaultPadding() {
-      if (this.$q.screen.height <= 512) {
+      if (fitHeight(this)) {
         return this.big ? 'md lg' : 'sm lg';
       }
       return this.big ? '42px lg' : 'lg';

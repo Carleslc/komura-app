@@ -27,5 +27,10 @@ export default {
     male: '@:welcome.neutral',
     female: '@:welcome.neutral',
   },
-  newGroup: 'New group',
+  newGroup: 'Done!',
+
+  // Create group
+  name: 'Name',
+  description: 'Description',
+  createGroup: 'Create group',
 };

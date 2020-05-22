@@ -8,6 +8,11 @@
   min-height: inherit !important;
 }
 
+.q-header,
+.q-footer {
+  background: white;
+}
+
 .menu-section {
   $border-radius: 20px;
 
@@ -142,6 +147,28 @@
     font-size: 1.2em;
     line-height: 1.2;
   }
+
+  &.primary {
+    color: $primary;
+    height: $btn-height;
+    min-height: $btn-min-height;
+    max-height: 64px;
+    padding: 0 42px;
+
+    @media (min-width: $breakpoint-xxs-min) {
+      &.q-px-lg {
+        padding: 0 64px;
+      }
+    }
+
+    .q-btn__content {
+      font-size: 1.25em;
+
+      @media (min-width: $breakpoint-lg-min) {
+        font-size: 1.3em;
+      }
+    }
+  }
 }
 
 .container .q-btn {
@@ -154,20 +181,6 @@
 
   .q-btn__content {
     font-size: 1.5em;
-  }
-}
-
-.desktop {
-  .logo-menu > img {
-    transition: transform 0.3s ease-in-out;
-    -webkit-transition: transform 0.3s ease-in-out;
-  }
-  .q-btn:hover,
-  .q-btn:focus {
-    .logo-menu > img {
-      -webkit-transform: rotate(-45deg);
-      transform: rotate(-45deg);
-    }
   }
 }
 
@@ -184,6 +197,17 @@ p {
   color: $dark;
   margin-bottom: 0;
   line-height: 1.2em;
+}
+
+.q-form {
+  .label {
+    font-size: 1.25em;
+    font-weight: $medium;
+
+    @media (min-width: $breakpoint-lg-min) {
+      font-size: 1.3em;
+    }
+  }
 }
 
 h1,
@@ -315,14 +339,8 @@ h4 {
     input,
     textarea,
     select {
-      font-size: 1.1em;
-
-      @media (max-width: $breakpoint-xxxs-max) {
-        font-size: 1em;
-      }
-
       @media (min-width: $breakpoint-lg-min) {
-        font-size: 1.2em;
+        font-size: 1.1em;
       }
 
       &:-webkit-autofill,
@@ -330,7 +348,7 @@ h4 {
       &:-webkit-autofill:hover,
       &:-webkit-autofill:focus,
       &:-webkit-autofill:active {
-        font-size: 18px;
+        font-size: 14px;
         font-style: italic;
       }
     }
@@ -501,20 +519,6 @@ h4 {
   .q-field__control {
     background: $grey-lighter;
 
-    input,
-    textarea,
-    select {
-      font-weight: $medium;
-
-      &:-webkit-autofill,
-      &:-webkit-autofill::first-line,
-      &:-webkit-autofill:hover,
-      &:-webkit-autofill:focus,
-      &:-webkit-autofill:active {
-        font-weight: $medium;
-      }
-    }
-
     &::before {
       background: $grey-hover;
       border-bottom: none;
@@ -522,6 +526,22 @@ h4 {
   }
 
   &.q-field--focused {
+    .q-field__control {
+      input,
+      textarea,
+      select {
+        font-weight: $medium;
+
+        &:-webkit-autofill,
+        &:-webkit-autofill::first-line,
+        &:-webkit-autofill:hover,
+        &:-webkit-autofill:focus,
+        &:-webkit-autofill:active {
+          font-weight: $medium;
+        }
+      }
+    }
+
     .q-field__control::before {
       background: $grey-hover;
     }
@@ -600,11 +620,11 @@ h4 {
 
 // less than drawer menu breakpoint
 // see also: mobile-only
-.on-hidden-drawer {
+.on-mobile-drawer {
   display: none;
 }
-.drawer-hidden {
-  .on-hidden-drawer {
+.drawer-mobile {
+  .on-mobile-drawer {
     display: inherit;
   }
 }

@@ -1,24 +1,22 @@
 <template>
-  <q-layout view="hhh LpR lFf" class="home-layout" :class="{ 'drawer-hidden': fit }">
+  <q-layout
+    view="hhh LpR lFf"
+    class="home-layout"
+    :class="{ 'drawer-mobile': fit, 'drawer-hidden': !menu }"
+  >
     <q-header>
       <q-toolbar class="row justify-start q-px-md">
-        <q-btn
-          v-if="!fit"
-          flat
-          :ripple="false"
-          class="col-auto q-py-sm q-mr-auto"
-          @click="toggleMenu"
-        >
-          <div class="logo-menu">
+        <q-btn v-if="!fit" flat :ripple="false" class="logo-menu q-py-sm" @click="toggleMenu">
+          <div>
             <img src="~assets/logo-icon.svg" style="width: 36px" />
           </div>
         </q-btn>
-        <h4 class="col-auto ellipsis gt-xxxs">
+        <h4 class="col-auto ellipsis gt-xxxs" :class="{ 'q-ml-auto': !fit }">
           <div v-if="greetings && displayName">
             <span class="text-medium">{{ `${$tg('welcome', currentUser.gender)}, ` }}</span>
             <span class="text-light">{{ displayName }}</span>
           </div>
-          <div v-else-if="!greetings">
+          <div v-else-if="withHeader">
             <span class="text-medium">{{ $t($route.name) }}</span>
           </div>
         </h4>
@@ -108,8 +106,11 @@ export default {
     fit() {
       return this.$q.screen.width <= this.breakpoint;
     },
+    withHeader() {
+      return this.$route.name !== 'userProfile';
+    },
     greetings() {
-      return [this.tabs.home.key, 'userProfile'].includes(this.$route.name);
+      return this.$route.name === this.tabs.home.key;
     }
   },
   methods: {
@@ -124,9 +125,29 @@ export default {
 </script>
 
 <style lang="scss">
+.desktop .home-layout {
+  .logo-menu img {
+    transition: transform 0.3s ease-in-out;
+    -webkit-transition: transform 0.3s ease-in-out;
+  }
+  .q-btn:hover,
+  .q-btn:focus {
+    &.logo-menu {
+      img {
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+      }
+    }
+  }
+}
+
 .home-layout {
+  .logo-menu {
+    position: fixed;
+    top: 6vh;
+  }
+
   .q-header {
-    background-color: transparent;
     padding: 6vh 3.33vw 0 3.33vw;
   }
 
@@ -139,9 +160,9 @@ export default {
     }
   }
 
-  &.drawer-hidden .q-page-container {
-    padding-bottom: calc(48px + 5vh) !important; // footer height + footer padding
-    min-height: calc(100vh - (56px + 6vh) - (48px + 5vh)) !important;
+  &.drawer-mobile .q-page-container {
+    padding-bottom: calc(48px + 5vh + 8px) !important; // footer height + footer padding
+    min-height: calc(100vh - (56px + 6vh) - (48px + 5vh + 8px)) !important;
   }
 
   .q-drawer {
@@ -158,9 +179,8 @@ export default {
   }
 
   .q-footer {
-    background-color: transparent;
-    padding-top: 12px; // shadow
-    overflow: hidden;
+    padding-top: 8px;
+    overflow-x: hidden;
 
     > div {
       padding: 2.5vh 16px;
