@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import { CurrentUser } from '@/mixins/CurrentUser';
+import { currentUser } from '@/mixins/currentUser';
 
 export default {
-  mixins: [CurrentUser],
+  mixins: [currentUser],
   meta() {
     return {
       title: this.currentUser.name

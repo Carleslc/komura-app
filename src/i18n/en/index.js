@@ -1,4 +1,14 @@
 export default {
+  // Misc
+  please: 'Please',
+
+  // Forms
+  required: {
+    label: 'Required',
+    minLength: '@:please, enter at least {n} characters',
+    groupName: '@:please, @.lower:namePlaceholder',
+  },
+
   // Login / Register
   login: 'Log in',
   notRegistered: "Don't have an account yet?",
@@ -22,15 +32,13 @@ export default {
 
   // Home
   home: 'Home',
-  welcome: {
-    neutral: 'Welcome',
-    male: '@:welcome.neutral',
-    female: '@:welcome.neutral',
-  },
-  newGroup: 'Done!',
+  welcome: 'Welcome',
+  newGroup: 'New group',
 
   // Create group
   name: 'Name',
+  namePlaceholder: 'Enter a name for your group',
   description: 'Description',
-  createGroup: 'Create group',
+  descriptionPlaceholder: 'Add a description so people know what this group is about',
+  createGroup: 'Done!',
 };

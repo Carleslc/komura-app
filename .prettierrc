@@ -10,15 +10,16 @@
       }
     },
     {
-      "files": "src/css/**",
+      "files": "src/i18n/**",
       "options": {
-        "printWidth": 150
+        "trailingComma": "es5",
+        "printWidth": 2000
       }
     },
     {
-      "files": "src/i18n/**",
+      "files": "src/css/**",
       "options": {
-        "trailingComma": "es5"
+        "printWidth": 150
       }
     }
   ]

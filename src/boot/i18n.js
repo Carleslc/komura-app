@@ -13,14 +13,19 @@ const i18n = new VueI18n({
   messages
 });
 
-Vue.prototype.$tg = function translateWithGender(key, gender) {
+Vue.prototype.$tg = function translateWithGender(key, gender, ...values) {
   let genderKey = 'neutral';
   if (gender === 'm') {
     genderKey = 'male';
   } else if (gender === 'f') {
     genderKey = 'female';
   }
-  return i18n.t(`${key}.${genderKey}`);
+  const keyWithGender = `${key}.${genderKey}`;
+  return i18n.t(i18n.te(keyWithGender) ? keyWithGender : key, values);
+};
+
+Vue.prototype.$tl = function translateLower(key, ...values) {
+  return i18n.t(key, values).toLocaleLowerCase(i18n.locale);
 };
 
 export default ({ app }) => {

@@ -5,7 +5,7 @@
     :class="{ 'drawer-mobile': fit, 'drawer-hidden': !menu }"
   >
     <q-header>
-      <q-toolbar class="row justify-start q-px-md">
+      <q-toolbar class="row justify-start" :class="fit ? 'q-px-none' : 'q-px-md'">
         <q-btn v-if="!fit" flat :ripple="false" class="logo-menu q-py-sm" @click="toggleMenu">
           <div>
             <img src="~assets/logo-icon.svg" style="width: 36px" />
@@ -17,7 +17,7 @@
             <span class="text-light">{{ displayName }}</span>
           </div>
           <div v-else-if="withHeader">
-            <span class="text-medium">{{ $t($route.name) }}</span>
+            <span v-t="$route.name" class="text-medium" />
           </div>
         </h4>
         <div class="col-auto q-ml-auto">
@@ -26,7 +26,14 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-if="!fit" v-model="menu" :width="320" :breakpoint="breakpoint" show-if-above>
+    <q-drawer
+      v-if="!fit"
+      v-model="menu"
+      behavior="desktop"
+      :width="320"
+      :breakpoint="breakpoint"
+      show-if-above
+    >
       <div class="column justify-between no-wrap full-height q-gutter-y-md">
         <div class="col-auto menu-section">
           <menu-btn
@@ -73,7 +80,7 @@
 </template>
 
 <script>
-import { CurrentUser } from '@/mixins/CurrentUser';
+import { currentUser } from '@/mixins/currentUser';
 
 export default {
   meta: {
@@ -83,7 +90,7 @@ export default {
     'menu-btn': require('components/MenuButton.vue').default,
     'user-profile-btn': require('components/UserProfileButton.vue').default
   },
-  mixins: [CurrentUser],
+  mixins: [currentUser],
   data() {
     this.breakpoint = 800;
     return {

@@ -76,7 +76,7 @@ export default class AuthService {
 
   onLoggedOut() {
     this.token = undefined;
-    LocalStorage.remove(USER_KEY);
+    LocalStorage.clear();
 
     if (this.router.currentRoute.meta.auth) {
       this.router.ensure({ name: 'index' });

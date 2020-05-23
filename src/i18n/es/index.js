@@ -1,4 +1,14 @@
 export default {
+  // Misc
+  please: 'Por favor',
+
+  // Forms
+  required: {
+    label: 'Obligatorio',
+    minLength: '@:please, escribe al menos {n} caracteres',
+    groupName: '@:please, @.lower:namePlaceholder',
+  },
+
   // Login / Register
   login: 'Iniciar sesión',
   notRegistered: '¿No tienes cuenta todavía?',
@@ -31,6 +41,8 @@ export default {
 
   // Create group
   name: 'Nombre',
+  namePlaceholder: 'Escribe un nombre para el grupo',
   description: 'Descripción',
+  descriptionPlaceholder: 'Añade información para que la gente sepa de qué trata el grupo',
   createGroup: '¡Listo!',
 };

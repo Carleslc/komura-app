@@ -1,20 +1,17 @@
-mutation createRootGroup($owner: String!, $name: String!, $slug: String!) {
-  insert_groups(objects: { name: $name, path: $slug, owner_id: $owner }) {
+mutation createRootGroup($owner: String!, $name: String!, $slug: String!, $description: String) {
+  insert_groups(
+    objects: { name: $name, path: $slug, description: $description, owner_id: $owner }
+  ) {
     returning {
       id
       path
       name
-      type
+      description
+      image
+      banner
       is_public
       is_accessible
       created_at
-      chat_settings {
-        is_public
-      }
-      members {
-        user_id
-        name
-      }
     }
   }
 }

@@ -6,10 +6,6 @@
 
 <script>
 export default {
-  meta: {
-    title: 'Komura',
-    titleTemplate: ''
-  },
   props: {
     redirectOnLoggedIn: {
       type: Boolean,

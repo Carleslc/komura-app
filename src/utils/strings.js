@@ -1,9 +1,13 @@
-export function asUsername(s) {
+export function slugify(s, separator = '-') {
   return s
-    .replace(/\s+/g, '.')
+    .replace(/\s+/g, separator)
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
+}
+
+export function asUsername(s) {
+  return slugify(s, '.');
 }
 
 export function kebabCase(s) {

@@ -13,7 +13,7 @@
       <q-icon v-if="icon" :name="icon" class="menu-icon" />
       <slot v-else name="icon" />
       <div class="overflow-hidden text-left">
-        <p v-if="label" class="menu-label">{{ $t(label) }}</p>
+        <p v-if="label" v-t="label" class="menu-label" />
         <slot v-else />
       </div>
     </div>

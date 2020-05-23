@@ -2,12 +2,12 @@ mutation createSubgroup($owner: String!, $name: String!, $slug: String!, $parent
   insert_groups(objects: { name: $name, path: $slug, parent_id: $parent, owner_id: $owner }) {
     returning {
       id
+      type
       path
       parent_id
       name
       is_public
       is_accessible
-      type
       created_at
       chat_settings {
         is_public

@@ -1,4 +1,4 @@
-export const CurrentUser = {
+export const currentUser = {
   data() {
     return {
       currentUser: {}

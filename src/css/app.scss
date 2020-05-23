@@ -219,16 +219,6 @@ h4 {
   margin: 0;
 }
 
-.text-white {
-  p,
-  h1,
-  h2,
-  h3,
-  h4 {
-    color: white;
-  }
-}
-
 h1 {
   font-size: 4em;
 }
@@ -282,6 +272,30 @@ h4 {
     font-weight: $medium;
     cursor: pointer;
   }
+
+  &-white {
+    color: white;
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: white;
+    }
+  }
+
+  &-grey {
+    color: $grey-light;
+
+    p,
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: $grey-light;
+    }
+  }
 }
 
 .shadow {
@@ -305,6 +319,10 @@ h4 {
   div {
     font-size: 16px;
     color: white;
+
+    &.text-sm {
+      font-size: 12px;
+    }
   }
 }
 
@@ -327,18 +345,20 @@ h4 {
       @media (max-width: $breakpoint-xs-max) {
         padding-right: 12px;
       }
-    }
 
-    .q-icon {
-      opacity: 60%;
-      -webkit-text-stroke: 0.8px white;
-      -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
-      transition: opacity 0.1s ease, color 0.1s ease-in-out;
+      .q-icon {
+        opacity: 60%;
+        -webkit-text-stroke: 0.8px white;
+        -webkit-transition: opacity 0.1s ease, color 0.1s ease-in-out;
+        transition: opacity 0.1s ease, color 0.1s ease-in-out;
+      }
     }
 
     input,
     textarea,
     select {
+      line-height: 1.5em;
+
       @media (min-width: $breakpoint-lg-min) {
         font-size: 1.1em;
       }
@@ -374,6 +394,18 @@ h4 {
 
   .q-field__bottom {
     font-weight: bold;
+  }
+
+  &.filled {
+    .q-field__control {
+      input,
+      textarea,
+      select {
+        &.text-medium-filled {
+          font-weight: $medium;
+        }
+      }
+    }
   }
 }
 
@@ -428,7 +460,7 @@ h4 {
     }
 
     &:hover {
-      .q-icon,
+      .q-field__prepend .q-icon,
       input,
       textarea,
       select {
@@ -455,7 +487,7 @@ h4 {
 
   &.q-field--focused {
     .q-field__control {
-      .q-icon,
+      .q-field__prepend .q-icon,
       input,
       textarea,
       select {
@@ -472,7 +504,7 @@ h4 {
 
   &.filled {
     .q-field__control {
-      .q-icon,
+      .q-field__prepend .q-icon,
       input,
       textarea,
       select {
@@ -526,22 +558,6 @@ h4 {
   }
 
   &.q-field--focused {
-    .q-field__control {
-      input,
-      textarea,
-      select {
-        font-weight: $medium;
-
-        &:-webkit-autofill,
-        &:-webkit-autofill::first-line,
-        &:-webkit-autofill:hover,
-        &:-webkit-autofill:focus,
-        &:-webkit-autofill:active {
-          font-weight: $medium;
-        }
-      }
-    }
-
     .q-field__control::before {
       background: $grey-hover;
     }
@@ -563,24 +579,6 @@ h4 {
     }
 
     &.q-field--error {
-      &.filled.q-field--focused {
-        .q-field__control {
-          input,
-          textarea,
-          select {
-            font-weight: normal;
-          }
-        }
-        &:focus-within,
-        &:active .q-field__control {
-          input,
-          textarea,
-          select {
-            font-weight: $medium;
-          }
-        }
-      }
-
       .q-field__control {
         .q-icon {
           color: $negative;
@@ -604,6 +602,23 @@ h4 {
           border-color: $negative;
         }
       }
+    }
+  }
+}
+
+.q-textarea {
+  // padding for the bottom right expandable
+  .q-field__control {
+    padding-bottom: 4px;
+    padding-right: 4px;
+
+    .q-field__append {
+      padding-right: 8px;
+    }
+
+    textarea {
+      padding-right: 8px;
+      padding-bottom: 2px;
     }
   }
 }
