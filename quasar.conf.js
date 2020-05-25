@@ -1,10 +1,10 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import SentryWebpackPlugin from '@sentry/webpack-plugin';
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
-export default function config(ctx) {
+module.exports = function config(ctx) {
   return {
     // app boot file (/src/boot)
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
@@ -218,4 +218,4 @@ export default function config(ctx) {
       }
     }
   };
-}
+};
