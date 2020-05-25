@@ -1,0 +1,13 @@
+query getGroup($path: String!) {
+  group(path: $path) @client {
+    id
+    path
+    name
+    description
+    image
+    banner
+    is_public
+    is_accessible
+    created_at
+  }
+}

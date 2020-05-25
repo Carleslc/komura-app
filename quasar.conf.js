@@ -44,7 +44,7 @@ module.exports = function config(ctx) {
       directives: [],
 
       // Quasar plugins
-      plugins: ['LocalStorage', 'Meta'],
+      plugins: ['LocalStorage', 'Meta', 'Notify'],
 
       config: {
         dark: false // [true, false, auto] avoid in SSR (modify in-app instead)

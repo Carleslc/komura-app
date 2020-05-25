@@ -40,5 +40,6 @@ export default {
   namePlaceholder: 'Enter a name for your group',
   description: 'Description',
   descriptionPlaceholder: 'Add a description so people know what this group is about',
+  groupAlreadyExists: 'There is already a group with a similar name to "{name}", please select another name.',
   createGroup: 'Done!',
 };

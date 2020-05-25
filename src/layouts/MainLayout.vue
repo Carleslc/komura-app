@@ -26,31 +26,16 @@
 </template>
 
 <script>
+import { isLoggedIn } from '@/mixins/isLoggedIn';
+
 export default {
   meta: {
     titleTemplate: title => `${title} | Komura`
   },
-  data() {
-    return {
-      isLoggedIn: this.$auth.isLoggedIn(),
-      unsubscribeonAuthStateChanged: undefined
-    };
-  },
+  mixins: [isLoggedIn],
   computed: {
     loginKey() {
       return this.isLoggedIn ? 'home' : 'login';
-    }
-  },
-  mounted() {
-    this.unsubscribeonAuthStateChanged = this.$auth.firebaseAuth.onAuthStateChanged(
-      firebaseUser => {
-        this.isLoggedIn = !!firebaseUser;
-      }
-    );
-  },
-  beforeDestroy() {
-    if (this.unsubscribeonAuthStateChanged) {
-      this.unsubscribeonAuthStateChanged();
     }
   }
 };

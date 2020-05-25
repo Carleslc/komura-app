@@ -74,7 +74,7 @@ export default {
       ]
     };
   },
-  mounted() {
+  created() {
     this.$auth.redirectOnLoggedIn = this.$route.query.signInSuccessUrl || { name: 'home' };
   }
 };

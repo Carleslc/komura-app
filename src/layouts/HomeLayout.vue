@@ -114,7 +114,7 @@ export default {
       return this.$q.screen.width <= this.breakpoint;
     },
     withHeader() {
-      return this.$route.name !== 'userProfile';
+      return !['userProfile', 'group'].includes(this.$route.name);
     },
     greetings() {
       return this.$route.name === this.tabs.home.key;

@@ -93,6 +93,9 @@ export default {
   methods: {
     validate() {
       return this.$refs.input.validate();
+    },
+    resetValidation() {
+      return this.$refs.input.resetValidation();
     }
   }
 };

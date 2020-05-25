@@ -1,6 +1,8 @@
 const routes = [
+  // Authenticated
   {
     path: '/',
+    meta: { auth: true },
     component: () => import('layouts/HomeLayout.vue'),
     children: [
       {
@@ -11,32 +13,51 @@ const routes = [
       },
       {
         name: 'userProfile',
-        path: '/profile/:username',
+        path: '/profile/:username?',
         component: () => import('pages/UserProfile.vue'),
-        meta: { auth: true }
-      },
-      {
-        path: 'profile',
-        redirect: '/'
+        props: true
       },
       {
         name: 'newGroup',
         path: '/groups/new',
-        component: () => import('pages/AddGroup.vue'),
-        meta: { auth: true }
+        component: () => import('pages/AddGroup.vue')
       },
       {
-        path: 'groups',
-        redirect: '/'
+        name: 'group',
+        path: '/groups/:path*',
+        component: () => import('pages/Group.vue'),
+        props: true
       }
     ]
   },
+  // Public
+  {
+    path: '/',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {
+        name: 'index',
+        path: '',
+        component: () => import('pages/Index.vue')
+      },
+      {
+        name: 'landing',
+        path: '/landing',
+        props: { redirectOnLoggedIn: false },
+        component: () => import('pages/Index.vue')
+      },
+      {
+        path: '/groups/:path*',
+        component: () => import('pages/Group.vue'),
+        props: true
+      }
+    ]
+  },
+  // Login / Register
   {
     path: '/login',
     component: () => import('layouts/LoginLayout.vue'),
-    children: [
-      { name: 'login', path: '/login', props: true, component: () => import('pages/Login.vue') }
-    ],
+    children: [{ name: 'login', path: '/login', component: () => import('pages/Login.vue') }],
     meta: { auth: false, redirect: { name: 'home' } }
   },
   {
@@ -46,24 +67,15 @@ const routes = [
       {
         name: 'register',
         path: '/register',
-        props: true,
         component: () => import('pages/Register.vue')
       }
     ],
     meta: { auth: false, redirect: { name: 'home' } }
   },
+  // Redirects
   {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { name: 'index', path: '', component: () => import('pages/Index.vue') },
-      {
-        name: 'landing',
-        path: '/landing',
-        props: { redirectOnLoggedIn: false },
-        component: () => import('pages/Index.vue')
-      }
-    ]
+    path: '/groups',
+    redirect: '/'
   }
 ];
 
@@ -72,7 +84,7 @@ if (process.env.MODE !== 'ssr') {
   routes.push({
     path: '*',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/Error404.vue') }]
+    children: [{ name: 'notFound', path: '', component: () => import('pages/Error404.vue') }]
   });
 }
 

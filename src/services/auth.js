@@ -24,6 +24,7 @@ export default class AuthService {
       isNewUser: false,
       profile: {}
     };
+    this.onAuthHeader = [];
     this.load();
   }
 
@@ -45,24 +46,42 @@ export default class AuthService {
     return this.firebaseAuth.currentUser.providerData[0].providerId;
   }
 
-  static buildAuthHeader(token) {
-    return token ? `Bearer ${token}` : undefined;
+  /**
+   * Authorize calls to provider API
+   * @param {String} accessToken Provider OAuth2 Token
+   */
+  static set providerToken(accessToken) {
+    axios.defaults.headers.common.Authorization = accessToken ? `Bearer ${accessToken}` : undefined;
   }
 
   /**
    * @param {String} token Firebase Id Token
    */
-  set token(token) {
-    this.header = AuthService.buildAuthHeader(token);
+  updateHeader(token) {
+    this.header = token ? `Bearer ${token}` : null;
+
+    if (this.onAuthHeader.length > 0) {
+      this.onAuthHeader.forEach(callback => callback(this.header));
+      this.onAuthHeader = [];
+    }
+
+    return this.header;
   }
 
-  /**
-   * Authorize calls to provider API
-   * @param {String} accessToken Provider OAuth2 Token
-   */
-  set providerToken(accessToken) {
-    this.providerHeader = AuthService.buildAuthHeader(accessToken);
-    axios.defaults.headers.common.Authorization = this.providerHeader;
+  fetchAuthHeader() {
+    return new Promise(resolve => {
+      if (this.header !== undefined) {
+        if (this.firebaseUser) {
+          this.firebaseUser
+            .getIdToken() // retrieve or refresh if expired
+            .then(token => resolve(this.updateHeader(token)));
+        } else {
+          resolve(this.header);
+        }
+      } else {
+        this.onAuthHeader.push(resolve);
+      }
+    });
   }
 
   isLoggedIn() {
@@ -72,15 +91,6 @@ export default class AuthService {
   logout() {
     this.firebaseAuth.signOut();
     this.apollo.clearStore();
-  }
-
-  onLoggedOut() {
-    this.token = undefined;
-    LocalStorage.clear();
-
-    if (this.router.currentRoute.meta.auth) {
-      this.router.ensure({ name: 'index' });
-    }
   }
 
   updateCurrentUser(user, persist = true) {
@@ -222,7 +232,7 @@ export default class AuthService {
 
   load() {
     function onLoggedIn(firebaseUser, validToken) {
-      this.token = validToken;
+      this.updateHeader(validToken);
       const lastLogin = this.user.last_login;
       if (!lastLogin || hoursElapsed(DateTime.fromISO(lastLogin)) >= 1) {
         if (this.additionalUserInfo.isNewUser) {
@@ -233,6 +243,15 @@ export default class AuthService {
       }
       if (this.redirectOnLoggedIn) {
         this.router.ensure(this.redirectOnLoggedIn);
+      }
+    }
+
+    function onLoggedOut() {
+      this.updateHeader(undefined);
+      LocalStorage.clear();
+
+      if (this.router.currentRoute.matched.some(r => r.meta.auth)) {
+        this.router.ensure({ name: 'index' });
       }
     }
 
@@ -264,11 +283,11 @@ export default class AuthService {
             })
             .catch(e => {
               console.error(e);
-              this.onLoggedOut();
+              onLoggedOut.call(this);
             });
         } else {
           // User is logged out
-          this.onLoggedOut();
+          onLoggedOut.call(this);
         }
       });
     });

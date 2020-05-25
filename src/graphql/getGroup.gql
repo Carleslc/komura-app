@@ -1,0 +1,13 @@
+query getGroup($path: String!) {
+  groups(where: { path: { _eq: $path } }) {
+    id
+    path
+    name
+    description
+    image
+    banner
+    is_public
+    is_accessible
+    created_at
+  }
+}

@@ -7,3 +7,16 @@ export function catchUndefined(f) {
     }
   };
 }
+
+export function parseError(callback) {
+  return ({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+      graphQLErrors.forEach(({ message, extensions }) => {
+        callback(message, extensions.code);
+      });
+    }
+    if (networkError) {
+      callback(networkError);
+    }
+  };
+}

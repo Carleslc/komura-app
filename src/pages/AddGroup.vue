@@ -11,11 +11,12 @@
             class="q-mb-lg"
             required
             :placeholder="$t('namePlaceholder')"
-            :lazy-rules="isNew"
+            :lazy-rules="isDefaultData"
             :limit="60"
             :rules="[
               name => !!name || $t('required.groupName'),
-              name => name.length >= 3 || $t('required.minLength', { n: 3 })
+              name => name.length >= 3 || $t('required.minLength', { n: 3 }),
+              name => !alreadyExists || $t('groupAlreadyExists', { name })
             ]"
           />
           <k-input
@@ -33,7 +34,7 @@
           outline
           type="submit"
           :label="$t('createGroup')"
-          :disabled="!name || name.length < 3"
+          :disabled="!name || name.length < 3 || alreadyExists || $apollo.loading"
           class="primary q-px-lg"
         />
       </div>
@@ -44,10 +45,9 @@
 <script>
 import { slugify } from '@/utils/strings';
 import { fitHeight } from '@/utils/responsive';
+import { parseError } from '@/utils/errors';
 import { currentUser } from '@/mixins/currentUser';
-import { saveDataMixin } from '@/mixins/saveDataMixin';
-
-const saveData = saveDataMixin('add-group', 'name', 'description');
+import { saveData } from '@/mixins/saveData';
 
 export default {
   meta() {
@@ -58,21 +58,22 @@ export default {
   components: {
     'k-input': require('components/KInput.vue').default
   },
-  mixins: [currentUser, saveData.mixin],
+  mixins: [
+    currentUser,
+    saveData('add-group', {
+      name: '',
+      description: ''
+    })
+  ],
   data() {
     return {
-      name: '',
-      description: '',
-      ...saveData.load(),
-      isNew: saveData.isNew()
+      alreadyExistsPath: null
     };
   },
   computed: {
-    fitHeight: fitHeight.bind(this)
-  },
-  mounted() {
-    if (!this.isNew) {
-      this.validate();
+    fitHeight: fitHeight.bind(this),
+    alreadyExists() {
+      return this.alreadyExistsPath && slugify(this.name) === this.alreadyExistsPath;
     }
   },
   methods: {
@@ -85,15 +86,45 @@ export default {
             name: this.name,
             slug: slugify(this.name),
             description: this.description || null
+          },
+          update: (proxy, { data }) => {
+            const group = data.insert_groups.returning[0];
+            proxy.writeQuery({
+              query: require('@/graphql/client/getGroup.gql'),
+              variables: {
+                path: group.path
+              },
+              data: {
+                group
+              }
+            });
+            this.reset();
+            this.$router.push({
+              name: 'group',
+              params: { path: group.path }
+            });
           }
         })
-        .then(({ data }) => {
-          // console.log(data.insert_groups.returning[0]);
-        })
-        .catch(console.error);
+        .catch(
+          parseError((message, code) => {
+            if (code === 'constraint-violation') {
+              this.alreadyExistsPath = slugify(this.name);
+              this.validate();
+            } else {
+              this.$q.notify({
+                type: 'negative',
+                message
+              });
+            }
+          })
+        );
     },
     validate() {
       this.$refs.name.validate();
+    },
+    reset() {
+      this.resetData();
+      this.$refs.name.resetValidation();
     }
   }
 };

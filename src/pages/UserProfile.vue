@@ -13,6 +13,19 @@ export default {
     return {
       title: this.currentUser.name
     };
+  },
+  props: {
+    username: {
+      type: String,
+      default: undefined
+    }
+  },
+  created() {
+    if (!this.username) {
+      this.$router.replace({
+        params: { username: this.currentUser.username }
+      });
+    }
   }
 };
 </script>

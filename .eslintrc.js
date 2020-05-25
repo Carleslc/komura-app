@@ -44,12 +44,15 @@ module.exports = {
     ],
 
     'prefer-destructuring': ['error', { object: true, array: false }],
+    'array-element-newline': ['error', 'consistent'],
 
     'vue/component-name-in-template-casing': ['error', 'PascalCase'],
+
     'no-param-reassign': 'off',
     'object-shorthand': 'off',
     'global-require': 'off',
     'no-unused-vars': 'warn',
+    'no-plusplus': 'off',
 
     'import/first': 'off',
     'import/named': 'error',
