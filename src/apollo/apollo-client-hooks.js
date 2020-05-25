@@ -12,5 +12,5 @@ export function apolloClientBeforeCreate({ apolloClientConfigObj }) {
 export function apolloClientAfterCreate({ apolloClient }) {
   Vue.prototype.apollo = apolloClient;
   apolloClient.readQuery = catchUndefined(apolloClient.readQuery.bind(apolloClient));
-  AuthService.instance.onApolloReady(apolloClient);
+  AuthService.instance.setApollo(apolloClient);
 }

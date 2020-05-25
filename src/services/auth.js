@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { LocalStorage } from 'quasar';
 import { DateTime } from 'luxon';
+import { Listener } from '@/utils/listener';
 import { asUsername } from '@/utils/strings';
 import { hoursElapsed } from '@/utils/dates';
+import { report } from '@/boot/sentry';
 
 const USER_KEY = 'current-user';
 const REFRESH_TOKEN_ENDPOINT = 'https://europe-west1-komura-app.cloudfunctions.net/refreshToken';
@@ -16,6 +18,8 @@ const Providers = {
 export default class AuthService {
   static instance;
 
+  static onUserListener = new Listener();
+
   constructor(firebaseAuth, router) {
     AuthService.instance = this;
     this.firebaseAuth = firebaseAuth;
@@ -24,13 +28,22 @@ export default class AuthService {
       isNewUser: false,
       profile: {}
     };
-    this.onAuthHeader = [];
+    this.onAuthHeaderListener = new Listener();
     this.load();
   }
 
-  onApolloReady(apolloClient) {
+  setApollo(apolloClient) {
     this.apollo = apolloClient;
     this.updateCurrentUser(LocalStorage.getItem(USER_KEY), false);
+  }
+
+  static onUser(callback) {
+    const { instance } = AuthService;
+    if (instance && !instance.loading) {
+      callback(instance.user, instance.firebaseUser);
+    } else {
+      AuthService.onUserListener.add(callback);
+    }
   }
 
   get firebaseUser() {
@@ -40,6 +53,10 @@ export default class AuthService {
   get user() {
     const userData = this.apollo.readQuery({ query: CURRENT_USER_QUERY });
     return userData ? userData.currentUser : undefined;
+  }
+
+  get isLoggedIn() {
+    return !!this.firebaseUser || !!this.user;
   }
 
   get provider() {
@@ -59,12 +76,7 @@ export default class AuthService {
    */
   updateHeader(token) {
     this.header = token ? `Bearer ${token}` : null;
-
-    if (this.onAuthHeader.length > 0) {
-      this.onAuthHeader.forEach(callback => callback(this.header));
-      this.onAuthHeader = [];
-    }
-
+    this.onAuthHeaderListener.consume(this.header);
     return this.header;
   }
 
@@ -79,13 +91,9 @@ export default class AuthService {
           resolve(this.header);
         }
       } else {
-        this.onAuthHeader.push(resolve);
+        this.onAuthHeaderListener.add(resolve);
       }
     });
-  }
-
-  isLoggedIn() {
-    return !!this.firebaseUser || !!this.user;
   }
 
   logout() {
@@ -128,6 +136,7 @@ export default class AuthService {
         last_login: null
       });
     }
+    AuthService.onUserListener.consume(this.user, firebaseUser);
   }
 
   socialSignInSuccess(authResult, redirectUrl) {
@@ -231,6 +240,8 @@ export default class AuthService {
   }
 
   load() {
+    this.loading = true;
+
     function onLoggedIn(firebaseUser, validToken) {
       this.updateHeader(validToken);
       const lastLogin = this.user.last_login;
@@ -255,41 +266,40 @@ export default class AuthService {
       }
     }
 
-    return new Promise(resolve => {
-      this.firebaseAuth.onAuthStateChanged(firebaseUser => {
-        resolve();
-        if (firebaseUser) {
-          // User is logged in
-          this.setCurrentUser(firebaseUser);
-          firebaseUser
-            .getIdToken() // retrieve or refresh if expired
-            .then(token =>
-              firebaseUser.getIdTokenResult().then(result => {
-                if (result.claims['https://hasura.io/jwt/claims']) {
-                  return token;
+    this.firebaseAuth.onAuthStateChanged(firebaseUser => {
+      if (firebaseUser) {
+        // User is logged in
+        this.setCurrentUser(firebaseUser);
+        firebaseUser
+          .getIdToken() // retrieve or refresh if expired
+          .then(token =>
+            firebaseUser.getIdTokenResult().then(result => {
+              if (result.claims['https://hasura.io/jwt/claims']) {
+                return token;
+              }
+              return fetch(`${REFRESH_TOKEN_ENDPOINT}?uid=${firebaseUser.uid}`).then(res => {
+                if (res.status === 200) {
+                  return firebaseUser.getIdToken(true); // force refresh
                 }
-                return fetch(`${REFRESH_TOKEN_ENDPOINT}?uid=${firebaseUser.uid}`).then(res => {
-                  if (res.status === 200) {
-                    return firebaseUser.getIdToken(true); // force refresh
-                  }
-                  return res.json().then(e => {
-                    throw e;
-                  });
+                return res.json().then(e => {
+                  throw e;
                 });
-              })
-            )
-            .then(validToken => {
-              onLoggedIn.call(this, firebaseUser, validToken);
+              });
             })
-            .catch(e => {
-              console.error(e);
-              onLoggedOut.call(this);
-            });
-        } else {
-          // User is logged out
-          onLoggedOut.call(this);
-        }
-      });
+          )
+          .then(validToken => {
+            onLoggedIn.call(this, firebaseUser, validToken);
+          })
+          .catch(e => {
+            report(e);
+            this.logout();
+          });
+      } else {
+        // User is logged out
+        onLoggedOut.call(this);
+        AuthService.onUserListener.consume();
+      }
+      this.loading = false;
     });
   }
 }

@@ -9,6 +9,7 @@ import fetch from 'node-fetch';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 
 import AuthService from '@/services/auth';
+import { globalErrorHandler } from '@/utils/errors';
 
 const onServer = process.env.SERVER;
 
@@ -46,32 +47,7 @@ const authLink = setContext(async (request, { headers }) => {
   };
 });
 
-const errorLink = onError(({ graphQLErrors, networkError /* operation, forward */ }) => {
-  if (process.env.DEV) {
-    if (graphQLErrors) {
-      graphQLErrors.forEach(({ message, extensions }) => {
-        console.error(extensions.code, message);
-        switch (extensions.code) {
-          case 'data-exception':
-          case 'validation-failed':
-            // Something went wrong (permissions, malformed requests...)
-            break;
-          case 'constraint-violation':
-            // e.g. unique key violation
-            break;
-          case 'invalid-jwt':
-            // forward(operation); // retry request
-            break;
-          default:
-            break;
-        }
-      });
-    }
-    if (networkError) {
-      console.error(`[Network error]: ${networkError}`);
-    }
-  }
-});
+const errorLink = onError(globalErrorHandler());
 
 export { httpLinkConfig };
 

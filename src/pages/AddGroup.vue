@@ -16,7 +16,8 @@
             :rules="[
               name => !!name || $t('required.groupName'),
               name => name.length >= 3 || $t('required.minLength', { n: 3 }),
-              name => !alreadyExists || $t('groupAlreadyExists', { name })
+              name => !alreadyExists || $t('groupAlreadyExists', { name }),
+              name => !isRestricted || $t('groupRestrictedName', { name })
             ]"
           />
           <k-input
@@ -34,7 +35,7 @@
           outline
           type="submit"
           :label="$t('createGroup')"
-          :disabled="!name || name.length < 3 || alreadyExists || $apollo.loading"
+          :disabled="!name || name.length < 3 || alreadyExists || isRestricted || $apollo.loading"
           class="primary q-px-lg"
         />
       </div>
@@ -43,7 +44,7 @@
 </template>
 
 <script>
-import { slugify } from '@/utils/strings';
+import { slugify, blacklist } from '@/utils/strings';
 import { fitHeight } from '@/utils/responsive';
 import { parseError } from '@/utils/errors';
 import { currentUser } from '@/mixins/currentUser';
@@ -72,8 +73,14 @@ export default {
   },
   computed: {
     fitHeight: fitHeight.bind(this),
+    slug() {
+      return slugify(this.name);
+    },
     alreadyExists() {
-      return this.alreadyExistsPath && slugify(this.name) === this.alreadyExistsPath;
+      return this.alreadyExistsPath && this.slug === this.alreadyExistsPath;
+    },
+    isRestricted() {
+      return blacklist.includes(this.slug);
     }
   },
   methods: {
@@ -84,7 +91,7 @@ export default {
           variables: {
             owner: this.currentUser.id,
             name: this.name,
-            slug: slugify(this.name),
+            slug: this.slug,
             description: this.description || null
           },
           update: (proxy, { data }) => {
@@ -106,17 +113,24 @@ export default {
           }
         })
         .catch(
-          parseError((message, code) => {
-            if (code === 'constraint-violation') {
-              this.alreadyExistsPath = slugify(this.name);
-              this.validate();
-            } else {
-              this.$q.notify({
-                type: 'negative',
-                message
-              });
+          parseError(
+            (message, code) => {
+              if (code === 'constraint-violation') {
+                this.alreadyExistsPath = this.slug;
+                this.validate();
+                this.$info('Attempted to create an existing group', message);
+              } else {
+                this.$q.notify({
+                  type: 'negative',
+                  message
+                });
+              }
+            },
+            {
+              name: this.name,
+              path: this.slug
             }
-          })
+          )
         );
     },
     validate() {

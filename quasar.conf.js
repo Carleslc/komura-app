@@ -1,13 +1,14 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import SentryWebpackPlugin from '@sentry/webpack-plugin';
 
-module.exports = function config(ctx) {
+export default function config(ctx) {
   return {
     // app boot file (/src/boot)
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ['i18n', 'firebase', 'auth', 'axios'],
+    boot: ['sentry', 'i18n', 'firebase', 'auth', 'axios'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ['utils.scss', 'firebase-ui.css', 'app.scss'],
@@ -106,6 +107,7 @@ module.exports = function config(ctx) {
           '@': require('path').resolve(__dirname, 'src')
         };
         cfg.plugins.push(new CopyWebpackPlugin([{ from: './_redirects', to: '' }]));
+        cfg.plugins.push(new SentryWebpackPlugin({ include: 'src' }));
       },
 
       uglifyOptions: {
@@ -216,4 +218,4 @@ module.exports = function config(ctx) {
       }
     }
   };
-};
+}

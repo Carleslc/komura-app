@@ -45,5 +45,6 @@ export default {
   description: 'Descripción',
   descriptionPlaceholder: 'Añade información para que la gente sepa de qué trata el grupo',
   groupAlreadyExists: 'Ya existe un grupo con un nombre similar a "{name}". Prueba con otro nombre.',
+  groupRestrictedName: 'No es posible usar el nombre "{name}". Prueba con otro nombre.',
   createGroup: '¡Listo!',
 };

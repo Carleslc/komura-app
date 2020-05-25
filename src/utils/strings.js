@@ -16,3 +16,5 @@ export function kebabCase(s) {
     .replace(/\s+/g, '-')
     .toLowerCase();
 }
+
+export const blacklist = ['new'];

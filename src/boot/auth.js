@@ -24,7 +24,7 @@ export default ({ router, Vue }) => {
   router.beforeEach((to, _from, next) => {
     const record = findAuthRecord(to);
     if (record) {
-      const loggedIn = auth.isLoggedIn();
+      const loggedIn = auth.isLoggedIn;
       if (record.meta.auth) {
         if (!loggedIn) {
           if (record.meta.redirect) {

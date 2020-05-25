@@ -41,5 +41,6 @@ export default {
   description: 'Description',
   descriptionPlaceholder: 'Add a description so people know what this group is about',
   groupAlreadyExists: 'There is already a group with a similar name to "{name}", please select another name.',
+  groupRestrictedName: '"{name}" cannot be used as group name, please select another name.',
   createGroup: 'Done!',
 };

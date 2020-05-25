@@ -1,7 +1,7 @@
 export const isLoggedIn = {
   data() {
     return {
-      isLoggedIn: this.$auth.isLoggedIn()
+      isLoggedIn: this.$auth.isLoggedIn
     };
   },
   created() {
