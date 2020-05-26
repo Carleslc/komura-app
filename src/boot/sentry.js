@@ -51,9 +51,8 @@ function withScopeContext(context, callback) {
   });
 }
 
-function withContextDev(context, callback) {
-  // eslint-disable-line no-console
-  console.log(context);
+function withContextDev(_context, callback) {
+  // console.log(context);
   callback();
 }
 
