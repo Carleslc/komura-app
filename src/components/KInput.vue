@@ -22,6 +22,7 @@
       v-bind="$attrs"
       filled
       hide-bottom-space
+      :debounce="debounce"
       :dense="dense"
       :type="type"
       :input-class="inputClass"
@@ -48,6 +49,10 @@ export default {
     type: {
       type: String,
       default: 'text'
+    },
+    debounce: {
+      type: Number,
+      default: undefined
     },
     dense: {
       type: Boolean,
@@ -85,7 +90,7 @@ export default {
     },
     limitHint() {
       if (this.limit && this.value.length >= 0.8 * this.limit) {
-        return this.limit - this.value.length;
+        return `${this.limit - this.value.length}`;
       }
       return undefined;
     }

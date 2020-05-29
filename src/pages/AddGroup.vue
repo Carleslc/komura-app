@@ -39,6 +39,9 @@
           class="primary q-px-lg"
         />
       </div>
+      <ul>
+        <li v-for="topic in suggestedTopics" :key="topic">{{ topic }}</li>
+      </ul>
     </q-form>
   </q-page>
 </template>
@@ -49,6 +52,8 @@ import { fitHeight } from '@/utils/responsive';
 import { parseError } from '@/utils/errors';
 import { currentUser } from '@/mixins/currentUser';
 import { saveData } from '@/mixins/saveData';
+import { getTopics } from '@/mixins/getTopics';
+import { debounce } from 'lodash';
 
 export default {
   meta() {
@@ -61,6 +66,7 @@ export default {
   },
   mixins: [
     currentUser,
+    getTopics,
     saveData('add-group', {
       name: '',
       description: ''
@@ -68,7 +74,9 @@ export default {
   ],
   data() {
     return {
-      alreadyExistsPath: null
+      alreadyExistsPath: null,
+      selectedTopics: new Set(),
+      suggestedTopics: new Set()
     };
   },
   computed: {
@@ -83,7 +91,19 @@ export default {
       return blacklist.includes(this.slug);
     }
   },
+  watch: {
+    name() {
+      this.debounceUpdateSuggestedTopics();
+    }
+  },
+  created() {
+    this.debounceUpdateSuggestedTopics = debounce(this.updateSuggestedTopics, 300);
+    this.debounceUpdateSuggestedTopics();
+  },
   methods: {
+    updateSuggestedTopics() {
+      this.suggestedTopics = this.getSuggestedTopics(this.name);
+    },
     createGroup() {
       this.$apollo
         .mutate({

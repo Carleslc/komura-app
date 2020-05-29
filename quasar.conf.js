@@ -106,13 +106,16 @@ module.exports = function config(ctx) {
           ...cfg.resolve.alias,
           '@': require('path').resolve(__dirname, 'src')
         };
-        cfg.plugins.push(new CopyWebpackPlugin([{ from: './_redirects', to: '' }]));
-        cfg.plugins.push(new SentryWebpackPlugin({ include: 'src' }));
+
+        if (ctx.prod) {
+          cfg.plugins.push(new CopyWebpackPlugin([{ from: './_redirects', to: '' }]));
+          cfg.plugins.push(new SentryWebpackPlugin({ include: 'src' }));
+        }
       },
 
       uglifyOptions: {
-        drop_debugger: !ctx.dev,
-        drop_console: !ctx.dev
+        drop_debugger: ctx.prod,
+        drop_console: ctx.prod
       }
     },
 

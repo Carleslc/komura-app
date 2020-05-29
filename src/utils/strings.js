@@ -17,4 +17,12 @@ export function kebabCase(s) {
     .toLowerCase();
 }
 
+export function words(s) {
+  return s.split(/\s+/);
+}
+
+export function similar(aWords, bWords) {
+  return aWords.some(aWord => bWords.includes(aWord));
+}
+
 export const blacklist = ['new'];

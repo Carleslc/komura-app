@@ -1,7 +1,11 @@
+import { Quasar } from 'quasar';
+
 import en from './en';
 import es from './es';
 
-export default {
+export const messages = {
   en,
-  es
+  es,
 };
+
+export const locale = Quasar.lang.getLocale().split('-')[0];
