@@ -21,8 +21,12 @@ export function words(s) {
   return s.split(/\s+/);
 }
 
-export function similar(aWords, bWords) {
-  return aWords.some(aWord => bWords.includes(aWord));
+export function similar(a, b) {
+  return b.toLowerCase().indexOf(a) > -1;
+}
+
+export function similarWords(aWords, bWords) {
+  return aWords.some(aWord => bWords.some(bWord => bWord.indexOf(aWord) > -1));
 }
 
 export const blacklist = ['new'];

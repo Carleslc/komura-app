@@ -30,6 +30,20 @@
           />
         </div>
         <div class="column split q-mb-lg">
+          <q-select
+            v-model="selectedTopics"
+            filled
+            dense
+            options-dense
+            multiple
+            use-input
+            emit-value
+            hide-selected
+            :options="topicsSelectList"
+            class="q-mb-md"
+            input-debounce="300"
+            @filter="filterSearchTopics"
+          />
           <q-option-group
             v-model="selectedTopics"
             :options="suggestedTopics"

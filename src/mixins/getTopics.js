@@ -1,15 +1,16 @@
 import { locale } from 'src/i18n';
-import { words, similar, getRandomColor } from '@/utils/strings';
+import { words, similar, similarWords, getRandomColor } from '@/utils/strings';
 import { debounce } from 'lodash';
 import gql from 'graphql-tag';
 
 export const getTopics = {
   data() {
     return {
-      topics: {},
+      topics: [],
+      topicsByName: {},
       selectedTopics: [],
       suggestedTopics: [],
-      topicColors: {}
+      topicsSelectList: []
     };
   },
   apollo: {
@@ -27,7 +28,7 @@ export const getTopics = {
           }
         `,
         update(data) {
-          return data.topics.reduce((topics, topic) => {
+          this.topicsByName = data.topics.reduce((topics, topic) => {
             topics[topic.name] = {
               parent: topic.parent,
               value: topic.name,
@@ -35,6 +36,7 @@ export const getTopics = {
             };
             return topics;
           }, {});
+          return Object.values(this.topicsByName);
         },
         result(data) {
           if (data.stale !== undefined) {
@@ -60,32 +62,30 @@ export const getTopics = {
     updateSuggestedTopics() {
       const suggestions = new Set();
 
-      const topics = Object.values(this.topics);
-
       // similar topics: with a word match
       const searchWords = words(this.search.toLowerCase()).filter(w => w.length > 2);
 
-      topics
+      this.topics
         .filter(
           topic =>
-            similar(searchWords, words(topic.label.toLowerCase())) ||
-            similar(searchWords, words(topic.value.toLowerCase()))
+            similarWords(searchWords, words(topic.label.toLowerCase())) ||
+            similarWords(searchWords, words(topic.value.toLowerCase()))
         )
         .forEach(suggestions.add, suggestions);
 
-      const selectedTopics = this.selectedTopics.map(value => this.topics[value]);
+      const selectedTopics = this.selectedTopics.map(value => this.topicsByName[value]);
 
       // parent topics of selected and similar topics
       [...selectedTopics, ...suggestions].forEach(topic => {
-        let parentTopic = this.topics[topic.parent];
+        let parentTopic = this.topicsByName[topic.parent];
         while (parentTopic) {
           suggestions.add(parentTopic);
-          parentTopic = this.topics[parentTopic.parent];
+          parentTopic = this.topicsByName[parentTopic.parent];
         }
       });
 
       // related topics (selected children topics)
-      topics
+      this.topics
         .filter(topic => topic.parent && this.selectedTopics.includes(topic.parent))
         .forEach(suggestions.add, suggestions);
 
@@ -103,24 +103,26 @@ export const getTopics = {
       });
 
       newSuggestedTopics.forEach(topic => {
-        let color = this.topicColors[topic.value];
-        if (!color) {
-          color = getRandomColor();
-          this.topicColors[topic.value] = color;
+        if (!topic.color) {
+          topic.color = getRandomColor();
         }
-        topic.color = color;
       });
 
       this.suggestedTopics = newSuggestedTopics;
 
-      // suggestions + unselected root topics
+      // unselected suggestions + root topics
       this.topicsSelectList = [
         ...suggestions,
-        ...topics.filter(
-          topic =>
-            !topic.parent && !this.selectedTopics.includes(topic.value) && !suggestions.has(topic)
-        )
-      ];
+        ...this.topics.filter(topic => !topic.parent && !suggestions.has(topic))
+      ].filter(topic => !this.selectedTopics.includes(topic.value));
+    },
+    filterSearchTopics(val, update /* abort */) {
+      update(() => {
+        const s = val.toLowerCase();
+        this.topicsSelectList = this.topics.filter(
+          topic => similar(s, topic.label) || similar(s, topic.value)
+        );
+      });
     }
   }
 };
