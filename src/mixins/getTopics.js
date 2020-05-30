@@ -1,11 +1,15 @@
 import { locale } from 'src/i18n';
-import { words, similar } from '@/utils/strings';
+import { words, similar, getRandomColor } from '@/utils/strings';
+import { debounce } from 'lodash';
 import gql from 'graphql-tag';
 
 export const getTopics = {
   data() {
     return {
-      topics: []
+      topics: {},
+      selectedTopics: [],
+      suggestedTopics: [],
+      topicColors: {}
     };
   },
   apollo: {
@@ -23,52 +27,100 @@ export const getTopics = {
           }
         `,
         update(data) {
-          return data.topics.map(topic => {
-            return {
+          return data.topics.reduce((topics, topic) => {
+            topics[topic.name] = {
               parent: topic.parent,
-              name: topic.name,
-              localized: topic[localeColumn] || topic.name
+              value: topic.name,
+              label: topic[localeColumn] || topic.name
             };
-          });
+            return topics;
+          }, {});
+        },
+        result(data) {
+          if (data.stale !== undefined) {
+            // call after cache
+            this.updateSuggestedTopics();
+          }
         }
       };
     }
   },
+  created() {
+    this.debounceUpdateSuggestedTopics = debounce(this.updateSuggestedTopics, 300);
+  },
+  watch: {
+    search() {
+      this.debounceUpdateSuggestedTopics();
+    },
+    selectedTopics() {
+      this.debounceUpdateSuggestedTopics();
+    }
+  },
   methods: {
-    getSuggestedTopics(search = '') {
-      const unselected = this.topics.filter(topic => !this.selectedTopics.has(topic.name)); // unselected
+    updateSuggestedTopics() {
+      const suggestions = new Set();
 
-      const searchWords = words(search.toLowerCase()).filter(w => w.length > 2);
-      const suggestions = unselected.filter(
-        // similar topics: with a word match
-        topic =>
-          similar(searchWords, words(topic.localized.toLowerCase())) ||
-          similar(searchWords, words(topic.name.toLowerCase()))
-      );
+      const topics = Object.values(this.topics);
 
-      // parent topics of similar topics
-      suggestions.forEach(topic => {
-        let parentTopic = topic;
-        while (parentTopic && parentTopic.parent) {
-          // eslint-disable-next-line no-loop-func
-          parentTopic = unselected.find(t => t.name === parentTopic.parent);
-          suggestions.push(parentTopic);
+      // similar topics: with a word match
+      const searchWords = words(this.search.toLowerCase()).filter(w => w.length > 2);
+
+      topics
+        .filter(
+          topic =>
+            similar(searchWords, words(topic.label.toLowerCase())) ||
+            similar(searchWords, words(topic.value.toLowerCase()))
+        )
+        .forEach(suggestions.add, suggestions);
+
+      const selectedTopics = this.selectedTopics.map(value => this.topics[value]);
+
+      // parent topics of selected and similar topics
+      [...selectedTopics, ...suggestions].forEach(topic => {
+        let parentTopic = this.topics[topic.parent];
+        while (parentTopic) {
+          suggestions.add(parentTopic);
+          parentTopic = this.topics[parentTopic.parent];
         }
       });
 
-      Array.prototype.push.apply(
-        suggestions,
-        unselected.filter(topic => topic.parent && this.selectedTopics.has(topic.parent))
-      ); // related topics
+      // related topics (selected children topics)
+      topics
+        .filter(topic => topic.parent && this.selectedTopics.includes(topic.parent))
+        .forEach(suggestions.add, suggestions);
 
-      if (this.selectedTopics.size === 0 && suggestions.length === 0) {
-        Array.prototype.push.apply(
-          suggestions,
-          unselected.filter(topic => !topic.parent)
-        ); // root topics
-      }
+      const newSuggestedTopics = [
+        // already suggested topics
+        ...this.suggestedTopics.filter(
+          topic => suggestions.has(topic) || this.selectedTopics.includes(topic.value)
+        )
+      ];
+      // selected topics + suggestions
+      [...selectedTopics, ...suggestions].forEach(topic => {
+        if (!newSuggestedTopics.includes(topic)) {
+          newSuggestedTopics.push(topic);
+        }
+      });
 
-      return new Set(suggestions.map(topic => topic.localized));
+      newSuggestedTopics.forEach(topic => {
+        let color = this.topicColors[topic.value];
+        if (!color) {
+          color = getRandomColor();
+          this.topicColors[topic.value] = color;
+        }
+        topic.color = color;
+      });
+
+      this.suggestedTopics = newSuggestedTopics;
+
+      // suggestions + unselected root topics
+      this.topicsSelectList = [
+        ...suggestions,
+        ...topics.filter(
+          topic =>
+            !topic.parent && !this.selectedTopics.includes(topic.value) && !suggestions.has(topic)
+        )
+      ];
     }
   }
 };

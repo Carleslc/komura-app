@@ -26,3 +26,9 @@ export function similar(aWords, bWords) {
 }
 
 export const blacklist = ['new'];
+
+const colors = ['primary', 'accent', 'positive', 'info', 'warning', 'negative'];
+
+export function getRandomColor() {
+  return colors[Math.floor(Math.random() * colors.length)];
+}

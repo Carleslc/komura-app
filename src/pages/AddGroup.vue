@@ -29,6 +29,14 @@
             :limit="20000"
           />
         </div>
+        <div class="column split q-mb-lg">
+          <q-option-group
+            v-model="selectedTopics"
+            :options="suggestedTopics"
+            inline
+            type="checkbox"
+          />
+        </div>
       </div>
       <div class="row">
         <q-btn
@@ -39,9 +47,6 @@
           class="primary q-px-lg"
         />
       </div>
-      <ul>
-        <li v-for="topic in suggestedTopics" :key="topic">{{ topic }}</li>
-      </ul>
     </q-form>
   </q-page>
 </template>
@@ -53,7 +58,6 @@ import { parseError } from '@/utils/errors';
 import { currentUser } from '@/mixins/currentUser';
 import { saveData } from '@/mixins/saveData';
 import { getTopics } from '@/mixins/getTopics';
-import { debounce } from 'lodash';
 
 export default {
   meta() {
@@ -74,9 +78,7 @@ export default {
   ],
   data() {
     return {
-      alreadyExistsPath: null,
-      selectedTopics: new Set(),
-      suggestedTopics: new Set()
+      alreadyExistsPath: null
     };
   },
   computed: {
@@ -89,21 +91,12 @@ export default {
     },
     isRestricted() {
       return blacklist.includes(this.slug);
+    },
+    search() {
+      return this.name;
     }
-  },
-  watch: {
-    name() {
-      this.debounceUpdateSuggestedTopics();
-    }
-  },
-  created() {
-    this.debounceUpdateSuggestedTopics = debounce(this.updateSuggestedTopics, 300);
-    this.debounceUpdateSuggestedTopics();
   },
   methods: {
-    updateSuggestedTopics() {
-      this.suggestedTopics = this.getSuggestedTopics(this.name);
-    },
     createGroup() {
       this.$apollo
         .mutate({
