@@ -29,28 +29,7 @@
             :limit="20000"
           />
         </div>
-        <div class="column split q-mb-lg">
-          <q-select
-            v-model="selectedTopics"
-            filled
-            dense
-            options-dense
-            multiple
-            use-input
-            emit-value
-            hide-selected
-            :options="topicsSelectList"
-            class="q-mb-md"
-            input-debounce="300"
-            @filter="filterSearchTopics"
-          />
-          <q-option-group
-            v-model="selectedTopics"
-            :options="suggestedTopics"
-            inline
-            type="checkbox"
-          />
-        </div>
+        <topics-select v-model="selectedTopics" :search="name" class="column split q-mb-lg" />
       </div>
       <div class="row">
         <q-btn
@@ -71,7 +50,6 @@ import { fitHeight } from '@/utils/responsive';
 import { parseError } from '@/utils/errors';
 import { currentUser } from '@/mixins/currentUser';
 import { saveData } from '@/mixins/saveData';
-import { getTopics } from '@/mixins/getTopics';
 
 export default {
   meta() {
@@ -80,11 +58,11 @@ export default {
     };
   },
   components: {
-    'k-input': require('components/KInput.vue').default
+    'k-input': require('components/KInput.vue').default,
+    'topics-select': require('components/TopicsSelect.vue').default
   },
   mixins: [
     currentUser,
-    getTopics,
     saveData('add-group', {
       name: '',
       description: ''
@@ -92,6 +70,7 @@ export default {
   ],
   data() {
     return {
+      selectedTopics: [],
       alreadyExistsPath: null
     };
   },
@@ -105,9 +84,6 @@ export default {
     },
     isRestricted() {
       return blacklist.includes(this.slug);
-    },
-    search() {
-      return this.name;
     }
   },
   methods: {

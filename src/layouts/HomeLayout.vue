@@ -62,18 +62,16 @@
       <router-view class="content page-component" />
     </q-page-container>
 
-    <q-footer v-if="fit">
-      <div class="row shadow-up">
-        <div v-for="tab of tabs" :key="tab.key" class="col-12 row justify-center">
-          <menu-btn
-            :icon="tab.icon"
-            :to="{ name: tab.key }"
-            :label="tab.key"
-            :selected="isTab(tab)"
-            padding="12px lg"
-            class="nav nav-bottom"
-          />
-        </div>
+    <q-footer v-if="fit" class="shadow-up">
+      <div v-for="tab of tabs" :key="tab.key" class="col-12 row justify-center">
+        <menu-btn
+          :icon="tab.icon"
+          :to="{ name: tab.key }"
+          :label="tab.key"
+          :selected="isTab(tab)"
+          padding="12px lg"
+          class="nav nav-bottom"
+        />
       </div>
     </q-footer>
   </q-layout>
@@ -168,8 +166,8 @@ export default {
   }
 
   &.drawer-mobile .q-page-container {
-    padding-bottom: calc(48px + 5vh + 8px) !important; // footer height + footer padding
-    min-height: calc(100vh - (56px + 6vh) - (48px + 5vh + 8px)) !important;
+    padding-bottom: calc(53px + 5vh) !important; // footer height + footer padding
+    min-height: calc(100vh - (56px + 6vh) - (53px + 5vh)) !important;
   }
 
   .q-drawer {
@@ -185,13 +183,8 @@ export default {
     }
   }
 
-  .q-footer {
-    padding-top: 8px;
-    overflow-x: hidden;
-
-    > div {
-      padding: 2.5vh 16px;
-    }
+  .q-footer > div {
+    padding: 2.5vh 16px;
   }
 }
 </style>

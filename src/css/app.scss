@@ -4,6 +4,10 @@
 
 @import './emoji.scss';
 
+*:focus {
+  outline-color: $primary;
+}
+
 .page-component {
   min-height: inherit !important;
 }
@@ -80,7 +84,6 @@
     }
 
     &.nav-bottom {
-      max-height: 48px;
       background-color: transparent;
 
       .menu-icon {
@@ -365,6 +368,7 @@ h4 {
     textarea,
     select {
       line-height: 1.5em;
+      color: $dark;
 
       @media (min-width: $breakpoint-lg-min) {
         font-size: 1.1em;
@@ -612,6 +616,10 @@ h4 {
       }
     }
   }
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .q-textarea {
@@ -627,6 +635,53 @@ h4 {
     textarea {
       padding-right: 8px;
       padding-bottom: 2px;
+    }
+  }
+}
+
+.q-checkbox {
+  .q-checkbox__bg {
+    top: 15%;
+    left: 15%;
+    height: 75%;
+    width: 75%;
+    border: none;
+    border-radius: 5px;
+
+    .q-checkbox__svg {
+      padding: 5px;
+    }
+  }
+
+  .q-checkbox__inner {
+    margin-right: 4px;
+
+    &.q-checkbox__inner--falsy {
+      .q-checkbox__bg {
+        background: $grey-lighter;
+      }
+    }
+
+    &:before {
+      content: none !important;
+    }
+  }
+
+  .q-checkbox__label {
+    color: $grey;
+    font-weight: $medium;
+  }
+
+  &:hover,
+  &:focus {
+    .q-checkbox__inner--falsy {
+      .q-checkbox__bg {
+        background: $grey-hover;
+      }
+    }
+
+    .q-checkbox__label {
+      color: $dark;
     }
   }
 }

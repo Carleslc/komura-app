@@ -1,17 +1,57 @@
+<template>
+  <div>
+    <q-select
+      v-model="selectedTopics"
+      filled
+      dense
+      options-dense
+      multiple
+      use-input
+      emit-value
+      hide-selected
+      :options="topicsSelectList"
+      class="q-mb-md"
+      input-debounce="300"
+      @filter="filterSearchTopics"
+    />
+    <q-option-group v-model="selectedTopics" :options="suggestedTopics" inline type="checkbox" />
+  </div>
+</template>
+
+<script>
 import { locale } from 'src/i18n';
 import { words, similar, similarWords, getRandomColor } from '@/utils/strings';
 import { debounce } from 'lodash';
 import gql from 'graphql-tag';
 
-export const getTopics = {
+export default {
+  props: {
+    value: {
+      type: Array,
+      required: true
+    },
+    search: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       topics: [],
       topicsByName: {},
-      selectedTopics: [],
       suggestedTopics: [],
       topicsSelectList: []
     };
+  },
+  computed: {
+    selectedTopics: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit('input', value);
+      }
+    }
   },
   apollo: {
     topics() {
@@ -47,9 +87,6 @@ export const getTopics = {
       };
     }
   },
-  created() {
-    this.debounceUpdateSuggestedTopics = debounce(this.updateSuggestedTopics, 300);
-  },
   watch: {
     search() {
       this.debounceUpdateSuggestedTopics();
@@ -57,6 +94,9 @@ export const getTopics = {
     selectedTopics() {
       this.debounceUpdateSuggestedTopics();
     }
+  },
+  created() {
+    this.debounceUpdateSuggestedTopics = debounce(this.updateSuggestedTopics, 300);
   },
   methods: {
     updateSuggestedTopics() {
@@ -126,3 +166,4 @@ export const getTopics = {
     }
   }
 };
+</script>
