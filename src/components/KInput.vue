@@ -1,21 +1,5 @@
 <template>
-  <div>
-    <div class="row">
-      <p v-t="label" class="label q-mb-md" />
-      <span v-if="required" class="q-ml-xs text text-md text-accent">
-        *
-        <q-tooltip
-          anchor="top middle"
-          self="top left"
-          :offset="[10, 10]"
-          content-class="gt-xxxs bg-transparent"
-          transition-show="jump-up"
-          transition-hide="jump-down"
-        >
-          <p class="text-sm text-accent">{{ $t('required.label') }}</p>
-        </q-tooltip>
-      </span>
-    </div>
+  <k-field :label="label" :required="required" :hint="hint">
     <q-input
       ref="input"
       v-model="input"
@@ -32,11 +16,14 @@
       :lazy-rules="lazyRules"
       :rules="rules"
     />
-  </div>
+  </k-field>
 </template>
 
 <script>
 export default {
+  components: {
+    'k-field': require('components/KField').default
+  },
   props: {
     value: {
       type: String,
@@ -45,6 +32,10 @@ export default {
     label: {
       type: String,
       required: true
+    },
+    hint: {
+      type: String,
+      default: ''
     },
     type: {
       type: String,
@@ -79,6 +70,11 @@ export default {
       default: undefined
     }
   },
+  data() {
+    return {
+      error: false
+    };
+  },
   computed: {
     input: {
       get() {
@@ -93,7 +89,18 @@ export default {
         return `${this.limit - this.value.length}`;
       }
       return undefined;
+    },
+    hasError() {
+      return this.error;
     }
+  },
+  mounted() {
+    this.$watch(
+      () => this.$refs.input.hasError,
+      hasError => {
+        this.error = hasError;
+      }
+    );
   },
   methods: {
     validate() {

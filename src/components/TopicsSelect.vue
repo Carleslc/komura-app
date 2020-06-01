@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <k-field label="topics" hint="selectTopics">
     <q-select
+      ref="topicsSelect"
       v-model="selectedTopics"
       filled
       dense
@@ -9,13 +10,26 @@
       use-input
       emit-value
       hide-selected
-      :options="topicsSelectList"
+      bottom-slots
+      hide-bottom-space
+      :options="Object.freeze(topicsFilter)"
+      :placeholder="$t('searchTopics')"
+      :hint="limitHint"
+      :counter="!!limitHint"
+      :max-values="maxTopics"
       class="q-mb-md"
-      input-debounce="300"
+      popup-content-class="filter-options"
+      input-debounce="200"
       @filter="filterSearchTopics"
+      @add="closePopup"
     />
-    <q-option-group v-model="selectedTopics" :options="suggestedTopics" inline type="checkbox" />
-  </div>
+    <q-option-group
+      v-model="selectedTopics"
+      :options="suggestedTopics"
+      type="checkbox"
+      :inline="$q.screen.width >= 350"
+    />
+  </k-field>
 </template>
 
 <script>
@@ -25,6 +39,9 @@ import { debounce } from 'lodash';
 import gql from 'graphql-tag';
 
 export default {
+  components: {
+    'k-field': require('components/KField').default
+  },
   props: {
     value: {
       type: Array,
@@ -40,7 +57,8 @@ export default {
       topics: [],
       topicsByName: {},
       suggestedTopics: [],
-      topicsSelectList: []
+      topicsFilter: [],
+      maxTopics: 10
     };
   },
   computed: {
@@ -49,8 +67,16 @@ export default {
         return this.value;
       },
       set(value) {
-        this.$emit('input', value);
+        if (value.length <= this.maxTopics) {
+          this.$emit('input', value);
+        }
       }
+    },
+    limitHint() {
+      if (this.selectedTopics.length >= 0.8 * this.maxTopics) {
+        return this.$t('limitTopics', { max: this.maxTopics });
+      }
+      return undefined;
     }
   },
   apollo: {
@@ -92,13 +118,18 @@ export default {
       this.debounceUpdateSuggestedTopics();
     },
     selectedTopics() {
-      this.debounceUpdateSuggestedTopics();
+      this.updateSuggestedTopics();
     }
   },
   created() {
     this.debounceUpdateSuggestedTopics = debounce(this.updateSuggestedTopics, 300);
   },
   methods: {
+    closePopup() {
+      if (this.$refs.topicsSelect) {
+        this.$refs.topicsSelect.hidePopup();
+      }
+    },
     updateSuggestedTopics() {
       const suggestions = new Set();
 
@@ -113,7 +144,7 @@ export default {
         )
         .forEach(suggestions.add, suggestions);
 
-      const selectedTopics = this.selectedTopics.map(value => this.topicsByName[value]);
+      const selectedTopics = this.selectedTopics.map(name => this.topicsByName[name]);
 
       // parent topics of selected and similar topics
       [...selectedTopics, ...suggestions].forEach(topic => {
@@ -135,9 +166,17 @@ export default {
           topic => suggestions.has(topic) || this.selectedTopics.includes(topic.value)
         )
       ];
-      // selected topics + suggestions
-      [...selectedTopics, ...suggestions].forEach(topic => {
+
+      // selected topics
+      selectedTopics.forEach(topic => {
         if (!newSuggestedTopics.includes(topic)) {
+          newSuggestedTopics.push(topic);
+        }
+      });
+
+      // suggestions
+      [...suggestions].forEach(topic => {
+        if (newSuggestedTopics.length < this.maxTopics && !newSuggestedTopics.includes(topic)) {
           newSuggestedTopics.push(topic);
         }
       });
@@ -156,14 +195,57 @@ export default {
         ...this.topics.filter(topic => !topic.parent && !suggestions.has(topic))
       ].filter(topic => !this.selectedTopics.includes(topic.value));
     },
-    filterSearchTopics(val, update /* abort */) {
+    filterSearchTopics(val, update) {
       update(() => {
         const s = val.toLowerCase();
-        this.topicsSelectList = this.topics.filter(
-          topic => similar(s, topic.label) || similar(s, topic.value)
-        );
+        if (s.length > 0) {
+          this.topicsFilter = this.topics.filter(
+            topic => similar(s, topic.label) || similar(s, topic.value)
+          );
+        } else {
+          this.topicsFilter = this.topicsSelectList;
+        }
       });
     }
   }
 };
 </script>
+
+<style lang="scss">
+.q-option-group--inline > div {
+  margin: 0;
+
+  @media (min-width: $breakpoint-xxs-min) {
+    width: 50%;
+  }
+  @media (min-width: $breakpoint-md-min) {
+    width: 33.33%;
+  }
+}
+
+.drawer-hidden {
+  .q-option-group--inline > div {
+    @media (min-width: $breakpoint-sm-min) {
+      width: 33.33%;
+    }
+  }
+  .split {
+    .q-option-group--inline > div {
+      @media (min-width: $breakpoint-lg-min) {
+        width: 33.33%;
+      }
+    }
+  }
+}
+
+.split {
+  .q-option-group--inline > div {
+    @media (min-width: $breakpoint-sm-min) {
+      width: 50%;
+    }
+    @media (min-width: $breakpoint-xl-min) {
+      width: 33.33%;
+    }
+  }
+}
+</style>

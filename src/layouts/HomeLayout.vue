@@ -2,7 +2,7 @@
   <q-layout
     view="hhh LpR lFf"
     class="home-layout"
-    :class="{ 'drawer-mobile': fit, 'drawer-hidden': !menu }"
+    :class="{ 'drawer-mobile': fit, 'drawer-hidden': drawerHidden }"
   >
     <q-header>
       <q-toolbar class="row justify-start" :class="fit ? 'q-px-none' : 'q-px-md'">
@@ -59,7 +59,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view class="content page-component" />
+      <router-view :fit="!drawerHidden" class="content page-component" />
     </q-page-container>
 
     <q-footer v-if="fit" class="shadow-up">
@@ -111,6 +111,9 @@ export default {
     fit() {
       return this.$q.screen.width <= this.breakpoint;
     },
+    drawerHidden() {
+      return !this.menu || this.fit;
+    },
     withHeader() {
       return !['userProfile', 'group'].includes(this.$route.name);
     },
@@ -148,12 +151,21 @@ export default {
 
 .home-layout {
   .logo-menu {
-    position: fixed;
-    top: 6vh;
+    position: absolute;
+  }
+  &:not(.drawer-hidden) {
+    .logo-menu {
+      position: fixed;
+      top: 6vh;
+    }
   }
 
   .q-header {
     padding: 6vh 3.33vw 0 3.33vw;
+
+    .q-toolbar {
+      min-height: 56px;
+    }
   }
 
   .q-page-container {

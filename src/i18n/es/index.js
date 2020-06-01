@@ -47,4 +47,10 @@ export default {
   groupAlreadyExists: 'Ya existe un grupo con un nombre similar a "{name}". Prueba con otro nombre.',
   groupRestrictedName: 'No es posible usar el nombre "{name}". Prueba con otro nombre.',
   createGroup: '¡Listo!',
+
+  // Topics
+  topics: 'Temas',
+  selectTopics: 'Añade algunos temas que describan en pocas palabras tu grupo para atraer a personas con los mismos intereses.',
+  searchTopics: 'Buscar temas',
+  limitTopics: 'Puedes seleccionar hasta {max} temas.',
 };

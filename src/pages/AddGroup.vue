@@ -2,7 +2,7 @@
   <q-page>
     <q-form class="column" @submit="createGroup">
       <div class="row full-width">
-        <div class="column split q-mb-lg">
+        <div class="column q-mb-lg" :class="{ 'full-width': !split, 'split q-pr-md': split }">
           <k-input
             ref="name"
             v-model="name"
@@ -28,17 +28,22 @@
             :rows="fitHeight ? 2 : 4"
             :limit="20000"
           />
+          <submit-btn
+            v-if="split"
+            label="createGroup"
+            :disabled="uncompleted"
+            class="q-mt-lg self-start"
+          />
         </div>
-        <topics-select v-model="selectedTopics" :search="name" class="column split q-mb-lg" />
-      </div>
-      <div class="row">
-        <q-btn
-          outline
-          type="submit"
-          :label="$t('createGroup')"
-          :disabled="!name || name.length < 3 || alreadyExists || isRestricted || $apollo.loading"
-          class="primary q-px-lg"
+        <topics-select
+          v-model="selectedTopics"
+          :search="name"
+          class="column q-mb-lg"
+          :class="{ 'full-width': !split, 'split q-pl-md': split }"
         />
+      </div>
+      <div v-if="!split" class="row full-width justify-center">
+        <submit-btn label="createGroup" :disabled="uncompleted" />
       </div>
     </q-form>
   </q-page>
@@ -59,18 +64,25 @@ export default {
   },
   components: {
     'k-input': require('components/KInput.vue').default,
-    'topics-select': require('components/TopicsSelect.vue').default
+    'topics-select': require('components/TopicsSelect.vue').default,
+    'submit-btn': require('components/SubmitButton.vue').default
   },
   mixins: [
     currentUser,
     saveData('add-group', {
       name: '',
-      description: ''
+      description: '',
+      selectedTopics: []
     })
   ],
+  props: {
+    fit: {
+      type: Boolean,
+      required: true
+    }
+  },
   data() {
     return {
-      selectedTopics: [],
       alreadyExistsPath: null
     };
   },
@@ -84,6 +96,18 @@ export default {
     },
     isRestricted() {
       return blacklist.includes(this.slug);
+    },
+    uncompleted() {
+      return (
+        !this.name ||
+        this.name.length < 3 ||
+        this.alreadyExists ||
+        this.isRestricted ||
+        this.$apollo.loading
+      );
+    },
+    split() {
+      return this.fit ? this.$q.screen.gt.md : this.$q.screen.gt.sm;
     }
   },
   methods: {
@@ -149,15 +173,6 @@ export default {
 
 <style lang="scss">
 .split {
-  width: 100%;
-
-  @media (min-width: $breakpoint-md-min) {
-    width: 50%;
-  }
-}
-.drawer-hidden .split {
-  @media (min-width: $breakpoint-sm-min) {
-    width: 50%;
-  }
+  width: 50%;
 }
 </style>
