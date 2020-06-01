@@ -8,7 +8,7 @@
           anchor="top middle"
           self="top left"
           :offset="[10, 10]"
-          content-class="gt-xxxs bg-transparent"
+          content-class="gt-min bg-transparent"
           transition-show="jump-up"
           transition-hide="jump-down"
         >

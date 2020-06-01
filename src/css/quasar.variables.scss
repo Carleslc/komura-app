@@ -29,7 +29,9 @@ $roundness: 10em;
 $btn-height: 7vh;
 $btn-min-height: 3.5em;
 
-$breakpoint-xxxs-min: 0px;
+$breakpoint-xxxxs-min: 0px;
+$breakpoint-xxxxs-max: 255px;
+$breakpoint-xxxs-min: 256px;
 $breakpoint-xxxs-max: 349px;
 $breakpoint-xxs-min: 350px;
 $breakpoint-xxs-max: 449px;

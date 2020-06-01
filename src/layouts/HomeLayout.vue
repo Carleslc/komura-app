@@ -11,7 +11,7 @@
             <img src="~assets/logo-icon.svg" style="width: 36px" />
           </div>
         </q-btn>
-        <h4 class="col-auto ellipsis gt-xxxs" :class="{ 'q-ml-auto': !fit }">
+        <h4 class="col-auto ellipsis gt-min" :class="{ 'q-ml-auto': !fit }">
           <div v-if="greetings && displayName">
             <span class="text-medium">{{ `${$tg('welcome', currentUser.gender)}, ` }}</span>
             <span class="text-light">{{ displayName }}</span>

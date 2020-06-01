@@ -27,7 +27,7 @@
       v-model="selectedTopics"
       :options="suggestedTopics"
       type="checkbox"
-      :inline="$q.screen.width >= 350"
+      :inline="xxs($q.screen)"
     />
   </k-field>
 </template>
@@ -35,6 +35,7 @@
 <script>
 import { locale } from 'src/i18n';
 import { words, similar, similarWords, getRandomColor } from '@/utils/strings';
+import { xxs } from '@/utils/screen';
 import { debounce } from 'lodash';
 import gql from 'graphql-tag';
 
@@ -125,6 +126,7 @@ export default {
     this.debounceUpdateSuggestedTopics = debounce(this.updateSuggestedTopics, 300);
   },
   methods: {
+    xxs,
     closePopup() {
       if (this.$refs.topicsSelect) {
         this.$refs.topicsSelect.hidePopup();

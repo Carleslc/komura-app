@@ -707,8 +707,8 @@ h4 {
   white-space: pre-line;
 }
 
-.gt-xxxs {
-  @media (max-width: $breakpoint-xxxs-max) {
+.gt-min {
+  @media (max-width: $breakpoint-xxxxs-max) {
     display: none;
   }
 }
