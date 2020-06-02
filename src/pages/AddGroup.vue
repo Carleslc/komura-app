@@ -52,7 +52,7 @@
 <script>
 import { slugify, blacklist } from '@/utils/strings';
 import { fitHeight } from '@/utils/responsive';
-import { parseError } from '@/utils/errors';
+import { parseError, notifyError } from '@/utils/errors';
 import { currentUser } from '@/mixins/currentUser';
 import { saveData } from '@/mixins/saveData';
 
@@ -147,10 +147,7 @@ export default {
                 this.validate();
                 this.$info('Attempted to create an existing group', message);
               } else {
-                this.$q.notify({
-                  type: 'negative',
-                  message
-                });
+                notifyError();
               }
             },
             {

@@ -1,4 +1,14 @@
 import { report, reportCode, withContext } from '@/boot/sentry';
+import { i18n } from 'boot/i18n';
+import { Notify } from 'quasar';
+
+export function notifyError(message) {
+  Notify.create({
+    type: 'negative',
+    timeout: 5000,
+    message: message || i18n.t('error')
+  });
+}
 
 export function catchUndefined(f) {
   return (...args) => {

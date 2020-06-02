@@ -21,8 +21,18 @@
       popup-content-class="filter-options"
       input-debounce="200"
       @filter="filterSearchTopics"
-      @add="closePopup"
-    />
+      @add="selectTopic"
+    >
+      <template v-slot:option="scope">
+        <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+          <q-item-section>
+            <q-item-label :class="{ 'text-italic': scope.opt.isNew }">
+              {{ scope.opt.label }}
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
+    </q-select>
     <q-option-group
       v-model="selectedTopics"
       :options="suggestedTopics"
@@ -33,10 +43,17 @@
 </template>
 
 <script>
-import { locale } from 'src/i18n';
-import { words, similar, similarWords, getRandomColor } from '@/utils/strings';
+import {
+  alphaLower,
+  removeSpecial,
+  words,
+  similar,
+  similarWords,
+  getRandomColor
+} from '@/utils/strings';
+import { language } from 'src/i18n';
 import { xxs } from '@/utils/screen';
-import { debounce } from 'lodash';
+import { debounce, capitalize } from 'lodash';
 import gql from 'graphql-tag';
 
 export default {
@@ -59,7 +76,8 @@ export default {
       topicsByName: {},
       suggestedTopics: [],
       topicsFilter: [],
-      maxTopics: 10
+      maxTopics: 10,
+      newTopic: undefined
     };
   },
   computed: {
@@ -82,12 +100,12 @@ export default {
   },
   apollo: {
     topics() {
-      const localeColumn = locale === 'en' ? 'name' : locale; // name column values are in English
+      const localeColumn = language === 'en' ? 'name' : language; // name column values are in English
 
       return {
         query: gql`
           query getTopics {
-            topics {
+            topics(order_by: { ${localeColumn}: asc }) {
               parent
               name
               ${localeColumn !== 'name' ? localeColumn : ''}
@@ -96,10 +114,15 @@ export default {
         `,
         update(data) {
           this.topicsByName = data.topics.reduce((topics, topic) => {
-            topics[topic.name] = {
+            const formatted = {
               parent: topic.parent,
               value: topic.name,
               label: topic[localeColumn] || topic.name
+            };
+            topics[topic.name] = {
+              ...formatted,
+              valueAlpha: alphaLower(formatted.value),
+              labelAlpha: alphaLower(formatted.label)
             };
             return topics;
           }, {});
@@ -127,26 +150,30 @@ export default {
   },
   methods: {
     xxs,
-    closePopup() {
-      if (this.$refs.topicsSelect) {
-        this.$refs.topicsSelect.hidePopup();
-      }
+    similarWordsTopics(s, raw = false) {
+      const alphaWords = words(raw ? s : alphaLower(s)).filter(w => w.length > 2);
+      return this.topics.filter(
+        topic =>
+          similarWords(alphaWords, words(topic.labelAlpha)) ||
+          similarWords(alphaWords, words(topic.valueAlpha))
+      );
+    },
+    similarTopics(s, raw = false) {
+      const alphaS = raw ? s : alphaLower(s);
+
+      return this.topics.filter(
+        topic => similar(alphaS, topic.labelAlpha) || similar(alphaS, topic.valueAlpha)
+      );
     },
     updateSuggestedTopics() {
       const suggestions = new Set();
 
-      // similar topics: with a word match
-      const searchWords = words(this.search.toLowerCase()).filter(w => w.length > 2);
+      // topics with a word match
+      this.similarWordsTopics(this.search).forEach(suggestions.add, suggestions);
 
-      this.topics
-        .filter(
-          topic =>
-            similarWords(searchWords, words(topic.label.toLowerCase())) ||
-            similarWords(searchWords, words(topic.value.toLowerCase()))
-        )
-        .forEach(suggestions.add, suggestions);
-
-      const selectedTopics = this.selectedTopics.map(name => this.topicsByName[name]);
+      const selectedTopics = this.selectedTopics.map(
+        name => this.topicsByName[name] || this.addLocalTopic(this.buildTopic(name))
+      );
 
       // parent topics of selected and similar topics
       [...selectedTopics, ...suggestions].forEach(topic => {
@@ -197,17 +224,76 @@ export default {
         ...this.topics.filter(topic => !topic.parent && !suggestions.has(topic))
       ].filter(topic => !this.selectedTopics.includes(topic.value));
     },
+    canAddNewTopic(val, topics) {
+      return (
+        val.length > 2 &&
+        topics.every(topic => val !== topic.valueAlpha && val !== topic.labelAlpha)
+      );
+    },
     filterSearchTopics(val, update) {
-      update(() => {
-        const s = val.toLowerCase();
-        if (s.length > 0) {
-          this.topicsFilter = this.topics.filter(
-            topic => similar(s, topic.label) || similar(s, topic.value)
-          );
-        } else {
-          this.topicsFilter = this.topicsSelectList;
+      update(
+        () => {
+          const searchAlpha = alphaLower(val);
+          if (searchAlpha.length > 0) {
+            let filteredTopics = this.similarTopics(searchAlpha, true);
+
+            if (filteredTopics.length === 0) {
+              Array.prototype.push.apply(
+                filteredTopics,
+                this.similarWordsTopics(searchAlpha, true).filter(
+                  topic => !filteredTopics.includes(topic.value)
+                )
+              );
+            }
+
+            if (this.canAddNewTopic(searchAlpha, filteredTopics)) {
+              this.newTopic = this.buildTopic(val, searchAlpha);
+              this.newTopic.isNew = true;
+              filteredTopics = [this.newTopic, ...filteredTopics];
+            }
+
+            this.topicsFilter = filteredTopics;
+          } else {
+            this.topicsFilter = this.topicsSelectList;
+          }
+        },
+        ref => {
+          if (val && ref.options.length === 1) {
+            ref.setOptionIndex(-1); // reset selection if there is something selected
+            ref.moveOptionSelection(1, true); // focus the first selectable option
+          }
         }
-      });
+      );
+    },
+    isNewTopic(topic) {
+      return this.newTopic && topic === this.newTopic.value;
+    },
+    selectTopic(topic) {
+      // Check if topic is new
+      if (this.isNewTopic(topic.value)) {
+        this.addLocalTopic(this.newTopic);
+        this.newTopic = undefined;
+      }
+      // Close popup
+      this.$refs.topicsSelect.hidePopup();
+    },
+    buildTopic(name, nameAlpha) {
+      name = capitalize(removeSpecial(name));
+      if (!nameAlpha) {
+        nameAlpha = alphaLower(name);
+      }
+      return {
+        value: name,
+        label: name,
+        labelAlpha: nameAlpha,
+        valueAlpha: nameAlpha
+      };
+    },
+    addLocalTopic(topic) {
+      topic.isNew = false;
+      this.topics.push(topic);
+      this.topicsByName[topic.value] = topic;
+      return topic;
     }
   }
 };

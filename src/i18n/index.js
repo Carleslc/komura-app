@@ -8,4 +8,4 @@ export const messages = {
   es,
 };
 
-export const locale = Quasar.lang.getLocale().split('-')[0];
+export const language = Quasar.lang.getLocale().split('-')[0];

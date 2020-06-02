@@ -1,12 +1,12 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
-import { messages, locale } from 'src/i18n';
+import { messages, language } from 'src/i18n';
 
 Vue.use(VueI18n);
 
 const i18n = new VueI18n({
-  locale,
+  locale: language,
   fallbackLocale: 'en',
   messages
 });

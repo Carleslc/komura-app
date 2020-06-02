@@ -52,7 +52,6 @@ function withScopeContext(context, callback) {
 }
 
 function withContextDev(_context, callback) {
-  // console.log(context);
   callback();
 }
 

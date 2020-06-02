@@ -1,6 +1,7 @@
 export default {
   // Misc
   please: 'Por favor',
+  error: 'Vaya... parece que ha ocurrido un error inesperado 😣',
 
   // Forms
   required: {
