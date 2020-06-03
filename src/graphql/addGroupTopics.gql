@@ -1,0 +1,5 @@
+mutation addGroupTopics($topics: [group_topics_insert_input!]!) {
+  insert_group_topics(objects: $topics) {
+    affected_rows
+  }
+}

@@ -1,9 +1,13 @@
-const NON_LATIN_OR_SPACE = /[^a-zA-Z \u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02af\u1d00-\u1d25\u1d62-\u1d65\u1d6b-\u1d77\u1d79-\u1d9a\u1e00-\u1eff\u2090-\u2094\u2184-\u2184\u2488-\u2490\u271d-\u271d\u2c60-\u2c7c\u2c7e-\u2c7f\ua722-\ua76f\ua771-\ua787\ua78b-\ua78c\ua7fb-\ua7ff\ufb00-\ufb06]/gi;
-
 import { Quasar } from 'quasar';
 
+const NON_LATIN_OR_SPACE = /[^a-zA-Z \u00c0-\u00d6\u00d8-\u00f6\u00f8-\u02af\u1d00-\u1d25\u1d62-\u1d65\u1d6b-\u1d77\u1d79-\u1d9a\u1e00-\u1eff\u2090-\u2094\u2184-\u2184\u2488-\u2490\u271d-\u271d\u2c60-\u2c7c\u2c7e-\u2c7f\ua722-\ua76f\ua771-\ua787\ua78b-\ua78c\ua7fb-\ua7ff\ufb00-\ufb06]/g;
+const NON_ALPHANUMERIC_OR_SPACE = /[^a-zA-Z0-9 ]/g;
+const NON_ALPHA_OR_SPACE = /[^a-zA-Z ]/g;
+const ACCENTS = /[\u0300-\u036f]/g;
+const SPACES = /\s+/g;
+
 export function trimSpaces(s, separator = ' ') {
-  return s.replace(/\s+/g, separator).trim();
+  return s.replace(SPACES, separator).trim();
 }
 
 export function removeSpecial(s) {
@@ -13,12 +17,12 @@ export function removeSpecial(s) {
 export function normalize(s, separator = ' ') {
   return trimSpaces(s, separator)
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
+    .replace(ACCENTS, '');
 }
 
-export function alpha(s) {
+export function alpha(s, numeric = false) {
   return normalize(s)
-    .replace(/[^a-zA-Z ]/g, '')
+    .replace(numeric ? NON_ALPHANUMERIC_OR_SPACE : NON_ALPHA_OR_SPACE, '')
     .trim();
 }
 
@@ -26,12 +30,12 @@ export function lowerCase(s) {
   return s.toLowerCase(Quasar.lang.getLocale());
 }
 
-export function alphaLower(s) {
-  return lowerCase(alpha(s));
+export function alphaLower(s, numeric = false) {
+  return lowerCase(alpha(s, numeric));
 }
 
 export function slugify(s, separator = '-') {
-  return normalize(s, separator).toLowerCase();
+  return trimSpaces(alphaLower(s, true), separator);
 }
 
 export function asUsername(s) {

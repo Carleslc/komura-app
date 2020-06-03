@@ -1,6 +1,18 @@
-mutation createRootGroup($owner: String!, $name: String!, $slug: String!, $description: String) {
+mutation createRootGroup(
+  $owner: String!
+  $name: String!
+  $slug: String!
+  $description: String
+  $topics: [group_topics_insert_input!]!
+) {
   insert_groups(
-    objects: { name: $name, path: $slug, description: $description, owner_id: $owner }
+    objects: {
+      name: $name
+      path: $slug
+      description: $description
+      owner_id: $owner
+      topics: { data: $topics }
+    }
   ) {
     returning {
       id

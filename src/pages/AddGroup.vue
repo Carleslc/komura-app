@@ -119,7 +119,8 @@ export default {
             owner: this.currentUser.id,
             name: this.name,
             slug: this.slug,
-            description: this.description || null
+            description: this.description || null,
+            topics: this.selectedTopics.map(name => ({ name }))
           },
           update: (proxy, { data }) => {
             const group = data.insert_groups.returning[0];
@@ -142,7 +143,7 @@ export default {
         .catch(
           parseError(
             (message, code) => {
-              if (code === 'constraint-violation') {
+              if (code === 'constraint-violation' && message.includes('groups_path_key')) {
                 this.alreadyExistsPath = this.slug;
                 this.validate();
                 this.$info('Attempted to create an existing group', message);
@@ -152,7 +153,8 @@ export default {
             },
             {
               name: this.name,
-              path: this.slug
+              path: this.slug,
+              topics: this.selectedTopics
             }
           )
         );
