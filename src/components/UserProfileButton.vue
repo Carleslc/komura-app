@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import { gravatar } from '@/services/gravatar';
+
 export default {
   components: {
     'menu-btn': require('components/MenuButton.vue').default,
@@ -33,7 +35,7 @@ export default {
   },
   computed: {
     picture() {
-      return this.user.provider_picture;
+      return this.user.image || gravatar(this.user.email, this.user.provider_picture, { s: 48 });
     },
     userProfile() {
       return { name: 'userProfile', params: { username: this.user.username } };

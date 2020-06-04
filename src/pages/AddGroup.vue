@@ -12,7 +12,7 @@
             required
             :placeholder="$t('namePlaceholder')"
             :lazy-rules="isDefaultData"
-            :limit="60"
+            :limit="50"
             :rules="[
               name => !!name || $t('required.groupName'),
               name => name.length >= 3 || $t('required.minLength', { n: 3 }),

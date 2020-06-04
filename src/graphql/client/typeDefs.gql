@@ -11,6 +11,7 @@ type User {
   banner: String
   provider_picture: String
   gender: String
+  email: String!
   created_at: DateTime
   last_login: DateTime
 }

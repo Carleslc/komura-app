@@ -60,6 +60,12 @@ export function similarWords(aWords, bWords) {
   return aWords.some(aWord => bWords.some(bWord => bWord.indexOf(aWord) > -1));
 }
 
+export function params(objectParams) {
+  return Object.keys(objectParams)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(objectParams[key])}`)
+    .join('&');
+}
+
 export const blacklist = ['new'];
 
 const colors = ['primary', 'accent', 'secondary', 'positive', 'info', 'warning', 'negative'];

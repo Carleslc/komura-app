@@ -201,6 +201,7 @@ p {
   margin-bottom: 0;
   line-height: 1.2em;
   text-align: justify;
+  white-space: pre-line;
 }
 
 .q-form {
@@ -217,10 +218,12 @@ p {
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5 {
+  margin: 0;
   color: $dark;
   font-weight: $medium;
-  margin: 0;
+  line-height: 1.2em;
 }
 
 h1 {
@@ -237,6 +240,28 @@ h3 {
 
 h4 {
   font-size: 1.5em;
+}
+
+h5 {
+  font-size: 1.3em;
+}
+
+@media (max-width: $breakpoint-sm-max) {
+  h1 {
+    font-size: 3.5em;
+  }
+  h2 {
+    font-size: 2.5em;
+  }
+  h3 {
+    font-size: 1.5em;
+  }
+  h4 {
+    font-size: 1.3em;
+  }
+  h5 {
+    font-size: 1.2em;
+  }
 }
 
 .text {
@@ -321,7 +346,7 @@ h4 {
 }
 
 .q-tooltip {
-  background-color: $grey;
+  background-color: $dark-light;
 
   p,
   div {
@@ -703,8 +728,17 @@ h4 {
   }
 }
 
-.with-line-breaks {
-  white-space: pre-line;
+.q-p {
+  &l-xxl {
+    padding-left: 96px;
+  }
+  &r-xxl {
+    padding-right: 96px;
+  }
+  &x-xxl {
+    padding-left: 96px;
+    padding-right: 96px;
+  }
 }
 
 .gt-min {

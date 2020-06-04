@@ -132,6 +132,7 @@ export default class AuthService {
         given_name: this.additionalUserInfo.profile.given_name || null,
         provider_picture: this.additionalUserInfo.profile.picture || null,
         gender: this.additionalUserInfo.profile.gender || null,
+        email: firebaseUser.email,
         created_at: null,
         last_login: null
       });
