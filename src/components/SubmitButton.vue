@@ -5,7 +5,7 @@
     type="submit"
     :label="$t(label)"
     class="primary"
-    :class="{ 'q-px-lg': padding }"
+    :class="{ 'q-px-lg': xxs }"
     @click="$emit('click')"
   />
 </template>
@@ -21,9 +21,7 @@ export default {
     }
   },
   computed: {
-    padding() {
-      return xxs(this.$q.screen);
-    }
+    xxs
   }
 };
 </script>

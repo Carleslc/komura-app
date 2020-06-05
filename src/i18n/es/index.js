@@ -54,4 +54,7 @@ export default {
   selectTopics: 'Añade algunos temas que describan en pocas palabras tu grupo para atraer a personas con los mismos intereses.',
   searchTopics: 'Buscar temas',
   limitTopics: 'Puedes seleccionar hasta {max} temas.',
+
+  // Group
+  noGroup: 'No hay nada aquí, el grupo que buscas se ha movido o no existe.',
 };

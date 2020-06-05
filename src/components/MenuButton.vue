@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { fitHeight } from '@/utils/responsive.js';
+import { fitHeight } from '@/utils/screen';
 
 export default {
   props: {
@@ -52,7 +52,7 @@ export default {
   },
   computed: {
     defaultPadding() {
-      if (fitHeight(this)) {
+      if (fitHeight()) {
         return this.big ? 'md lg' : 'sm lg';
       }
       return this.big ? '42px lg' : 'lg';

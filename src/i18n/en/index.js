@@ -50,4 +50,7 @@ export default {
   selectTopics: 'Add some topics that briefly describe your group to bring in people with the same interests.',
   searchTopics: 'Search topics',
   limitTopics: 'Select up to {max} topics.',
+
+  // Group
+  noGroup: "There is nothing here, maybe the group has been moved or doesn't exist.",
 };

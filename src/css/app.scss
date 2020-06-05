@@ -219,47 +219,72 @@ h1,
 h2,
 h3,
 h4,
-h5 {
-  margin: 0;
+h5,
+.text-h1,
+.text-h2,
+.text-h3,
+.text-h4,
+.text-h5 {
   color: $dark;
   font-weight: $medium;
   line-height: 1.2em;
 }
 
-h1 {
+h1,
+h2,
+h3,
+h4,
+h5 {
+  margin: 0;
+}
+
+h1,
+.text-h1 {
   font-size: 4em;
 }
 
-h2 {
+h2,
+.text-h2 {
   font-size: 3em;
 }
 
-h3 {
+h3,
+.text-h3 {
   font-size: 2em;
 }
 
-h4 {
+h4,
+.text-h4 {
   font-size: 1.5em;
 }
 
-h5 {
+h5,
+.text-h5 {
   font-size: 1.3em;
 }
 
 @media (max-width: $breakpoint-sm-max) {
-  h1 {
+  h1,
+  .text-h1 {
     font-size: 3.5em;
   }
-  h2 {
+  h2,
+  .text-h2 {
     font-size: 2.5em;
   }
-  h3 {
+  h3,
+  .text-h3 {
     font-size: 1.5em;
   }
-  h4 {
+}
+
+@media (max-width: $breakpoint-xs-max) {
+  h4,
+  .text-h4 {
     font-size: 1.3em;
   }
-  h5 {
+  h5,
+  .text-h5 {
     font-size: 1.2em;
   }
 }
@@ -745,6 +770,14 @@ h5 {
   @media (max-width: $breakpoint-xxxxs-max) {
     display: none;
   }
+}
+
+.non-draggable img {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 // less than drawer menu breakpoint

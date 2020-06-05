@@ -11,7 +11,7 @@
             <img src="~assets/logo-icon.svg" style="width: 36px" />
           </div>
         </q-btn>
-        <h4 class="col-auto ellipsis gt-min" :class="{ 'q-ml-auto': !fit }">
+        <h4 class="col-auto ellipsis gt-min" :class="{ 'header-margin': !fit }">
           <div v-if="greetings && displayName">
             <span class="text-medium">{{ `${$tg('welcome', currentUser.gender)}, ` }}</span>
             <span class="text-light">{{ displayName }}</span>
@@ -118,7 +118,7 @@ export default {
       return !['userProfile', 'group'].includes(this.$route.name);
     },
     greetings() {
-      return this.$route.name === this.tabs.home.key;
+      return [this.tabs.home.key, 'group'].includes(this.$route.name);
     }
   },
   methods: {
@@ -165,6 +165,10 @@ export default {
 
     .q-toolbar {
       min-height: 56px;
+
+      .header-margin {
+        margin-left: calc(320px - 16px);
+      }
     }
   }
 

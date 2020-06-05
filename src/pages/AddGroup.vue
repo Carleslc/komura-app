@@ -51,8 +51,8 @@
 
 <script>
 import { slugify, blacklist } from '@/utils/strings';
-import { fitHeight } from '@/utils/responsive';
 import { parseError, notifyError } from '@/utils/errors';
+import { fitHeight } from '@/utils/screen';
 import { currentUser } from '@/mixins/currentUser';
 import { saveData } from '@/mixins/saveData';
 
@@ -87,7 +87,7 @@ export default {
     };
   },
   computed: {
-    fitHeight: fitHeight.bind(this),
+    fitHeight,
     slug() {
       return slugify(this.name);
     },

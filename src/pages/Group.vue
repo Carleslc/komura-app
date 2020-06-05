@@ -1,42 +1,75 @@
 <template>
-  <q-page v-if="$apollo.loading">
-    <loading />
-  </q-page>
-  <q-page v-else-if="found">
+  <q-page v-if="found">
     <div class="row container">
       <div
-        class="column q-gutter-y-xl"
+        class="column col-12 q-gutter-y-xl"
         :class="{
           'q-pb-xl': fit ? $q.screen.lt.lg : $q.screen.lt.md,
           'col-lg-8': fit,
           'col-md-8': !fit
         }"
       >
-        <q-img :src="banner" native-context-menu draggable="false" class="banner" />
+        <q-skeleton
+          v-if="$apollo.loading || !banner"
+          type="rect"
+          class="banner"
+          :animation="$apollo.loading || banner ? 'wave' : 'none'"
+        />
+        <q-img
+          v-else
+          ref="banner"
+          :src="banner"
+          basic
+          native-context-menu
+          img-class="non-draggable"
+          class="banner"
+          @load="setDefaultColor"
+          @error="loadingBanner = false"
+        />
         <div class="row items-center no-wrap">
-          <q-avatar size="80px" class="col-auto q-pr-lg">
-            <img draggable="false" :src="logo" style="height: 80px; width: 80px;" />
+          <q-skeleton
+            v-if="loadingBanner"
+            type="QAvatar"
+            size="80px"
+            class="q-mr-lg"
+            :animation="$apollo.loading || banner ? 'wave' : 'none'"
+          />
+
+          <q-avatar
+            v-else
+            size="80px"
+            :style="`background: ${defaultColor}`"
+            class="col-auto group-image q-mr-lg"
+          >
+            <img v-if="logo" draggable="false" :src="logo" />
           </q-avatar>
-          <h2>{{ group.name }}</h2>
+          <q-skeleton v-if="$apollo.loading" type="text" width="50%" class="text-h2" />
+          <h2 v-else>{{ group.name }}</h2>
         </div>
-        <p class="text-lg">{{ group.description }}</p>
+        <div v-if="$apollo.loading">
+          <q-skeleton type="text" width="100%" class="text-lg" />
+          <q-skeleton type="text" width="100%" class="text-lg" />
+          <q-skeleton type="text" width="75%" class="text-lg" />
+        </div>
+        <p v-else class="text-lg">{{ group.description }}</p>
       </div>
       <div
-        class="column inner q-gutter-y-xl"
+        class="column col-12 inner q-gutter-y-xl"
         :class="{
           'col-lg-4': fit,
           'col-md-4': !fit
         }"
       >
-        <h5 class="q-pb-md">{{ $t('topics') }}</h5>
+        <q-skeleton v-if="$apollo.loading" type="text" width="64px" class="text-h5 q-pb-md" />
+        <h5 v-else class="q-pb-md">{{ $t('topics') }}</h5>
       </div>
     </div>
   </q-page>
-  <not-found v-else />
+  <not-found v-else message="noGroup" emoji="desert" />
 </template>
 
 <script>
-import { defaultAvatar } from '@/services/gravatar';
+import { getMainColorAsync, getPaletteColor } from '@/utils/colors';
 
 export default {
   meta() {
@@ -45,7 +78,6 @@ export default {
     };
   },
   components: {
-    loading: require('components/Loading.vue').default,
     'not-found': require('pages/Error404.vue').default
   },
   props: {
@@ -67,29 +99,25 @@ export default {
     });
 
     return {
-      found: !!cached,
-      group: cached ? cached.group : {}
+      found: true,
+      cached: !!cached,
+      group: cached ? cached.group : {},
+      loadingBanner: true,
+      defaultColor: getPaletteColor('primary')
     };
   },
   computed: {
     logo() {
-      return (
-        this.group.image ||
-        'https://images.unsplash.com/photo-1589120206612-3a21ed976d36?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=64&ixid=eyJhcHBfaWQiOjF9&ixlib=rb-1.2.1&q=80&w=64' ||
-        defaultAvatar(this.group.name, 'identicon', { s: 80 })
-      );
+      return this.group.image;
     },
     banner() {
-      return (
-        this.group.banner ||
-        'https://images.unsplash.com/photo-1581878879399-c933ccf51c36?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=200&ixid=eyJhcHBfaWQiOjF9&ixlib=rb-1.2.1&q=80&w=800'
-      );
+      return this.group.banner;
     }
   },
   apollo: {
     group() {
       return {
-        skip: this.found,
+        skip: this.cached,
         query: require('@/graphql/getGroup.gql'),
         variables: {
           path: this.path
@@ -99,6 +127,18 @@ export default {
           return this.found ? data.groups[0] : {};
         }
       };
+    }
+  },
+  methods: {
+    setDefaultColor() {
+      // timeout prevents img from being null
+      setTimeout(async () => {
+        this.defaultColor = await getMainColorAsync(
+          this.$refs.banner.$el.querySelector('img'),
+          this.defaultColor
+        );
+        this.loadingBanner = false;
+      });
     }
   }
 };
@@ -112,8 +152,18 @@ export default {
   transition: padding-right 50ms ease-in-out;
 
   .banner {
+    width: 100%;
     border-radius: 20px;
     max-height: 256px;
+
+    &.q-skeleton {
+      padding-top: 25%; // aspect ratio 4:1
+    }
+  }
+
+  .group-image {
+    height: 80px;
+    width: 80px;
   }
 
   > .column {

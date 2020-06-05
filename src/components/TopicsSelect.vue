@@ -37,20 +37,14 @@
       v-model="selectedTopics"
       :options="suggestedTopics"
       type="checkbox"
-      :inline="xxs($q.screen)"
+      :inline="xxs"
     />
   </k-field>
 </template>
 
 <script>
-import {
-  alphaLower,
-  removeSpecial,
-  words,
-  similar,
-  similarWords,
-  getRandomColor
-} from '@/utils/strings';
+import { alphaLower, removeSpecial, words, similar, similarWords } from '@/utils/strings';
+import { getRandomColor } from '@/utils/colors';
 import { language } from 'src/i18n';
 import { xxs } from '@/utils/screen';
 import { debounce, capitalize } from 'lodash';
@@ -81,6 +75,7 @@ export default {
     };
   },
   computed: {
+    xxs,
     selectedTopics: {
       get() {
         return this.value;
@@ -149,7 +144,6 @@ export default {
     this.debounceUpdateSuggestedTopics = debounce(this.updateSuggestedTopics, 300);
   },
   methods: {
-    xxs,
     similarWordsTopics(s, raw = false) {
       const alphaWords = words(raw ? s : alphaLower(s)).filter(w => w.length > 2);
       return this.topics.filter(
