@@ -25,7 +25,7 @@
             label="description"
             type="textarea"
             :placeholder="$t('descriptionPlaceholder')"
-            :rows="fitHeight ? 2 : 4"
+            :rows="4"
             :limit="20000"
           />
           <submit-btn
@@ -35,15 +35,25 @@
             class="q-mt-lg self-start"
           />
         </div>
-        <topics-select
-          v-model="selectedTopics"
-          :search="name"
-          class="column q-mb-lg"
-          :class="{ 'full-width': !split, 'split q-pl-md': split }"
-        />
+        <div class="column q-mb-lg" :class="{ 'full-width': !split, 'split q-pl-md': split }">
+          <topics-select
+            ref="topicsSelect"
+            v-model="selectedTopics"
+            :search="name"
+            :class="{
+              'q-mb-lg': selectedTopics.length > 0,
+              'q-mb-md': selectedTopics.length === 0
+            }"
+            @update="setDefaultBanner"
+          />
+          <k-field label="banner">
+            <q-skeleton v-if="!banner" type="rect" animation="none" class="banner hoverable" />
+            <banner v-else :src="banner" />
+          </k-field>
+        </div>
       </div>
       <div v-if="!split" class="row full-width justify-center">
-        <submit-btn label="createGroup" :disabled="uncompleted" />
+        <submit-btn label="createGroup" :disabled="uncompleted" :loading="$apollo.loading" />
       </div>
     </q-form>
   </q-page>
@@ -55,6 +65,9 @@ import { parseError, notifyError } from '@/utils/errors';
 import { fitHeight } from '@/utils/screen';
 import { currentUser } from '@/mixins/currentUser';
 import { saveData } from '@/mixins/saveData';
+import { getRandomImageAsync } from '@/services/unsplash';
+import { createRootGroup } from '@/graphql/createRootGroup';
+import { getClientGroup, toClientGroup } from '@/graphql/client/getGroup';
 
 export default {
   meta() {
@@ -63,8 +76,10 @@ export default {
     };
   },
   components: {
+    'k-field': require('components/KField.vue').default,
     'k-input': require('components/KInput.vue').default,
     'topics-select': require('components/TopicsSelect.vue').default,
+    banner: require('components/Banner.vue').default,
     'submit-btn': require('components/SubmitButton.vue').default
   },
   mixins: [
@@ -72,6 +87,7 @@ export default {
     saveData('add-group', {
       name: '',
       description: '',
+      banner: null,
       selectedTopics: []
     })
   ],
@@ -83,7 +99,9 @@ export default {
   },
   data() {
     return {
-      alreadyExistsPath: null
+      alreadyExistsPath: null,
+      fetchingBanner: false,
+      waitingToSubmit: false
     };
   },
   computed: {
@@ -103,61 +121,94 @@ export default {
         this.name.length < 3 ||
         this.alreadyExists ||
         this.isRestricted ||
-        this.$apollo.loading
+        this.$apollo.loading ||
+        this.waitingToSubmit
       );
     },
     split() {
       return this.fit ? this.$q.screen.gt.md : this.$q.screen.gt.sm;
     }
   },
+  watch: {
+    fetchingBanner() {
+      if (this.waitingToSubmit) {
+        this.createGroup();
+      }
+    }
+  },
   methods: {
     createGroup() {
-      this.$apollo
-        .mutate({
-          mutation: require('@/graphql/createRootGroup.gql'),
-          variables: {
-            owner: this.currentUser.id,
-            name: this.name,
-            slug: this.slug,
-            description: this.description || null,
-            topics: this.selectedTopics.map(name => ({ name }))
-          },
-          update: (proxy, { data }) => {
-            const group = data.insert_groups.returning[0];
-            proxy.writeQuery({
-              query: require('@/graphql/client/getGroup.gql'),
-              variables: {
-                path: group.path
-              },
-              data: {
-                group
-              }
-            });
-            this.reset();
-            this.$router.push({
-              name: 'group',
-              params: { path: group.path }
-            });
-          }
-        })
-        .catch(
-          parseError(
-            (message, code) => {
-              if (code === 'constraint-violation' && message.includes('groups_path_key')) {
-                this.alreadyExistsPath = this.slug;
-                this.validate();
-                this.$info('Attempted to create an existing group', message);
-              } else {
-                notifyError();
-              }
-            },
-            {
+      this.waitingToSubmit = this.fetchingBanner;
+      if (!this.waitingToSubmit) {
+        this.$apollo
+          .mutate({
+            mutation: createRootGroup,
+            variables: {
+              owner: this.currentUser.id,
               name: this.name,
-              path: this.slug,
-              topics: this.selectedTopics
+              slug: this.slug,
+              description: this.description || null,
+              banner: this.banner,
+              topics: this.selectedTopics.map(name => ({ name }))
+            },
+            update: (proxy, { data }) => {
+              const group = data.insert_groups.returning[0];
+              proxy.writeQuery({
+                query: getClientGroup,
+                variables: {
+                  path: group.path
+                },
+                data: {
+                  group: toClientGroup(group)
+                }
+              });
+              this.reset();
+              this.$router.push({
+                name: 'group',
+                params: { path: group.path }
+              });
             }
-          )
-        );
+          })
+          .catch(
+            parseError(
+              (message, code) => {
+                if (code === 'constraint-violation' && message.includes('groups_path_key')) {
+                  this.alreadyExistsPath = this.slug;
+                  this.validate();
+                  this.$info('Attempted to create an existing group', message);
+                } else {
+                  notifyError();
+                }
+              },
+              {
+                name: this.name,
+                path: this.slug,
+                topics: this.selectedTopics
+              }
+            )
+          );
+      }
+    },
+    setDefaultBanner(selectedTopics) {
+      if (!this.fetchingBanner) {
+        const topics = selectedTopics.filter(topic => !topic.isLocal).map(topic => topic.value);
+        if (topics.length > 0) {
+          if (!this.banner) {
+            this.fetchingBanner = true;
+            getRandomImageAsync(topics, '800x400')
+              .then(url => {
+                if (url) {
+                  this.banner = url;
+                }
+              })
+              .finally(() => {
+                this.fetchingBanner = false;
+              });
+          }
+        } else {
+          this.banner = null;
+        }
+      }
     },
     validate() {
       this.$refs.name.validate();

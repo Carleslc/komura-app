@@ -68,7 +68,7 @@ export default class AuthService {
    * @param {String} accessToken Provider OAuth2 Token
    */
   static set providerToken(accessToken) {
-    axios.defaults.headers.common.Authorization = accessToken ? `Bearer ${accessToken}` : undefined;
+    this.providerHeader = accessToken ? `Bearer ${accessToken}` : undefined;
   }
 
   /**
@@ -107,12 +107,12 @@ export default class AuthService {
         query: CURRENT_USER_QUERY,
         data: {
           currentUser: {
-            __typename: 'User',
             description: null,
             image: null,
             banner: null,
             ...this.user,
-            ...user
+            ...user,
+            __typename: 'User'
           }
         }
       });
@@ -154,7 +154,12 @@ export default class AuthService {
       switch (this.provider) {
         case Providers.GOOGLE:
           axios
-            .get('https://people.googleapis.com/v1/people/me?personFields=genders')
+            .get('https://people.googleapis.com/v1/people/me?personFields=genders', {
+              headers: {
+                Authorization: this.providerHeader,
+                Accept: 'application/json'
+              }
+            })
             .then(({ data }) => {
               // https://developers.google.com/people/api/rest/v1/people#gender
               let gender = data.genders[0];
@@ -166,9 +171,7 @@ export default class AuthService {
               }
               // gender 'other' or 'unspecified' does not set gender (null)
             })
-            .catch(e => {
-              console.error(e);
-            })
+            .catch(report)
             .finally(resolve);
           break;
         default:

@@ -45,10 +45,9 @@
 <script>
 import { alphaLower, removeSpecial, words, similar, similarWords } from '@/utils/strings';
 import { getRandomColor } from '@/utils/colors';
-import { language } from 'src/i18n';
+import { getTopics, topicsLabelColumn } from '@/graphql/getTopics';
 import { xxs } from '@/utils/screen';
 import { debounce, capitalize } from 'lodash';
-import gql from 'graphql-tag';
 
 export default {
   components: {
@@ -74,45 +73,16 @@ export default {
       newTopic: undefined
     };
   },
-  computed: {
-    xxs,
-    selectedTopics: {
-      get() {
-        return this.value;
-      },
-      set(value) {
-        if (value.length <= this.maxTopics) {
-          this.$emit('input', value);
-        }
-      }
-    },
-    limitHint() {
-      if (this.selectedTopics.length >= 0.8 * this.maxTopics) {
-        return this.$t('limitTopics', { max: this.maxTopics });
-      }
-      return undefined;
-    }
-  },
   apollo: {
     topics() {
-      const localeColumn = language === 'en' ? 'name' : language; // name column values are in English
-
       return {
-        query: gql`
-          query getTopics {
-            topics(order_by: { ${localeColumn}: asc }) {
-              parent
-              name
-              ${localeColumn !== 'name' ? localeColumn : ''}
-            }
-          }
-        `,
+        query: getTopics,
         update(data) {
           this.topicsByName = data.topics.reduce((topics, topic) => {
             const formatted = {
               parent: topic.parent,
               value: topic.name,
-              label: topic[localeColumn] || topic.name
+              label: topic[topicsLabelColumn] || topic.name
             };
             topics[topic.name] = {
               ...formatted,
@@ -132,11 +102,39 @@ export default {
       };
     }
   },
+  computed: {
+    xxs,
+    selectedTopics: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        if (value.length <= this.maxTopics) {
+          this.$emit('input', value);
+        }
+      }
+    },
+    limitHint() {
+      if (this.selectedTopics.length >= 0.8 * this.maxTopics) {
+        return this.$t('limitTopics', { max: this.maxTopics });
+      }
+      return undefined;
+    },
+    selectedTopicsObjects() {
+      return this.selectedTopics.map(
+        name => this.topicsByName[name] || this.addLocalTopic(this.buildTopic(name))
+      );
+    },
+    similarWordsTopicsToSearch() {
+      return this.similarWordsTopics(this.search);
+    }
+  },
   watch: {
     search() {
       this.debounceUpdateSuggestedTopics();
     },
     selectedTopics() {
+      this.$emit('update', this.selectedTopicsObjects);
       this.updateSuggestedTopics();
     }
   },
@@ -163,14 +161,10 @@ export default {
       const suggestions = new Set();
 
       // topics with a word match
-      this.similarWordsTopics(this.search).forEach(suggestions.add, suggestions);
-
-      const selectedTopics = this.selectedTopics.map(
-        name => this.topicsByName[name] || this.addLocalTopic(this.buildTopic(name))
-      );
+      this.similarWordsTopicsToSearch.forEach(suggestions.add, suggestions);
 
       // parent topics of selected and similar topics
-      [...selectedTopics, ...suggestions].forEach(topic => {
+      [...this.selectedTopicsObjects, ...suggestions].forEach(topic => {
         let parentTopic = this.topicsByName[topic.parent];
         while (parentTopic) {
           suggestions.add(parentTopic);
@@ -191,7 +185,7 @@ export default {
       ];
 
       // selected topics
-      selectedTopics.forEach(topic => {
+      this.selectedTopicsObjects.forEach(topic => {
         if (!newSuggestedTopics.includes(topic)) {
           newSuggestedTopics.push(topic);
         }
@@ -280,7 +274,8 @@ export default {
         value: name,
         label: name,
         labelAlpha: nameAlpha,
-        valueAlpha: nameAlpha
+        valueAlpha: nameAlpha,
+        isLocal: true
       };
     },
     addLocalTopic(topic) {

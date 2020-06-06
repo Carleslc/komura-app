@@ -10,19 +10,15 @@
         }"
       >
         <q-skeleton
-          v-if="$apollo.loading || !banner"
+          v-if="$apollo.loading || !group.banner"
           type="rect"
+          :animation="$apollo.loading || group.banner ? 'wave' : 'none'"
           class="banner"
-          :animation="$apollo.loading || banner ? 'wave' : 'none'"
         />
-        <q-img
+        <banner
           v-else
           ref="banner"
-          :src="banner"
-          basic
-          native-context-menu
-          img-class="non-draggable"
-          class="banner"
+          :src="group.banner"
           @load="setDefaultColor"
           @error="loadingBanner = false"
         />
@@ -32,16 +28,15 @@
             type="QAvatar"
             size="80px"
             class="q-mr-lg"
-            :animation="$apollo.loading || banner ? 'wave' : 'none'"
+            :animation="$apollo.loading || group.banner ? 'wave' : 'none'"
           />
-
           <q-avatar
             v-else
             size="80px"
             :style="`background: ${defaultColor}`"
             class="col-auto group-image q-mr-lg"
           >
-            <img v-if="logo" draggable="false" :src="logo" />
+            <img v-if="group.image" draggable="false" :src="group.image" />
           </q-avatar>
           <q-skeleton v-if="$apollo.loading" type="text" width="50%" class="text-h2" />
           <h2 v-else>{{ group.name }}</h2>
@@ -70,6 +65,8 @@
 
 <script>
 import { getMainColorAsync, getPaletteColor } from '@/utils/colors';
+import { getClientGroup, toClientGroup } from '@/graphql/client/getGroup';
+import { getGroup } from '@/graphql/getGroup';
 
 export default {
   meta() {
@@ -78,6 +75,7 @@ export default {
     };
   },
   components: {
+    banner: require('components/Banner.vue').default,
     'not-found': require('pages/Error404.vue').default
   },
   props: {
@@ -92,7 +90,7 @@ export default {
   },
   data() {
     const cached = this.apollo.readQuery({
-      query: require('@/graphql/client/getGroup.gql'),
+      query: getClientGroup,
       variables: {
         path: this.path
       }
@@ -106,25 +104,20 @@ export default {
       defaultColor: getPaletteColor('primary')
     };
   },
-  computed: {
-    logo() {
-      return this.group.image;
-    },
-    banner() {
-      return this.group.banner;
-    }
-  },
   apollo: {
     group() {
       return {
         skip: this.cached,
-        query: require('@/graphql/getGroup.gql'),
+        query: getGroup,
         variables: {
           path: this.path
         },
         update(data) {
           this.found = data.groups && data.groups.length > 0;
-          return this.found ? data.groups[0] : {};
+          if (this.found) {
+            return toClientGroup(data.groups[0]);
+          }
+          return {};
         }
       };
     }
@@ -150,16 +143,6 @@ export default {
   -moz-transition: padding-right 50ms ease-in-out;
   -o-transition: padding-right 50ms ease-in-out;
   transition: padding-right 50ms ease-in-out;
-
-  .banner {
-    width: 100%;
-    border-radius: 20px;
-    max-height: 256px;
-
-    &.q-skeleton {
-      padding-top: 25%; // aspect ratio 4:1
-    }
-  }
 
   .group-image {
     height: 80px;

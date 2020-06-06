@@ -15,3 +15,8 @@ type User {
   created_at: DateTime
   last_login: DateTime
 }
+
+type Topic {
+  name: String!
+  label: String!
+}

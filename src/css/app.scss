@@ -766,6 +766,25 @@ h5,
   }
 }
 
+.q-skeleton {
+  background: $grey-lighter;
+  transition: background 0.3s ease-in-out;
+
+  &.hoverable:hover {
+    background: $grey-hover-2;
+  }
+}
+
+.banner {
+  width: 100%;
+  border-radius: 20px;
+  max-height: 256px;
+
+  &.q-skeleton {
+    padding-bottom: 25%; // aspect ratio 4:1
+  }
+}
+
 .gt-min {
   @media (max-width: $breakpoint-xxxxs-max) {
     display: none;
