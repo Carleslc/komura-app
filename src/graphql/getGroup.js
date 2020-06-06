@@ -3,8 +3,7 @@ import { topicsLabelColumnNotDefault } from '@/graphql/getTopics';
 
 export const getGroup = gql`
   query getGroup($path: String!) {
-    groups(where: { path: { _eq: $path } }) {
-      id
+    groups(where: { path: { _eq: $path }, type: { _eq: group } }) {
       path
       name
       description

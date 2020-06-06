@@ -52,7 +52,7 @@
           </k-field>
         </div>
       </div>
-      <div v-if="!split" class="row full-width justify-center">
+      <div v-if="!split" class="row full-width justify-center q-mb-sm">
         <submit-btn label="createGroup" :disabled="uncompleted" :loading="$apollo.loading" />
       </div>
     </q-form>
@@ -62,12 +62,11 @@
 <script>
 import { slugify, blacklist } from '@/utils/strings';
 import { parseError, notifyError } from '@/utils/errors';
-import { fitHeight } from '@/utils/screen';
-import { currentUser } from '@/mixins/currentUser';
-import { saveData } from '@/mixins/saveData';
 import { getRandomImageAsync } from '@/services/unsplash';
 import { createRootGroup } from '@/graphql/createRootGroup';
 import { getClientGroup, toClientGroup } from '@/graphql/client/getGroup';
+import { saveData } from '@/mixins/saveData';
+import currentUser from '@/mixins/currentUser';
 
 export default {
   meta() {
@@ -105,7 +104,6 @@ export default {
     };
   },
   computed: {
-    fitHeight,
     slug() {
       return slugify(this.name);
     },

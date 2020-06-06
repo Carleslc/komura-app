@@ -2,16 +2,16 @@
   <q-layout
     view="hhh LpR lFf"
     class="home-layout"
-    :class="{ 'drawer-mobile': fit, 'drawer-hidden': drawerHidden }"
+    :class="{ 'drawer-mobile': fitWidth, 'drawer-hidden': drawerHidden }"
   >
     <q-header>
-      <q-toolbar class="row justify-start" :class="fit ? 'q-px-none' : 'q-px-md'">
-        <q-btn v-if="!fit" flat :ripple="false" class="logo-menu q-py-sm" @click="toggleMenu">
+      <q-toolbar class="row justify-start" :class="fitWidth ? 'q-px-none' : 'q-px-md'">
+        <q-btn v-if="!fitWidth" flat :ripple="false" class="logo-menu q-py-sm" @click="toggleMenu">
           <div>
             <img src="~assets/logo-icon.svg" style="width: 36px" />
           </div>
         </q-btn>
-        <h4 class="col-auto ellipsis gt-min" :class="{ 'header-margin': !fit }">
+        <h4 class="col-auto ellipsis gt-min" :class="{ 'header-margin': !fitWidth }">
           <div v-if="greetings && displayName">
             <span class="text-medium">{{ `${$tg('welcome', currentUser.gender)}, ` }}</span>
             <span class="text-light">{{ displayName }}</span>
@@ -21,13 +21,13 @@
           </div>
         </h4>
         <div class="col-auto q-ml-auto">
-          <user-profile-btn v-if="fit" avatar :user="currentUser" />
+          <user-profile-btn v-if="fitWidth" avatar :user="currentUser" />
         </div>
       </q-toolbar>
     </q-header>
 
     <q-drawer
-      v-if="!fit"
+      v-if="!fitWidth"
       v-model="menu"
       behavior="desktop"
       :width="320"
@@ -48,7 +48,7 @@
           <menu-btn icon="img:statics/icons/exit.svg" label="logout" @click="$auth.logout()" />
         </div>
         <div class="col-auto column justify-between q-gutter-y-md full-width no-wrap">
-          <div class="menu-section">
+          <div v-if="$q.platform.is.desktop" class="menu-section">
             <menu-btn big icon="o_group_add" label="newGroup" :to="{ name: 'newGroup' }" />
           </div>
           <div class="menu-section">
@@ -62,7 +62,7 @@
       <router-view :fit="!drawerHidden" class="content page-component" />
     </q-page-container>
 
-    <q-footer v-if="fit" class="shadow-up">
+    <q-footer v-if="fitWidth" class="shadow-up">
       <div v-for="tab of tabs" :key="tab.key" class="col-12 row justify-center">
         <menu-btn
           :icon="tab.icon"
@@ -78,7 +78,8 @@
 </template>
 
 <script>
-import { currentUser } from '@/mixins/currentUser';
+import currentUser from '@/mixins/currentUser';
+import screen from '@/mixins/screen';
 
 export default {
   meta: {
@@ -88,11 +89,10 @@ export default {
     'menu-btn': require('components/MenuButton.vue').default,
     'user-profile-btn': require('components/UserProfileButton.vue').default
   },
-  mixins: [currentUser],
+  mixins: [screen, currentUser],
   data() {
-    this.breakpoint = 800;
     return {
-      menu: this.$q.screen.width > this.breakpoint,
+      menu: !this.fitWidth,
       tabs: {
         home: {
           key: 'home',
@@ -102,17 +102,14 @@ export default {
     };
   },
   computed: {
+    drawerHidden() {
+      return !this.menu || this.fitWidth;
+    },
     displayName() {
       return this.currentUser.given_name || this.currentUser.name;
     },
     isHomePage() {
       return this.isTab(this.tabs.home);
-    },
-    fit() {
-      return this.$q.screen.width <= this.breakpoint;
-    },
-    drawerHidden() {
-      return !this.menu || this.fit;
     },
     withHeader() {
       return !['userProfile', 'group'].includes(this.$route.name);

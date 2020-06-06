@@ -37,7 +37,7 @@
       v-model="selectedTopics"
       :options="suggestedTopics"
       type="checkbox"
-      :inline="xxs"
+      :inline="!xxs"
     />
   </k-field>
 </template>
@@ -46,13 +46,14 @@
 import { alphaLower, removeSpecial, words, similar, similarWords } from '@/utils/strings';
 import { getRandomColor } from '@/utils/colors';
 import { getTopics, topicsLabelColumn } from '@/graphql/getTopics';
-import { xxs } from '@/utils/screen';
 import { debounce, capitalize } from 'lodash';
+import screen from '@/mixins/screen';
 
 export default {
   components: {
     'k-field': require('components/KField').default
   },
+  mixins: [screen],
   props: {
     value: {
       type: Array,
@@ -103,7 +104,6 @@ export default {
     }
   },
   computed: {
-    xxs,
     selectedTopics: {
       get() {
         return this.value;

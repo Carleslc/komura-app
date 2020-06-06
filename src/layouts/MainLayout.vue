@@ -1,15 +1,15 @@
 <template>
   <q-layout view="hhh LpR fFf">
-    <q-header class="bg-transparent" :class="$q.screen.gt.xs ? 'q-pa-lg' : 'q-pa-md'">
-      <q-toolbar class="row justify-start">
+    <q-header class="bg-transparent" :class="xs ? 'q-pa-md' : 'q-pa-lg'">
+      <q-toolbar class="row justify-start q-pr-none">
         <router-link to="/" class="col-auto row items-center">
-          <img v-if="$q.screen.gt.xs" src="~assets/KomuraLogo-Azul.svg" />
-          <img v-else src="~assets/logo-icon.svg" width="36px" />
+          <img v-if="xs" src="~assets/logo-icon.svg" width="36px" />
+          <img v-else src="~assets/KomuraLogo-Azul.svg" />
         </router-link>
         <div class="col-auto q-ml-auto">
           <q-btn
             flat
-            padding="md lg"
+            :padding="xs ? 'md' : 'md lg'"
             color="primary"
             :icon="isLoggedIn ? 'k:home' : 'o_account_circle'"
             :label="$t(loginKey)"
@@ -26,13 +26,14 @@
 </template>
 
 <script>
-import { isLoggedIn } from '@/mixins/isLoggedIn';
+import isLoggedIn from '@/mixins/isLoggedIn';
+import screen from '@/mixins/screen';
 
 export default {
   meta: {
     titleTemplate: title => `${title} | Komura`
   },
-  mixins: [isLoggedIn],
+  mixins: [isLoggedIn, screen],
   computed: {
     loginKey() {
       return this.isLoggedIn ? 'home' : 'login';

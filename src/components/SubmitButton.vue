@@ -6,15 +6,16 @@
     :label="$t(label)"
     :loading="loading"
     class="primary"
-    :class="{ 'q-px-lg': xxs }"
+    :class="{ 'q-px-lg': !xxs }"
     @click="$emit('click')"
   />
 </template>
 
 <script>
-import { xxs } from '@/utils/screen';
+import screen from '@/mixins/screen';
 
 export default {
+  mixins: [screen],
   props: {
     label: {
       type: String,
@@ -24,9 +25,6 @@ export default {
       type: Boolean,
       default: false
     }
-  },
-  computed: {
-    xxs
   }
 };
 </script>

@@ -21,9 +21,10 @@
 </template>
 
 <script>
-import { fitHeight } from '@/utils/screen';
+import screen from '@/mixins/screen';
 
 export default {
+  mixins: [screen],
   props: {
     icon: {
       type: String,
@@ -52,7 +53,7 @@ export default {
   },
   computed: {
     defaultPadding() {
-      if (fitHeight()) {
+      if (this.fitHeight) {
         return this.big ? 'md lg' : 'sm lg';
       }
       return this.big ? '42px lg' : 'lg';

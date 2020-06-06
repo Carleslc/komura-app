@@ -4,7 +4,6 @@ import { topicsLabelColumn } from '@/graphql/getTopics';
 export const getClientGroup = gql`
   query getGroup($path: String!) {
     group(path: $path) @client {
-      id
       path
       name
       description

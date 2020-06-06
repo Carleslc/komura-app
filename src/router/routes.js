@@ -15,7 +15,8 @@ const routes = [
         name: 'userProfile',
         path: '/profile/:username?',
         component: () => import('pages/UserProfile.vue'),
-        props: true
+        props: true,
+        meta: { auth: true, redirect: { name: 'publicUserProfile' } }
       },
       {
         name: 'newGroup',
@@ -26,7 +27,8 @@ const routes = [
         name: 'group',
         path: '/groups/:path*',
         component: () => import('pages/Group.vue'),
-        props: true
+        props: true,
+        meta: { auth: true, redirect: { name: 'publicGroup' } }
       }
     ]
   },
@@ -47,8 +49,15 @@ const routes = [
         component: () => import('pages/Index.vue')
       },
       {
+        name: 'publicGroup',
         path: '/groups/:path*',
         component: () => import('pages/Group.vue'),
+        props: true
+      },
+      {
+        name: 'publicUserProfile',
+        path: '/profile/:username',
+        component: () => import('pages/UserProfile.vue'),
         props: true
       }
     ]

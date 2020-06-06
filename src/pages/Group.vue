@@ -114,10 +114,7 @@ export default {
         },
         update(data) {
           this.found = data.groups && data.groups.length > 0;
-          if (this.found) {
-            return toClientGroup(data.groups[0]);
-          }
-          return {};
+          return this.found ? toClientGroup(data.groups[0]) : {};
         }
       };
     }

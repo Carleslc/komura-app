@@ -1,4 +1,4 @@
-export const isLoggedIn = {
+export default {
   data() {
     return {
       isLoggedIn: this.$auth.isLoggedIn

@@ -27,7 +27,7 @@ export function alpha(s, numeric = false) {
 }
 
 export function lowerCase(s) {
-  return s.toLowerCase(Quasar.lang.getLocale());
+  return s ? s.toLowerCase(Quasar.lang.getLocale()) : s;
 }
 
 export function alphaLower(s, numeric = false) {
@@ -67,3 +67,7 @@ export function params(objectParams) {
 }
 
 export const blacklist = ['new'];
+
+export function equalsIgnoreCase(a, b) {
+  return lowerCase(a) === lowerCase(b);
+}

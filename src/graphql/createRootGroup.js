@@ -21,7 +21,6 @@ export const createRootGroup = gql`
       }
     ) {
       returning {
-        id
         path
         name
         description

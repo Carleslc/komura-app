@@ -28,6 +28,11 @@ export default class AuthService {
       isNewUser: false,
       profile: {}
     };
+    this.publicRole = {
+      headers: {
+        'X-Hasura-Role': 'anonymous'
+      }
+    };
     this.onAuthHeaderListener = new Listener();
     this.load();
   }

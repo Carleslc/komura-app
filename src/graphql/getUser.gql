@@ -1,17 +1,16 @@
-query getUser($id: String!) {
-  users_by_pk(id: $id) {
-    id
-    given_name
-    provider_picture
-    gender
-    personal_space {
-      username: path
-    }
-    main_profile {
-      name
-      description
-      image
-      banner
+query getUser($username: String!) {
+  groups(where: { path: { _eq: $username }, type: { _eq: user } }) {
+    path
+    is_public
+    owner {
+      provider_picture
+      created_at
+      main_profile {
+        name
+        description
+        image
+        banner
+      }
     }
   }
 }
