@@ -11,7 +11,7 @@
             <img src="~assets/logo-icon.svg" style="width: 36px" />
           </div>
         </q-btn>
-        <h4 class="col-auto ellipsis gt-min" :class="{ 'header-margin': !fitWidth }">
+        <h4 class="col-auto ellipsis gt-min" :class="{ 'q-ml-auto': !fitWidth }">
           <div v-if="greetings && displayName">
             <span class="text-medium">{{ `${$tg('welcome', currentUser.gender)}, ` }}</span>
             <span class="text-light">{{ displayName }}</span>
@@ -20,7 +20,7 @@
             <span v-t="$route.name" class="text-medium" />
           </div>
         </h4>
-        <div class="col-auto q-ml-auto">
+        <div v-if="$route.name !== 'userProfile'" class="col-auto q-ml-auto">
           <user-profile-btn v-if="fitWidth" avatar :user="currentUser" />
         </div>
       </q-toolbar>
@@ -147,46 +147,60 @@ export default {
 }
 
 .home-layout {
+  $header-padding-y: 4vh;
+  $header-height: calc(56px + #{$header-padding-y}); // toolbar height + header padding (top)
+  $footer-padding-y: 12px;
+  $footer-height: calc(
+    53px + (2 * #{$footer-padding-y})
+  ); // footer height + footer padding (top & bottom)
+
   .logo-menu {
     position: absolute;
   }
   &:not(.drawer-hidden) {
     .logo-menu {
       position: fixed;
-      top: 6vh;
+      top: $header-padding-y;
     }
   }
 
   .q-header {
-    padding: 6vh 3.33vw 0 3.33vw;
+    padding: $header-padding-y 3.33vw 0 3.33vw;
 
     .q-toolbar {
       min-height: 56px;
-
-      .header-margin {
-        margin-left: calc(320px - 16px);
-      }
     }
   }
 
   .q-page-container {
-    padding-top: calc(56px + 6vh) !important; // header height + header padding
-    min-height: calc(100vh - (56px + 6vh)) !important;
+    padding-top: $header-height !important;
+    min-height: calc(100vh - #{$header-height}) !important;
 
     .content {
-      padding: 6vh 3.33vw 2vh 3.33vw;
+      padding: $header-padding-y 3.33vw 2vh 3.33vw;
     }
   }
 
-  &.drawer-mobile .q-page-container {
-    padding-bottom: calc(53px + 5vh) !important; // footer height + footer padding
-    min-height: calc(100vh - (56px + 6vh) - (53px + 5vh)) !important;
+  &.drawer-mobile {
+    .q-header {
+      padding-top: $header-padding-y;
+    }
+
+    .q-page-container {
+      padding-top: $header-height !important;
+      padding-bottom: $footer-height !important;
+      min-height: calc(100vh - #{$header-height} - #{$footer-height}) !important;
+
+      .content {
+        padding-top: $header-padding-y;
+      }
+    }
   }
 
   .q-drawer {
     &.q-drawer--standard {
-      padding: 6vh 0 4vh 2vw;
-      top: calc(56px + 6vh) !important; // header height + header padding
+      padding: $header-padding-y 0 2vh 2vw;
+      top: $header-height !important;
     }
     &.q-drawer--mobile {
       padding: 2.5vw;
@@ -197,7 +211,7 @@ export default {
   }
 
   .q-footer > div {
-    padding: 2.5vh 16px;
+    padding: $footer-padding-y 16px;
   }
 }
 </style>
