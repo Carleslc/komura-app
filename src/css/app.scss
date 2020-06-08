@@ -17,11 +17,38 @@
   background: white;
 }
 
+$content-padding-md: 42px;
+
+.content {
+  padding-bottom: 24px;
+  padding-left: $content-padding;
+  padding-right: $content-padding;
+
+  @media (min-width: $breakpoint-md-min) {
+    padding-left: $content-padding-md;
+    padding-right: $content-padding-md;
+  }
+}
+
+.no-header {
+  .content {
+    padding-top: $content-padding;
+
+    @media (min-width: $breakpoint-md-min) {
+      padding-top: $content-padding-md;
+    }
+  }
+}
+
 .menu-section {
   $border-radius: 20px;
 
   width: 100%;
   border-radius: $border-radius;
+
+  &:not(:first-child) {
+    margin-top: 16px;
+  }
 
   .menu-button {
     width: 100%;
@@ -33,13 +60,13 @@
         .q-focus-helper {
           border-radius: 3px;
         }
-        &.first {
+        &:first-child {
           .q-focus-helper {
             border-top-left-radius: $border-radius;
             border-top-right-radius: $border-radius;
           }
         }
-        &.last {
+        &:last-child {
           .q-focus-helper {
             border-bottom-left-radius: $border-radius;
             border-bottom-right-radius: $border-radius;
@@ -200,17 +227,24 @@ p {
   color: $dark;
   margin-bottom: 0;
   line-height: 1.2em;
-  text-align: justify;
   white-space: pre-line;
 }
 
 .q-form {
   .label {
-    font-size: 1.2em;
+    font-size: 1.3em;
     font-weight: $medium;
 
-    @media (min-width: $breakpoint-md-min) {
-      font-size: 1.3em;
+    @media (max-width: $breakpoint-xs-max) {
+      font-size: 1.2em;
+    }
+  }
+}
+
+.drawer-mobile {
+  .q-form {
+    .label {
+      font-size: 1.2em;
     }
   }
 }
@@ -263,7 +297,7 @@ h5,
   font-size: 1.3em;
 }
 
-@media (max-width: $breakpoint-sm-max) {
+.drawer-mobile {
   h1,
   .text-h1 {
     font-size: 3.5em;
@@ -279,13 +313,17 @@ h5,
 }
 
 @media (max-width: $breakpoint-xs-max) {
-  h4,
-  .text-h4 {
-    font-size: 1.3em;
+  h1,
+  .text-h1 {
+    font-size: 3.5em;
   }
-  h5,
-  .text-h5 {
-    font-size: 1.2em;
+  h2,
+  .text-h2 {
+    font-size: 2.5em;
+  }
+  h3,
+  .text-h3 {
+    font-size: 1.5em;
   }
 }
 
@@ -423,10 +461,11 @@ h5,
     textarea,
     select {
       line-height: 1.5em;
+      font-size: 1.1em;
       color: $dark;
 
-      @media (min-width: $breakpoint-md-min) {
-        font-size: 1.1em;
+      @media (max-width: $breakpoint-xs-max) {
+        font-size: 1em;
       }
 
       &:-webkit-autofill,
@@ -441,14 +480,14 @@ h5,
   }
 
   .q-field__label {
-    font-size: 1.2em;
+    font-size: 1.3em;
+
+    @media (max-width: $breakpoint-xs-max) {
+      font-size: 1.2em;
+    }
 
     @media (max-width: $breakpoint-xxxs-max) {
       font-size: 1.1em;
-    }
-
-    @media (min-width: $breakpoint-md-min) {
-      font-size: 1.3em;
     }
   }
 
@@ -471,6 +510,25 @@ h5,
         &.text-medium-filled {
           font-weight: $medium;
         }
+      }
+    }
+  }
+}
+
+.drawer-mobile {
+  .q-field {
+    .q-field__control {
+      input,
+      textarea,
+      select {
+        font-size: 1em;
+      }
+    }
+    .q-field__label {
+      font-size: 1.2em;
+
+      @media (max-width: $breakpoint-xxxs-max) {
+        font-size: 1.1em;
       }
     }
   }

@@ -1,10 +1,10 @@
 <template>
-  <q-layout view="hhh LpR fFf">
+  <q-layout view="hHh LpR fFf">
     <q-header class="bg-transparent" :class="xs ? 'q-pa-md' : 'q-pa-lg'">
       <q-toolbar class="row justify-start q-pr-none">
         <router-link to="/" class="col-auto row items-center">
-          <img v-if="xs" src="~assets/logo-icon.svg" width="36px" />
-          <img v-else src="~assets/KomuraLogo-Azul.svg" />
+          <img v-if="xs" src="~assets/logo-icon.svg" width="36px" @mousedown.prevent />
+          <img v-else src="~assets/KomuraLogo-Azul.svg" @mousedown.prevent />
         </router-link>
         <div class="col-auto q-ml-auto">
           <q-btn
@@ -20,7 +20,7 @@
     </q-header>
 
     <q-page-container>
-      <router-view />
+      <router-view class="content" />
     </q-page-container>
   </q-layout>
 </template>

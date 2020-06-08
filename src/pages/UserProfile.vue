@@ -16,7 +16,7 @@ export default {
     };
   },
   components: {
-    'not-found': require('pages/Error404.vue').default
+    'not-found': require('pages/NotFound.vue').default
   },
   mixins: [currentUser],
   props: {

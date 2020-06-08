@@ -34,20 +34,20 @@
       :breakpoint="breakpoint"
       show-if-above
     >
-      <div class="column justify-between no-wrap full-height q-gutter-y-md">
+      <div class="column justify-between no-wrap full-height">
         <div class="col-auto menu-section">
           <menu-btn
             :icon="tabs.home.icon"
             :selected="isTab(tabs.home)"
             :to="{ name: tabs.home.key }"
             :label="tabs.home.key"
-            class="nav first last"
+            class="nav"
           />
         </div>
         <div class="col-auto menu-section">
           <menu-btn icon="img:statics/icons/exit.svg" label="logout" @click="$auth.logout()" />
         </div>
-        <div class="col-auto column justify-between q-gutter-y-md full-width no-wrap">
+        <div class="col-auto column justify-between full-width no-wrap menu-section">
           <div v-if="$q.platform.is.desktop" class="menu-section">
             <menu-btn big icon="o_group_add" label="newGroup" :to="{ name: 'newGroup' }" />
           </div>
@@ -59,7 +59,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view :fit="!drawerHidden" class="content page-component" />
+      <router-view :fit="!drawerHidden" class="content" />
     </q-page-container>
 
     <q-footer v-if="fitWidth" class="shadow-up">
@@ -147,71 +147,48 @@ export default {
 }
 
 .home-layout {
-  $header-padding-y: 4vh;
-  $header-height: calc(56px + #{$header-padding-y}); // toolbar height + header padding (top)
-  $footer-padding-y: 12px;
-  $footer-height: calc(
-    53px + (2 * #{$footer-padding-y})
-  ); // footer height + footer padding (top & bottom)
-
   .logo-menu {
     position: absolute;
   }
   &:not(.drawer-hidden) {
     .logo-menu {
       position: fixed;
-      top: $header-padding-y;
     }
   }
+
+  $toolbar-height: 50px;
+  $header-padding: 42px;
 
   .q-header {
-    padding: $header-padding-y 3.33vw 0 3.33vw;
-
-    .q-toolbar {
-      min-height: 56px;
-    }
-  }
-
-  .q-page-container {
-    padding-top: $header-height !important;
-    min-height: calc(100vh - #{$header-height}) !important;
-
-    .content {
-      padding: $header-padding-y 3.33vw 2vh 3.33vw;
-    }
+    padding: $header-padding;
   }
 
   &.drawer-mobile {
     .q-header {
-      padding-top: $header-padding-y;
-    }
-
-    .q-page-container {
-      padding-top: $header-height !important;
-      padding-bottom: $footer-height !important;
-      min-height: calc(100vh - #{$header-height} - #{$footer-height}) !important;
-
-      .content {
-        padding-top: $header-padding-y;
-      }
+      padding: $content-padding;
     }
   }
 
   .q-drawer {
+    padding: $content-padding;
+
     &.q-drawer--standard {
-      padding: $header-padding-y 0 2vh 2vw;
-      top: $header-height !important;
-    }
-    &.q-drawer--mobile {
-      padding: 2.5vw;
+      top: calc(
+        #{$toolbar-height} + 2 * #{$header-padding}
+      ) !important; // header height + padding (top & bottom)
+
+      padding-top: 0;
+      padding-right: 0;
     }
     .q-drawer__content {
       max-width: 100%;
     }
   }
 
-  .q-footer > div {
-    padding: $footer-padding-y 16px;
+  $footer-padding: 12px;
+
+  .q-footer {
+    padding: $footer-padding;
   }
 }
 </style>

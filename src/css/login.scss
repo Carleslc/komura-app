@@ -19,12 +19,8 @@
   }
 
   .container {
-    padding: 10vh 5vw 10vh 5vw;
+    padding: 10vh 5vw;
     max-width: 768px;
-
-    @media (max-width: $breakpoint-xs-max), (max-height: $breakpoint-xs-max) {
-      padding: 3vh 5vw 3vh 5vw;
-    }
   }
 
   .q-separator {
@@ -43,46 +39,52 @@
             // 15% of parent
             padding-left: 15%;
             padding-right: 15%;
+            padding-bottom: 64px;
             z-index: 1;
 
-            h1 {
+            h1,
+            h2 {
               width: 100%;
-              font-size: 5em;
-              font-weight: $medium;
               line-height: 1.5em;
-              margin-top: 16px;
-              margin-bottom: 16px;
+              margin-top: 8px;
+              margin-bottom: 8px;
+
+              @media (min-height: $breakpoint-xmd-min) {
+                margin-top: 16px;
+                margin-bottom: 16px;
+              }
+            }
+
+            h1 {
+              font-size: 4em;
+              font-weight: $medium;
 
               @media (max-width: $breakpoint-xmd-max) {
-                font-size: 4em;
+                font-size: 3.5em;
               }
 
               @media (max-height: $breakpoint-xs-max) {
-                font-size: 10vh;
+                font-size: 3em;
               }
 
-              @media (max-height: $breakpoint-xxxs-max) {
-                font-size: 3em;
+              @media (max-height: $breakpoint-xxs-max) {
+                font-size: 2.5em;
               }
             }
 
             h2 {
-              width: 100%;
               font-size: 2.5em;
               font-weight: normal;
-              line-height: 1.5em;
-              margin-top: 16px;
-              margin-bottom: 16px;
 
               @media (max-width: $breakpoint-xmd-max) {
                 font-size: 2em;
               }
 
               @media (max-height: $breakpoint-xs-max) {
-                font-size: 5vh;
+                font-size: 1.7em;
               }
 
-              @media (max-height: $breakpoint-xxxs-max) {
+              @media (max-height: $breakpoint-xxs-max) {
                 font-size: 1.5em;
               }
             }

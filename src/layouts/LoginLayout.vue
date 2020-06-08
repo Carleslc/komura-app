@@ -4,9 +4,9 @@
       <q-page class="row full-height justify-between">
         <div id="login-form" class="row col-xs-12 col-sm-6 col-md-5 col-xl-4 justify-center">
           <div class="container column full-height full-width">
-            <div class="header-logo col-auto">
+            <div class="header-logo col-auto" @mousedown.prevent>
               <router-link to="/">
-                <img alt="Kindly Network" src="~assets/KomuraReducido-Azul.svg" />
+                <img alt="Kindly Network" src="~assets/KomuraReducido-Azul.svg" draggable="false" />
               </router-link>
             </div>
             <div class="column col justify-center">
@@ -37,7 +37,10 @@
             class="full-height"
           >
             <q-carousel-slide v-for="(slide, i) in slides" :key="i" :name="i" :img-src="slide.path">
-              <div class="row full-height content-center text-white">
+              <div
+                class="row full-width full-height justify-center content-center text-white"
+                :class="{ 'text-center': $q.screen.gt.lg }"
+              >
                 <h1>{{ slide.title }}</h1>
                 <h2>{{ slide.subtitle }}</h2>
               </div>

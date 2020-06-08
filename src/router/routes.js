@@ -49,15 +49,21 @@ const routes = [
         component: () => import('pages/Index.vue')
       },
       {
-        name: 'publicGroup',
-        path: '/groups/:path*',
-        component: () => import('pages/Group.vue'),
-        props: true
-      },
-      {
         name: 'publicUserProfile',
         path: '/profile/:username',
         component: () => import('pages/UserProfile.vue'),
+        props: true
+      }
+    ]
+  },
+  {
+    path: '/',
+    component: () => import('layouts/PublicLayout.vue'),
+    children: [
+      {
+        name: 'publicGroup',
+        path: '/groups/:path*',
+        component: () => import('pages/Group.vue'),
         props: true
       }
     ]
@@ -93,7 +99,7 @@ if (process.env.MODE !== 'ssr') {
   routes.push({
     path: '*',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ name: 'notFound', path: '', component: () => import('pages/Error404.vue') }]
+    children: [{ name: 'notFound', path: '', component: () => import('pages/NotFound.vue') }]
   });
 }
 

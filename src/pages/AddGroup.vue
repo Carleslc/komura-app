@@ -52,7 +52,7 @@
           </k-field>
         </div>
       </div>
-      <div v-if="!split" class="row full-width justify-center q-mb-sm">
+      <div v-if="!split" class="row full-width justify-center">
         <submit-btn label="createGroup" :disabled="uncompleted" :loading="$apollo.loading" />
       </div>
     </q-form>
