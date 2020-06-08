@@ -1,5 +1,5 @@
 import { LocalStorage } from 'quasar';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash.isempty';
 
 export function saveData(key, defaultData) {
   function save() {

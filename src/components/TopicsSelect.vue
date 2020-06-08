@@ -46,7 +46,8 @@
 import { alphaLower, removeSpecial, words, similar, similarWords } from '@/utils/strings';
 import { getRandomColor } from '@/utils/colors';
 import { getTopics, topicsLabelColumn } from '@/graphql/getTopics';
-import { debounce, capitalize } from 'lodash';
+import debounce from 'lodash.debounce';
+import capitalize from 'lodash.capitalize';
 import screen from '@/mixins/screen';
 
 export default {
