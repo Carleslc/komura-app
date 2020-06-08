@@ -22,7 +22,7 @@
 <script>
 export default {
   components: {
-    'k-field': require('components/KField').default
+    'k-field': require('components/KField.vue').default
   },
   props: {
     value: {

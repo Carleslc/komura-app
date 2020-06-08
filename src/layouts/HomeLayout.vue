@@ -106,13 +106,21 @@ export default {
       return !this.menu || this.fitWidth;
     },
     displayName() {
-      return this.currentUser.given_name || this.currentUser.name;
+      if (this.currentUser.given_name) {
+        return this.currentUser.given_name;
+      }
+      if (this.$auth.loading) {
+        // currentUser will be updated
+        // so wait until next displayName call to avoid visual re-rendering changing name to given_name
+        return null;
+      }
+      return this.currentUser.name;
     },
     isHomePage() {
       return this.isTab(this.tabs.home);
     },
     withHeader() {
-      return !['userProfile', 'group'].includes(this.$route.name);
+      return !['home', 'userProfile', 'group'].includes(this.$route.name);
     },
     greetings() {
       return [this.tabs.home.key, 'group'].includes(this.$route.name);

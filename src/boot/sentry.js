@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import { Vue as VueIntegration } from '@sentry/integrations';
-import AuthService from '@/services/auth';
+import { onAuthUser } from '@/services/auth';
 import { i18n } from '@/boot/i18n';
 
 const ENABLED = process.env.PROD;
@@ -64,7 +64,7 @@ export default async ({ Vue }) => {
       integrations: [new VueIntegration({ Vue, attachProps: true })]
     });
 
-    AuthService.onUser(user => {
+    onAuthUser(user => {
       Sentry.configureScope(scope => {
         if (user) {
           const userScope = {

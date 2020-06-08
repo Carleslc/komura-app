@@ -4,11 +4,9 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
 import { split } from 'apollo-link';
-import { w3cwebsocket } from 'websocket';
-import fetch from 'node-fetch';
 import MessageTypes from 'subscriptions-transport-ws/dist/message-types';
 
-import AuthService from '@/services/auth';
+import { fetchAuthHeader } from '@/services/auth';
 import { globalErrorHandler } from '@/utils/errors';
 
 const onServer = process.env.SERVER;
@@ -20,7 +18,7 @@ const API = 'komura-backend.herokuapp.com/v1/graphql';
 
 const httpLinkConfig = {
   uri: `https://${API}`,
-  fetch: onServer ? fetch : undefined
+  fetch: onServer ? require('node-fetch') : undefined
 };
 
 const wsClient = new SubscriptionClient(
@@ -28,7 +26,7 @@ const wsClient = new SubscriptionClient(
   {
     reconnect: true
   },
-  onServer ? w3cwebsocket : undefined
+  onServer ? require('websocket') : undefined
 );
 
 const wsLink = new WebSocketLink(wsClient);
@@ -36,7 +34,7 @@ const wsLink = new WebSocketLink(wsClient);
 const authLink = setContext(async (request, { headers }) => {
   const contextHeaders = { ...headers };
 
-  const authHeader = await AuthService.instance.fetchAuthHeader();
+  const authHeader = await fetchAuthHeader();
 
   if (authHeader) {
     contextHeaders.Authorization = authHeader;

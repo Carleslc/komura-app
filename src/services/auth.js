@@ -9,29 +9,46 @@ import { report } from '@/boot/sentry';
 const USER_KEY = 'current-user';
 const REFRESH_TOKEN_ENDPOINT = 'https://europe-west1-komura-app.cloudfunctions.net/refreshToken';
 
-const CURRENT_USER_QUERY = require('@/graphql/client/getCurrentUser.gql');
-
 const Providers = {
   GOOGLE: 'google.com'
 };
 
+export function anonymousRole() {
+  return {
+    headers: {
+      'X-Hasura-Role': 'anonymous'
+    }
+  };
+}
+
+let instance;
+
+export function fetchAuthHeader() {
+  return instance.fetchAuthHeader();
+}
+
+export function setAuthApollo(apolloClient) {
+  return instance.setApollo(apolloClient);
+}
+
+const onUserListener = new Listener();
+
+export function onAuthUser(callback) {
+  if (instance && !instance.loading) {
+    callback(instance.user, instance.firebaseUser);
+  } else {
+    onUserListener.add(callback);
+  }
+}
+
 export default class AuthService {
-  static instance;
-
-  static onUserListener = new Listener();
-
   constructor(firebaseAuth, router) {
-    AuthService.instance = this;
+    instance = this;
     this.firebaseAuth = firebaseAuth;
     this.router = router;
     this.additionalUserInfo = {
       isNewUser: false,
       profile: {}
-    };
-    this.publicRole = {
-      headers: {
-        'X-Hasura-Role': 'anonymous'
-      }
     };
     this.onAuthHeaderListener = new Listener();
     this.load();
@@ -42,13 +59,8 @@ export default class AuthService {
     this.updateCurrentUser(LocalStorage.getItem(USER_KEY), false);
   }
 
-  static onUser(callback) {
-    const { instance } = AuthService;
-    if (instance && !instance.loading) {
-      callback(instance.user, instance.firebaseUser);
-    } else {
-      AuthService.onUserListener.add(callback);
-    }
+  static get publicRole() {
+    return anonymousRole();
   }
 
   get firebaseUser() {
@@ -56,7 +68,9 @@ export default class AuthService {
   }
 
   get user() {
-    const userData = this.apollo.readQuery({ query: CURRENT_USER_QUERY });
+    const userData = this.apollo.readQuery({
+      query: require('@/graphql/client/getCurrentUser.gql')
+    });
     return userData ? userData.currentUser : undefined;
   }
 
@@ -109,7 +123,7 @@ export default class AuthService {
   updateCurrentUser(user, persist = true) {
     if (user) {
       this.apollo.writeQuery({
-        query: CURRENT_USER_QUERY,
+        query: require('@/graphql/client/getCurrentUser.gql'),
         data: {
           currentUser: {
             description: null,
@@ -142,7 +156,7 @@ export default class AuthService {
         last_login: null
       });
     }
-    AuthService.onUserListener.consume(this.user, firebaseUser);
+    onUserListener.consume(this.user, firebaseUser);
   }
 
   socialSignInSuccess(authResult, redirectUrl) {
@@ -306,7 +320,7 @@ export default class AuthService {
       } else {
         // User is logged out
         onLoggedOut.call(this);
-        AuthService.onUserListener.consume();
+        onUserListener.consume();
       }
       this.loading = false;
     });
