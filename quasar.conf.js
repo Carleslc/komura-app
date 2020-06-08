@@ -65,9 +65,9 @@ module.exports = function config(ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       showProgress: true,
       gzip: true,
-      analyze: false,
+      analyze: true, // webpack-bundle-analyzer
       // Options below are automatically set depending on the env, set them if you want to override
-      // preloadChunks: false,
+      preloadChunks: true,
       // extractCSS: false,
 
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack

@@ -119,8 +119,8 @@ export default {
   },
   methods: {
     setDefaultColor() {
-      // timeout prevents img from being null
-      setTimeout(async () => {
+      // waiting for next tick prevents img from being null
+      this.$nextTick(async () => {
         this.defaultColor = await getMainColorAsync(
           this.$refs.banner.$el.querySelector('img'),
           this.defaultColor
