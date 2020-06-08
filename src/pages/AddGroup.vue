@@ -75,11 +75,11 @@ export default {
     };
   },
   components: {
-    'k-field': require('components/KField.vue').default,
-    'k-input': require('components/KInput.vue').default,
-    'topics-select': require('components/TopicsSelect.vue').default,
-    banner: require('components/Banner.vue').default,
-    'submit-btn': require('components/SubmitButton.vue').default
+    'k-field': () => import('components/KField.vue'),
+    'k-input': () => import('components/KInput.vue'),
+    'topics-select': () => import('components/TopicsSelect.vue'),
+    banner: () => import('components/Banner.vue'),
+    'submit-btn': () => import('components/SubmitButton.vue')
   },
   mixins: [
     currentUser,

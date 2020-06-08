@@ -16,7 +16,7 @@ export default {
     };
   },
   components: {
-    'not-found': require('pages/NotFound.vue').default
+    'not-found': () => import('pages/NotFound.vue')
   },
   mixins: [currentUser],
   props: {

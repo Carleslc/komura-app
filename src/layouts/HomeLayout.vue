@@ -86,8 +86,8 @@ export default {
     titleTemplate: title => `${title} | Komura`
   },
   components: {
-    'menu-btn': require('components/MenuButton.vue').default,
-    'user-profile-btn': require('components/UserProfileButton.vue').default
+    'menu-btn': () => import('components/MenuButton.vue'),
+    'user-profile-btn': () => import('components/UserProfileButton.vue')
   },
   mixins: [screen, currentUser],
   data() {

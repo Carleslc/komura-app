@@ -20,8 +20,8 @@ import { gravatar } from '@/services/gravatar';
 
 export default {
   components: {
-    'menu-btn': require('components/MenuButton.vue').default,
-    about: require('components/UserProfileAbout.vue').default
+    'menu-btn': () => import('components/MenuButton.vue'),
+    about: () => import('components/UserProfileAbout.vue')
   },
   props: {
     user: {

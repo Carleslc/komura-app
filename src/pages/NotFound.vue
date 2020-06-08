@@ -7,7 +7,7 @@
 <script>
 export default {
   components: {
-    'not-found': require('components/NotFound.vue').default
+    'not-found': () => import('components/NotFound.vue')
   }
 };
 </script>

@@ -73,8 +73,8 @@ export default {
     };
   },
   components: {
-    banner: require('components/Banner.vue').default,
-    'not-found': require('pages/NotFound.vue').default
+    banner: () => import('components/Banner.vue'),
+    'not-found': () => import('pages/NotFound.vue')
   },
   props: {
     path: {

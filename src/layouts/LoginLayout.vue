@@ -58,7 +58,7 @@ export default {
     titleTemplate: title => `${title} | Komura`
   },
   components: {
-    'social-providers': require('components/SocialProviders.vue').default
+    'social-providers': () => import('components/SocialProviders.vue')
   },
   data() {
     return {

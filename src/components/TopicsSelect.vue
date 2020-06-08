@@ -52,7 +52,7 @@ import screen from '@/mixins/screen';
 
 export default {
   components: {
-    'k-field': require('components/KField.vue').default
+    'k-field': () => import('components/KField.vue')
   },
   mixins: [screen],
   props: {
