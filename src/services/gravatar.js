@@ -5,7 +5,7 @@ const GRAVATAR_URL = 'https://www.gravatar.com/avatar/';
 const DEFAULT = 'wavatar';
 
 function hash(s) {
-  return md5(lowerCase(s));
+  return s ? md5(lowerCase(s)) : '';
 }
 
 export function gravatar(s, d = DEFAULT, options) {

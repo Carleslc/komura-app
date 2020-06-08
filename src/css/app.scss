@@ -1,7 +1,5 @@
 @import './fonts/Volte/font.scss';
 
-@import './login.scss';
-
 @import './emoji.scss';
 
 *:focus {
@@ -173,7 +171,7 @@ $content-padding-md: 42px;
 
   .q-btn__content {
     text-transform: none; // no-caps
-    font-weight: $medium;
+    font-weight: $font-medium;
     font-size: 1.2em;
     line-height: 1.2;
   }
@@ -233,7 +231,7 @@ p {
 .q-form {
   .label {
     font-size: 1.3em;
-    font-weight: $medium;
+    font-weight: $font-medium;
 
     @media (max-width: $breakpoint-xs-max) {
       font-size: 1.2em;
@@ -260,7 +258,7 @@ h5,
 .text-h4,
 .text-h5 {
   color: $dark;
-  font-weight: $medium;
+  font-weight: $font-medium;
   line-height: 1.2em;
 }
 
@@ -352,11 +350,11 @@ h5,
   }
 
   &-light {
-    font-weight: $light;
+    font-weight: $font-light;
   }
 
   &-medium {
-    font-weight: $medium;
+    font-weight: $font-medium;
   }
 
   &-bold {
@@ -365,7 +363,7 @@ h5,
 
   &-button {
     color: $primary;
-    font-weight: $medium;
+    font-weight: $font-medium;
     cursor: pointer;
   }
 
@@ -425,7 +423,7 @@ h5,
 .q-notification {
   .q-notification__message {
     font-size: 1.2em;
-    font-weight: $medium;
+    font-weight: $font-medium;
   }
 }
 
@@ -499,7 +497,7 @@ h5,
 
   .q-field__bottom {
     font-size: 1em;
-    font-weight: $medium;
+    font-weight: $font-medium;
   }
 
   &.filled {
@@ -508,7 +506,7 @@ h5,
       textarea,
       select {
         &.text-medium-filled {
-          font-weight: $medium;
+          font-weight: $font-medium;
         }
       }
     }
@@ -657,14 +655,14 @@ h5,
         input,
         textarea,
         select {
-          font-weight: $medium;
+          font-weight: $font-medium;
 
           &:-webkit-autofill,
           &:-webkit-autofill::first-line,
           &:-webkit-autofill:hover,
           &:-webkit-autofill:focus,
           &:-webkit-autofill:active {
-            font-weight: $medium;
+            font-weight: $font-medium;
           }
         }
       }
@@ -784,7 +782,7 @@ h5,
 
   .q-checkbox__label {
     color: $grey;
-    font-weight: $medium;
+    font-weight: $font-medium;
     overflow: hidden;
     text-overflow: ellipsis;
   }

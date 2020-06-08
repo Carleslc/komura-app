@@ -57,7 +57,7 @@
 
             h1 {
               font-size: 4em;
-              font-weight: $medium;
+              font-weight: $font-medium;
 
               @media (max-width: $breakpoint-xmd-max) {
                 font-size: 3.5em;
@@ -130,6 +130,8 @@
 
 // Social Providers
 
+@import './firebase-ui';
+
 .firebaseui-idp-list > .firebaseui-list-item {
   margin-bottom: 16px;
 }
@@ -172,7 +174,7 @@
 .firebaseui-idp-text,
 .firebaseui-idp-text-long,
 .firebaseui-idp-text-short {
-  font-weight: $medium;
+  font-weight: $font-medium;
   font-size: 1.3em;
   white-space: nowrap;
   overflow: auto;

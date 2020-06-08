@@ -82,3 +82,8 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+// $ import quasar variables
+@import '@/css/login.scss';
+</style>

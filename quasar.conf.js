@@ -11,13 +11,13 @@ module.exports = function config(ctx) {
     boot: ['sentry', 'i18n', 'firebase', 'auth', 'axios'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
-    css: ['utils.scss', 'firebase-ui.css', 'app.scss'],
+    css: ['app.scss', 'utils.scss'],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
     extras: [
       'material-icons-outlined',
-      'material-icons-round',
-      'eva-icons'
+      'material-icons-round'
+      // 'eva-icons',
       // 'mdi-v4',
       // 'ionicons-v4',
       // 'fontawesome-v5',
@@ -29,7 +29,7 @@ module.exports = function config(ctx) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
-      iconSet: 'eva-icons', // Quasar icon set
+      iconSet: 'material-icons-outlined', // Quasar icon set
       lang: 'es', // Quasar language pack
 
       // Possible values for "all":
@@ -60,6 +60,7 @@ module.exports = function config(ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
+      modern: false,
       scopeHoisting: true,
       vueRouterMode: 'history', // available values: 'hash', 'history'
       showProgress: true,
