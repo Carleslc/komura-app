@@ -65,7 +65,7 @@ module.exports = function config(ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
       showProgress: true,
       gzip: true,
-      analyze: true, // webpack-bundle-analyzer
+      analyze: false, // webpack-bundle-analyzer
       // Options below are automatically set depending on the env, set them if you want to override
       preloadChunks: true,
       // extractCSS: false,
