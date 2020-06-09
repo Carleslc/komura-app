@@ -47,7 +47,12 @@
             @update="setDefaultBanner"
           />
           <k-field label="banner">
-            <q-skeleton v-if="!banner" type="rect" animation="none" class="banner hoverable" />
+            <q-skeleton
+              v-if="!banner"
+              type="rect"
+              animation="none"
+              class="banner bg-light hoverable"
+            />
             <banner v-else :src="banner" />
           </k-field>
         </div>

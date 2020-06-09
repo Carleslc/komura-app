@@ -1,75 +1,77 @@
 <template>
-  <q-page v-if="found" class="container" :class="split ? 'row' : 'column'">
-    <div
-      class="column col-12 gutter-y-xl"
-      :class="{
-        'q-mb-xl': !split,
-        'col-lg-8': fit && ($apollo.loading || hasTopics),
-        'col-md-8': !fit && ($apollo.loading || hasTopics)
-      }"
-    >
-      <q-skeleton
-        v-if="$apollo.loading || !group.banner"
-        type="rect"
-        :animation="$apollo.loading || group.banner ? 'wave' : 'none'"
-        class="banner"
-      />
-      <banner
-        v-else
-        ref="banner"
-        :src="group.banner"
-        @load="setDefaultColor"
-        @error="loadingBanner = false"
-      />
-      <div class="row items-center no-wrap">
+  <q-page v-if="found">
+    <div class="container row">
+      <div
+        class="column col-12 gutter-y-xl"
+        :class="{
+          'col-lg-8': fit && side,
+          'col-md-8': !fit && side,
+          'with-side': side
+        }"
+      >
         <q-skeleton
-          v-if="loadingBanner"
-          type="QAvatar"
-          size="80px"
-          class="q-mr-lg"
-          :animation="$apollo.loading || group.banner ? 'wave' : 'none'"
+          v-if="$apollo.loading || !group.banner"
+          type="rect"
+          :animation="$apollo.loading ? 'wave' : 'none'"
+          class="banner"
         />
-        <q-avatar
+        <banner
           v-else
-          size="80px"
-          :style="`background: ${defaultColor}`"
-          class="col-auto group-image q-mr-lg"
-        >
-          <img v-if="group.image" draggable="false" :src="group.image" />
-        </q-avatar>
-        <q-skeleton v-if="$apollo.loading" type="text" width="50%" class="text-h2" />
-        <h2 v-else>{{ group.name }}</h2>
-      </div>
-      <div v-if="$apollo.loading">
-        <q-skeleton type="text" width="100%" class="text-lg" />
-        <q-skeleton type="text" width="100%" class="text-lg" />
-        <q-skeleton type="text" width="75%" class="text-lg" />
-      </div>
-      <p v-else-if="group.description" class="text-lg text-justify">{{ group.description }}</p>
-    </div>
-    <div
-      v-if="$apollo.loading || hasTopics"
-      class="column col-12 gutter-y-md inner"
-      :class="{
-        'col-lg-4': fit,
-        'col-md-4': !fit
-      }"
-    >
-      <div class="column gutter-y-md">
-        <q-skeleton v-if="$apollo.loading" type="text" width="64px" class="text-h5" />
-        <h5 v-else v-t="'topics'" />
-        <div v-if="$apollo.loading" class="row">
-          <q-skeleton v-for="i in 2" :key="i" type="QChip" width="96px" class="q-mr-sm" />
-        </div>
-        <div v-else class="row">
-          <q-chip
-            v-for="topic in group.topics"
-            :key="topic.name"
-            :color="topic.color"
-            :label="topic.label"
-            text-color="white"
-            class="q-mr-xs"
+          ref="banner"
+          :src="group.banner"
+          @load="setDefaultColor"
+          @error="loadingBanner = false"
+        />
+        <div class="row items-center no-wrap">
+          <q-skeleton
+            v-if="loadingBanner"
+            type="QAvatar"
+            size="80px"
+            class="q-mr-lg"
+            :animation="$apollo.loading || group.banner ? 'wave' : 'none'"
           />
+          <q-avatar
+            v-else
+            size="80px"
+            :style="`background: ${defaultColor}`"
+            class="col-auto group-image q-mr-lg"
+          >
+            <img v-if="group.image" draggable="false" :src="group.image" />
+          </q-avatar>
+          <q-skeleton v-if="$apollo.loading" type="text" width="50%" class="text-h2" />
+          <h2 v-else>{{ group.name }}</h2>
+        </div>
+        <div v-if="$apollo.loading">
+          <q-skeleton type="text" width="100%" class="text-lg" />
+          <q-skeleton type="text" width="100%" class="text-lg" />
+          <q-skeleton type="text" width="75%" class="text-lg" />
+        </div>
+        <p v-else-if="group.description" class="text-lg text-justify">{{ group.description }}</p>
+      </div>
+      <div
+        v-if="side"
+        class="column col-12 side"
+        :class="{
+          'col-lg-4': fit,
+          'col-md-4': !fit
+        }"
+      >
+        <div v-if="$apollo.loading || hasTopics" class="gutter-y-md">
+          <q-skeleton v-if="$apollo.loading" type="text" width="64px" class="text-h5" />
+          <h5 v-else v-t="'topics'" />
+          <div v-if="$apollo.loading" class="row">
+            <q-skeleton v-for="i in 2" :key="i" type="QChip" width="96px" class="q-mr-sm" />
+          </div>
+          <div v-else-if="hasTopics" class="row">
+            <q-chip
+              v-for="topic in group.topics"
+              :key="topic.name"
+              :color="topic.color"
+              :label="topic.label"
+              text-color="white"
+              class="q-mr-xs"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -146,6 +148,9 @@ export default {
     },
     split() {
       return this.fit ? this.$q.screen.gt.md : this.$q.screen.gt.sm;
+    },
+    side() {
+      return this.$apollo.loading || this.hasTopics;
     }
   },
   methods: {
@@ -170,52 +175,54 @@ export default {
     width: 80px;
   }
 
+  @media (min-width: $breakpoint-lg-min) {
+    > .column.side {
+      -webkit-transition: padding-left 100ms ease-in-out;
+      -moz-transition: padding-left 100ms ease-in-out;
+      -o-transition: padding-left 100ms ease-in-out;
+      transition: padding-left 100ms ease-in-out;
+
+      padding-left: $padding-xlg;
+    }
+  }
+
   > .column {
     -webkit-transition: padding-left 100ms ease-in-out;
     -moz-transition: padding-left 100ms ease-in-out;
     -o-transition: padding-left 100ms ease-in-out;
     transition: padding-left 100ms ease-in-out;
 
-    &:last-child {
+    margin-bottom: $padding-lg;
+
+    &.with-side {
+      margin-bottom: $padding-xl;
+    }
+
+    &.side {
       transition: none;
-
-      &.inner {
-        @media (min-width: $breakpoint-lg-min) {
-          -webkit-transition: padding-left 100ms ease-in-out;
-          -moz-transition: padding-left 100ms ease-in-out;
-          -o-transition: padding-left 100ms ease-in-out;
-          transition: padding-left 100ms ease-in-out;
-
-          padding-left: 42px;
-        }
-      }
     }
   }
 }
 
 .drawer-hidden {
   .container {
-    > .column {
-      @media (min-width: $breakpoint-md-min) {
-        padding-left: 42px;
-      }
-
-      @media (min-width: $breakpoint-lg-min) {
+    @media (min-width: $breakpoint-lg-min) {
+      > .column:first-child {
         // padding so logo is vertically centered (16px + 36px + 16px + 42px)
         $padding: 110px;
+        padding-left: $padding;
+        padding-right: $padding;
 
-        &:first-child {
-          padding-left: $padding;
+        &.with-side {
+          margin-bottom: $padding-xl;
+          padding-right: 0;
         }
+      }
+    }
 
-        &.inner {
-          -webkit-transition: padding-right 100ms ease-in-out;
-          -moz-transition: padding-right 100ms ease-in-out;
-          -o-transition: padding-right 100ms ease-in-out;
-          transition: padding-right 100ms ease-in-out;
-
-          padding-right: $padding;
-        }
+    > .column.side {
+      @media (min-width: $breakpoint-md-min) {
+        padding-left: $padding-xlg;
       }
     }
   }

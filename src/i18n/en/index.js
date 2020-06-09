@@ -53,5 +53,5 @@ export default {
   limitTopics: 'Select up to {max} topics.',
 
   // Group
-  noGroup: "There is nothing here, maybe the group has been moved or doesn't exist.",
+  noGroup: "The group you're looking for is private, has been moved or doesn't exist.",
 };

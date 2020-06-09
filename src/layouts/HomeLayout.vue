@@ -2,7 +2,11 @@
   <q-layout
     view="hhh LpR lFf"
     class="home-layout"
-    :class="{ 'drawer-mobile': fitWidth, 'drawer-hidden': drawerHidden }"
+    :class="{
+      'drawer-mobile': fitWidth || fitHeight,
+      'drawer-hidden': drawerHidden,
+      'fit-height': fitHeight
+    }"
   >
     <q-header>
       <q-toolbar class="row justify-start" :class="fitWidth ? 'q-px-none' : 'q-px-md'">
@@ -29,7 +33,7 @@
     <q-drawer
       v-if="!fitWidth"
       v-model="menu"
-      behavior="desktop"
+      :behavior="fitHeight ? 'mobile' : 'desktop'"
       :width="320"
       :breakpoint="breakpoint"
       show-if-above
@@ -158,6 +162,7 @@ export default {
   .logo-menu {
     position: absolute;
   }
+
   &:not(.drawer-hidden) {
     .logo-menu {
       position: fixed;
@@ -165,10 +170,27 @@ export default {
   }
 
   $toolbar-height: 50px;
-  $header-padding: 42px;
 
   .q-header {
-    padding: $header-padding;
+    padding: $padding-xlg;
+  }
+
+  &.fit-height {
+    .q-header {
+      padding: $content-padding $padding-xlg;
+    }
+
+    $header-height: calc(
+      #{$toolbar-height} + 2 * #{$content-padding}
+    ); // toolbar height + header padding (top & bottom)
+
+    .q-drawer.q-drawer--standard {
+      top: $header-height !important;
+    }
+
+    .q-page-container {
+      padding-top: $header-height !important;
+    }
   }
 
   &.drawer-mobile {
@@ -178,16 +200,38 @@ export default {
   }
 
   .q-drawer {
-    padding: $content-padding;
+    padding-left: $content-padding;
 
     &.q-drawer--standard {
       top: calc(
-        #{$toolbar-height} + 2 * #{$header-padding}
-      ) !important; // header height + padding (top & bottom)
+        #{$toolbar-height} + 2 * #{$padding-xlg}
+      ) !important; // toolbar height + header padding (top & bottom)
 
-      padding-top: 0;
-      padding-right: 0;
+      .q-drawer__content {
+        > div > :last-child {
+          padding-bottom: $content-padding;
+        }
+      }
     }
+
+    &.q-drawer--mobile {
+      $mobile-padding: 24px;
+
+      padding-left: $mobile-padding;
+      padding-right: $mobile-padding;
+
+      .q-drawer__content {
+        > div {
+          > :first-child {
+            padding-top: $mobile-padding;
+          }
+          > :last-child {
+            padding-bottom: $mobile-padding;
+          }
+        }
+      }
+    }
+
     .q-drawer__content {
       max-width: 100%;
     }

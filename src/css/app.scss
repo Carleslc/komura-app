@@ -200,15 +200,18 @@ $content-padding-md: 42px;
 }
 
 .container .q-btn {
-  width: 100%;
   min-width: 10vw;
   min-height: $btn-min-height;
   height: $btn-height;
-  padding: 0 16px 0 16px;
+  padding: 0 64px;
   align-items: center;
 
   .q-btn__content {
     font-size: 1.5em;
+  }
+
+  @media (max-width: $breakpoint-xs-max) {
+    padding: 0 32px;
   }
 }
 
@@ -851,11 +854,19 @@ h5,
 }
 
 .q-skeleton {
-  background: $grey-lighter;
+  background: $grey-hover;
   transition: background 0.3s ease-in-out;
+
+  &.bg-light {
+    background: $grey-lighter;
+  }
 
   &.hoverable:hover {
     background: $grey-hover-2;
+  }
+
+  &::before {
+    content: none;
   }
 }
 
@@ -863,9 +874,10 @@ h5,
   width: 100%;
   border-radius: 20px;
   max-height: 256px;
+  max-width: 1080px;
 
   &.q-skeleton {
-    padding-bottom: 25%; // aspect ratio 4:1
+    padding-bottom: calc(min(25%, 256px)); // aspect ratio 4:1
   }
 }
 

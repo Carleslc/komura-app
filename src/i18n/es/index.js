@@ -57,5 +57,5 @@ export default {
   limitTopics: 'Puedes seleccionar hasta {max} temas.',
 
   // Group
-  noGroup: 'No hay nada aquí, el grupo que buscas se ha movido o no existe.',
+  noGroup: 'El grupo que buscas no existe, es privado o ha cambiado de dirección.',
 };
