@@ -1,11 +1,11 @@
 <template>
-  <q-page v-if="found" class="row container">
+  <q-page v-if="found" class="container" :class="split ? 'row' : 'column'">
     <div
-      class="column col-12 q-gutter-y-xl"
+      class="column col-12 gutter-y-xl"
       :class="{
-        'q-pb-xl': fit ? $q.screen.lt.lg : $q.screen.lt.md,
-        'col-lg-8': fit,
-        'col-md-8': !fit
+        'q-mb-xl': !split,
+        'col-lg-8': fit && ($apollo.loading || hasTopics),
+        'col-md-8': !fit && ($apollo.loading || hasTopics)
       }"
     >
       <q-skeleton
@@ -45,24 +45,40 @@
         <q-skeleton type="text" width="100%" class="text-lg" />
         <q-skeleton type="text" width="75%" class="text-lg" />
       </div>
-      <p v-else class="text-lg text-justify">{{ group.description }}</p>
+      <p v-else-if="group.description" class="text-lg text-justify">{{ group.description }}</p>
     </div>
     <div
-      class="column col-12 inner q-gutter-y-xl"
+      v-if="$apollo.loading || hasTopics"
+      class="column col-12 gutter-y-md inner"
       :class="{
         'col-lg-4': fit,
         'col-md-4': !fit
       }"
     >
-      <q-skeleton v-if="$apollo.loading" type="text" width="64px" class="text-h5 q-pb-md" />
-      <h5 v-else class="q-pb-md">{{ $t('topics') }}</h5>
+      <div class="column gutter-y-md">
+        <q-skeleton v-if="$apollo.loading" type="text" width="64px" class="text-h5" />
+        <h5 v-else v-t="'topics'" />
+        <div v-if="$apollo.loading" class="row">
+          <q-skeleton v-for="i in 2" :key="i" type="QChip" width="96px" class="q-mr-sm" />
+        </div>
+        <div v-else class="row">
+          <q-chip
+            v-for="topic in group.topics"
+            :key="topic.name"
+            :color="topic.color"
+            :label="topic.label"
+            text-color="white"
+            class="q-mr-xs"
+          />
+        </div>
+      </div>
     </div>
   </q-page>
   <not-found v-else message="noGroup" emoji="desert" />
 </template>
 
 <script>
-import { getMainColorAsync, getPaletteColor } from '@/utils/colors';
+import { getMainColorAsync, getPaletteColor, getRandomColor } from '@/utils/colors';
 import { getClientGroup, toClientGroup } from '@/graphql/client/getGroup';
 import { getGroup } from '@/graphql/getGroup';
 
@@ -112,9 +128,24 @@ export default {
         },
         update(data) {
           this.found = data.groups && data.groups.length > 0;
-          return this.found ? toClientGroup(data.groups[0]) : {};
+          if (this.found) {
+            const group = toClientGroup(data.groups[0]);
+            group.topics.forEach(topic => {
+              topic.color = getRandomColor();
+            });
+            return group;
+          }
+          return {};
         }
       };
+    }
+  },
+  computed: {
+    hasTopics() {
+      return this.group.topics && this.group.topics.length > 0;
+    },
+    split() {
+      return this.fit ? this.$q.screen.gt.md : this.$q.screen.gt.sm;
     }
   },
   methods: {
@@ -134,34 +165,29 @@ export default {
 
 <style lang="scss">
 .container {
-  -webkit-transition: padding-right 50ms ease-in-out;
-  -moz-transition: padding-right 50ms ease-in-out;
-  -o-transition: padding-right 50ms ease-in-out;
-  transition: padding-right 50ms ease-in-out;
-
   .group-image {
     height: 80px;
     width: 80px;
   }
 
   > .column {
-    &:first-child {
-      -webkit-transition: padding-left 100ms ease-in-out;
-      -moz-transition: padding-left 100ms ease-in-out;
-      -o-transition: padding-left 100ms ease-in-out;
-      transition: padding-left 100ms ease-in-out;
-    }
+    -webkit-transition: padding-left 100ms ease-in-out;
+    -moz-transition: padding-left 100ms ease-in-out;
+    -o-transition: padding-left 100ms ease-in-out;
+    transition: padding-left 100ms ease-in-out;
 
-    &.inner {
-      -webkit-transition: padding-left 50ms ease-in-out;
-      -moz-transition: padding-left 50ms ease-in-out;
-      -o-transition: padding-left 50ms ease-in-out;
-      transition: padding-left 50ms ease-in-out;
-    }
+    &:last-child {
+      transition: none;
 
-    @media (min-width: $breakpoint-lg-min) {
       &.inner {
-        padding-left: 3.33vw;
+        @media (min-width: $breakpoint-lg-min) {
+          -webkit-transition: padding-left 100ms ease-in-out;
+          -moz-transition: padding-left 100ms ease-in-out;
+          -o-transition: padding-left 100ms ease-in-out;
+          transition: padding-left 100ms ease-in-out;
+
+          padding-left: 42px;
+        }
       }
     }
   }
@@ -171,19 +197,25 @@ export default {
   .container {
     > .column {
       @media (min-width: $breakpoint-md-min) {
-        &.inner {
-          padding-left: 3.33vw;
-        }
+        padding-left: 42px;
       }
-    }
 
-    @media (min-width: $breakpoint-lg-min) {
-      // padding so logo is vertically centered (2*16px + 36px + 3.33vw);
-      $padding: calc(68px + 3.33vw);
-      padding-right: $padding;
+      @media (min-width: $breakpoint-lg-min) {
+        // padding so logo is vertically centered (16px + 36px + 16px + 42px)
+        $padding: 110px;
 
-      > .column {
-        padding-left: $padding;
+        &:first-child {
+          padding-left: $padding;
+        }
+
+        &.inner {
+          -webkit-transition: padding-right 100ms ease-in-out;
+          -moz-transition: padding-right 100ms ease-in-out;
+          -o-transition: padding-right 100ms ease-in-out;
+          transition: padding-right 100ms ease-in-out;
+
+          padding-right: $padding;
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <q-page class="row justify-center">
-    <not-found />
+    <not-found :message="message" :emoji="emoji" />
   </q-page>
 </template>
 
@@ -8,6 +8,16 @@
 export default {
   components: {
     'not-found': () => import('components/NotFound.vue')
+  },
+  props: {
+    message: {
+      type: String,
+      default: '404'
+    },
+    emoji: {
+      type: String,
+      default: 'sweat'
+    }
   }
 };
 </script>
