@@ -87,7 +87,7 @@ import { getGroup } from '@/graphql/getGroup';
 export default {
   meta() {
     return {
-      title: this.group.name
+      title: this.group.name || this.path
     };
   },
   components: {
@@ -137,6 +137,7 @@ export default {
             });
             return group;
           }
+          this.$emit('not-found');
           return {};
         }
       };
@@ -192,20 +193,39 @@ export default {
     -o-transition: padding-left 100ms ease-in-out;
     transition: padding-left 100ms ease-in-out;
 
-    margin-bottom: $padding-lg;
-
-    &.with-side {
-      margin-bottom: $padding-xl;
-    }
-
     &.side {
       transition: none;
+    }
+  }
+
+  @media (max-width: $breakpoint-sm-max) {
+    > .column {
+      &.with-side,
+      &:not(:last-child) {
+        margin-bottom: $padding-xl;
+      }
+    }
+  }
+}
+
+.drawer-hidden,
+.no-header {
+  .container {
+    @media (min-width: $breakpoint-md-min) {
+      > .column.side {
+        padding-left: $padding-xlg;
+      }
     }
   }
 }
 
 .drawer-hidden {
   .container {
+    @media (max-width: $breakpoint-md-max) {
+      > .column {
+        margin-bottom: 0;
+      }
+    }
     @media (min-width: $breakpoint-lg-min) {
       > .column:first-child {
         // padding so logo is vertically centered (16px + 36px + 16px + 42px)
@@ -214,15 +234,8 @@ export default {
         padding-right: $padding;
 
         &.with-side {
-          margin-bottom: $padding-xl;
           padding-right: 0;
         }
-      }
-    }
-
-    > .column.side {
-      @media (min-width: $breakpoint-md-min) {
-        padding-left: $padding-xlg;
       }
     }
   }

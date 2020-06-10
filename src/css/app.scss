@@ -15,12 +15,10 @@
   background: white;
 }
 
-$content-padding-md: 42px;
-
 .content {
-  padding-bottom: 24px;
-  padding-left: $content-padding;
-  padding-right: $content-padding;
+  padding-bottom: $content-padding-xs;
+  padding-left: $content-padding-sm;
+  padding-right: $content-padding-sm;
 
   @media (min-width: $breakpoint-md-min) {
     padding-left: $content-padding-md;
@@ -30,10 +28,15 @@ $content-padding-md: 42px;
 
 .no-header {
   .content {
-    padding-top: $content-padding;
+    padding-top: $content-padding-sm;
 
     @media (min-width: $breakpoint-md-min) {
       padding-top: $content-padding-md;
+    }
+
+    @media (min-width: $breakpoint-xmd-min) {
+      padding-left: $content-padding-xl;
+      padding-right: $content-padding-xl;
     }
   }
 }
@@ -864,17 +867,12 @@ h5,
   &.hoverable:hover {
     background: $grey-hover-2;
   }
-
-  &::before {
-    content: none;
-  }
 }
 
 .banner {
   width: 100%;
   border-radius: 20px;
   max-height: 256px;
-  max-width: 1080px;
 
   &.q-skeleton {
     padding-bottom: calc(min(25%, 256px)); // aspect ratio 4:1

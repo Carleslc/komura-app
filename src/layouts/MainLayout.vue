@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="hHh LpR fFf">
-    <q-header class="bg-transparent" :class="xs ? 'q-pa-md' : 'q-pa-lg'">
+  <q-layout view="hHh LpR fFf" :class="{ 'no-header': !header }">
+    <q-header v-if="header" class="bg-transparent" :class="xs ? 'q-pa-md' : 'q-pa-lg'">
       <q-toolbar class="row justify-start q-pr-none">
         <router-link to="/" class="col-auto row items-center">
           <img v-if="xs" src="~assets/logo-icon.svg" width="36px" @mousedown.prevent />
@@ -20,7 +20,7 @@
     </q-header>
 
     <q-page-container>
-      <router-view class="content" />
+      <router-view class="content" @not-found="header = true" />
     </q-page-container>
   </q-layout>
 </template>
@@ -30,10 +30,23 @@ import isLoggedIn from '@/mixins/isLoggedIn';
 import screen from '@/mixins/screen';
 
 export default {
-  meta: {
-    titleTemplate: title => `${title} | Komura`
+  meta() {
+    return {
+      titleTemplate: title => (this.branded ? `${title} | Komura` : title)
+    };
   },
   mixins: [isLoggedIn, screen],
+  props: {
+    branded: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      header: this.branded
+    };
+  },
   computed: {
     loginKey() {
       return this.isLoggedIn ? 'home' : 'login';

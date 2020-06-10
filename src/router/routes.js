@@ -1,4 +1,9 @@
 const routes = [
+  // Redirects
+  {
+    path: '/groups',
+    redirect: '/'
+  },
   // Authenticated
   {
     path: '/',
@@ -58,7 +63,8 @@ const routes = [
   },
   {
     path: '/',
-    component: () => import('layouts/PublicLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
+    props: { branded: false },
     children: [
       {
         name: 'publicGroup',
@@ -86,11 +92,6 @@ const routes = [
       }
     ],
     meta: { auth: false, redirect: { name: 'home' } }
-  },
-  // Redirects
-  {
-    path: '/groups',
-    redirect: '/'
   }
 ];
 

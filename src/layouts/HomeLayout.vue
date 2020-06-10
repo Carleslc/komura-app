@@ -177,11 +177,11 @@ export default {
 
   &.fit-height {
     .q-header {
-      padding: $content-padding $padding-xlg;
+      padding: $content-padding-sm $padding-xlg;
     }
 
     $header-height: calc(
-      #{$toolbar-height} + 2 * #{$content-padding}
+      #{$toolbar-height} + 2 * #{$content-padding-sm}
     ); // toolbar height + header padding (top & bottom)
 
     .q-drawer.q-drawer--standard {
@@ -195,12 +195,12 @@ export default {
 
   &.drawer-mobile {
     .q-header {
-      padding: $content-padding;
+      padding: $content-padding-sm;
     }
   }
 
   .q-drawer {
-    padding-left: $content-padding;
+    padding-left: $content-padding-sm;
 
     &.q-drawer--standard {
       top: calc(
@@ -209,7 +209,7 @@ export default {
 
       .q-drawer__content {
         > div > :last-child {
-          padding-bottom: $content-padding;
+          padding-bottom: $content-padding-sm;
         }
       }
     }
