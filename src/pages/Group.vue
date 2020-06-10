@@ -87,7 +87,7 @@ import { getGroup } from '@/graphql/getGroup';
 export default {
   meta() {
     return {
-      title: this.group.name || this.path
+      title: this.group.name
     };
   },
   components: {

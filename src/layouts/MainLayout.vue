@@ -32,7 +32,8 @@ import screen from '@/mixins/screen';
 export default {
   meta() {
     return {
-      titleTemplate: title => (this.branded ? `${title} | Komura` : title)
+      title: this.branded ? 'Komura' : '',
+      titleTemplate: title => (this.branded && title !== 'Komura' ? `${title} | Komura` : title)
     };
   },
   mixins: [isLoggedIn, screen],
