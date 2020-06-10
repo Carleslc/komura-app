@@ -53,10 +53,10 @@
 </template>
 
 <script>
+import meta from '@/utils/meta';
+
 export default {
-  meta: {
-    titleTemplate: title => `${title} | Komura`
-  },
+  meta,
   components: {
     'social-providers': () => import('components/SocialProviders.vue')
   },

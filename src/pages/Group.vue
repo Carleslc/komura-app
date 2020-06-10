@@ -87,7 +87,13 @@ import { getGroup } from '@/graphql/getGroup';
 export default {
   meta() {
     return {
-      title: this.group.name
+      title: this.group.name,
+      meta: {
+        description: { name: 'description', content: this.group.description },
+        og_description: { property: 'og:description', content: this.group.description },
+        site_name: { property: 'og:site_name', content: this.group.name },
+        image: { property: 'og:image', content: this.group.banner }
+      }
     };
   },
   components: {

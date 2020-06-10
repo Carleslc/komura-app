@@ -84,11 +84,10 @@
 <script>
 import currentUser from '@/mixins/currentUser';
 import screen from '@/mixins/screen';
+import meta from '@/utils/meta';
 
 export default {
-  meta: {
-    titleTemplate: title => `${title} | Komura`
-  },
+  meta,
   components: {
     'menu-btn': () => import('components/MenuButton.vue'),
     'user-profile-btn': () => import('components/UserProfileButton.vue')

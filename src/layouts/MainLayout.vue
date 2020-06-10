@@ -28,12 +28,14 @@
 <script>
 import isLoggedIn from '@/mixins/isLoggedIn';
 import screen from '@/mixins/screen';
+import meta from '@/utils/meta';
 
 export default {
   meta() {
     return {
-      title: this.branded ? 'Komura' : '',
-      titleTemplate: title => (this.branded && title !== 'Komura' ? `${title} | Komura` : title)
+      title: this.branded ? meta.title : '',
+      titleTemplate: title => (this.branded ? meta.titleTemplate(title) : title),
+      meta: meta.meta
     };
   },
   mixins: [isLoggedIn, screen],
