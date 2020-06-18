@@ -3,6 +3,9 @@ import { i18n } from 'boot/i18n';
 import { Notify } from 'quasar';
 
 export function notifyError(message) {
+  if (message instanceof Error) {
+    message = undefined; // do not show raw error messages to GUI
+  }
   Notify.create({
     type: 'negative',
     timeout: 5000,

@@ -850,6 +850,9 @@ h5,
     &-md > *:not(:first-child) {
       margin-top: 16px;
     }
+    &-xlg > *:not(:first-child) {
+      margin-top: $padding-xlg;
+    }
     &-xl > *:not(:first-child) {
       margin-top: 48px;
     }

@@ -2,7 +2,7 @@
   <q-page v-if="found">
     <div class="container row">
       <div
-        class="column col-12 gutter-y-xl"
+        class="column col-12 gutter-y-xlg"
         :class="{
           'col-lg-8': fit && side,
           'col-md-8': !fit && side,
@@ -50,7 +50,7 @@
       </div>
       <div
         v-if="side"
-        class="column col-12 side"
+        class="column col-12 side gutter-y-xlg"
         :class="{
           'col-lg-4': fit,
           'col-md-4': !fit
@@ -204,12 +204,9 @@ export default {
     }
   }
 
-  @media (max-width: $breakpoint-sm-max) {
-    > .column {
-      &.with-side,
-      &:not(:last-child) {
-        margin-bottom: $padding-xl;
-      }
+  @media (max-width: $breakpoint-md-max) {
+    > .column.with-side {
+      margin-bottom: $padding-xlg;
     }
   }
 }
@@ -218,6 +215,9 @@ export default {
 .no-header {
   .container {
     @media (min-width: $breakpoint-md-min) {
+      > .column.with-side {
+        margin-bottom: 0;
+      }
       > .column.side {
         padding-left: $padding-xlg;
       }
@@ -227,11 +227,6 @@ export default {
 
 .drawer-hidden {
   .container {
-    @media (max-width: $breakpoint-md-max) {
-      > .column {
-        margin-bottom: 0;
-      }
-    }
     @media (min-width: $breakpoint-lg-min) {
       > .column:first-child {
         // padding so logo is vertically centered (16px + 36px + 16px + 42px)
