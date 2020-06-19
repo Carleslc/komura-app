@@ -15,3 +15,7 @@ export function gravatar(s, d = DEFAULT, options) {
 export function defaultAvatar(s, d, options) {
   return gravatar(s, d, { ...options, f: 'y' });
 }
+
+export function identicon(s) {
+  return defaultAvatar(s, 'identicon');
+}

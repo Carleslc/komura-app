@@ -170,7 +170,13 @@ export default {
                 name: 'group',
                 params: { path: group.path }
               });
-            }
+            },
+            refetchQueries: [
+              {
+                query: require('@/graphql/getUserGroups.gql'),
+                variables: { id: this.currentUser.id }
+              }
+            ]
           })
           .catch(
             parseError(

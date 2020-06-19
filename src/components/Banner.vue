@@ -2,10 +2,12 @@
   <q-img
     v-if="src"
     :src="src"
+    no-default-spinner
     native-context-menu
     class="banner"
     img-class="non-draggable"
-    @load="$emit('load')"
+    :class="{ loading: loading }"
+    @load="load"
     @error="$emit('error')"
   />
 </template>
@@ -15,7 +17,18 @@ export default {
   props: {
     src: {
       type: String,
-      required: true
+      default: ''
+    }
+  },
+  data() {
+    return {
+      loading: true
+    };
+  },
+  methods: {
+    load() {
+      this.loading = false;
+      this.$emit('load');
     }
   }
 };

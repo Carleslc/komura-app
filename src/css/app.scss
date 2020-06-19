@@ -16,13 +16,18 @@
 }
 
 .content {
-  padding-bottom: $content-padding-xs;
+  padding-bottom: $content-padding-sm;
   padding-left: $content-padding-sm;
   padding-right: $content-padding-sm;
 
   @media (min-width: $breakpoint-md-min) {
+    padding-bottom: $content-padding-md;
     padding-left: $content-padding-md;
     padding-right: $content-padding-md;
+  }
+
+  &.inner {
+    padding-top: $content-padding-sm;
   }
 }
 
@@ -312,7 +317,7 @@ h5,
   }
   h3,
   .text-h3 {
-    font-size: 1.5em;
+    font-size: 1.8em;
   }
 }
 
@@ -327,7 +332,7 @@ h5,
   }
   h3,
   .text-h3 {
-    font-size: 1.5em;
+    font-size: 1.8em;
   }
 }
 
@@ -418,7 +423,9 @@ h5,
 }
 
 .q-tooltip {
-  background-color: $dark-light;
+  &.dark {
+    background-color: $dark-light;
+  }
 
   p,
   div {
@@ -845,10 +852,30 @@ h5,
   }
 }
 
+.pr {
+  &-lg {
+    padding-right: 24px;
+
+    @media (max-width: $breakpoint-md-max) {
+      padding-right: 12px;
+    }
+  }
+  &-min {
+    &-md {
+      @media (max-width: $breakpoint-sm-max) {
+        padding-right: 0;
+      }
+    }
+  }
+}
+
 .gutter {
   &-y {
     &-md > *:not(:first-child) {
       margin-top: 16px;
+    }
+    &-lg > *:not(:first-child) {
+      margin-top: 24px;
     }
     &-xlg > *:not(:first-child) {
       margin-top: $padding-xlg;
@@ -856,16 +883,19 @@ h5,
     &-xl > *:not(:first-child) {
       margin-top: 48px;
     }
+    &-max {
+      &-sm > *:not(:first-child) {
+        @media (min-width: $breakpoint-md-min) {
+          margin-top: 0;
+        }
+      }
+    }
   }
 }
 
 .q-skeleton {
   background: $grey-hover;
   transition: background 0.3s ease-in-out;
-
-  &.bg-light {
-    background: $grey-lighter;
-  }
 
   &.hoverable:hover {
     background: $grey-hover-2;
@@ -875,11 +905,29 @@ h5,
 .banner {
   width: 100%;
   border-radius: 20px;
-  max-height: 256px;
+
+  $max-height: 256px;
+  max-height: $max-height;
+
+  &.loading {
+    min-height: $max-height;
+
+    @media (max-width: $breakpoint-sm-max) {
+      min-height: 218px;
+    }
+  }
 
   &.q-skeleton {
-    padding-bottom: calc(min(25%, 256px)); // aspect ratio 4:1
+    padding-bottom: calc(min(25%, #{$max-height})); // aspect ratio 4:1
   }
+}
+
+.bg-light {
+  background-color: $grey-lighter;
+}
+
+.rounded {
+  border-radius: 20px;
 }
 
 .gt-min {

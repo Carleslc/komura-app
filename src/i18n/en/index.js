@@ -35,6 +35,7 @@ export default {
   home: 'Home',
   welcome: 'Welcome',
   newGroup: 'New group',
+  myGroups: 'My groups',
 
   // Create group
   name: 'Name',
@@ -54,4 +55,7 @@ export default {
 
   // Group
   noGroup: "The group you're looking for is private, has been moved or doesn't exist.",
+
+  // Members
+  admin: 'Administrator',
 };

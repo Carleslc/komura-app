@@ -1,0 +1,16 @@
+query getUserGroups($id: String!) {
+  users_by_pk(id: $id) {
+    profiles(
+      where: { group: { type: { _eq: group }, parent_id: { _is_null: true } } }
+      order_by: { last_seen: desc }
+    ) {
+      role
+      group {
+        path
+        name
+        image
+        banner
+      }
+    }
+  }
+}

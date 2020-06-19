@@ -1,0 +1,5 @@
+query getGroupRecommendations($id: String!) {
+  user_group_recommendations(args: { user_id: $id }) {
+    path
+  }
+}

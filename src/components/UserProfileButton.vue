@@ -2,7 +2,7 @@
   <q-btn v-if="avatar" round :to="userProfile">
     <q-avatar v-if="picture" size="48px" class="shadow">
       <img :src="picture" />
-      <q-tooltip v-if="$q.platform.is.desktop" :delay="300">
+      <q-tooltip v-if="$q.platform.is.desktop" :delay="300" content-class="dark">
         <about :name="user.name" :username="user.username" class="justify-center" />
       </q-tooltip>
     </q-avatar>

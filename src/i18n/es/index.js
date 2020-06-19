@@ -39,6 +39,7 @@ export default {
     female: 'Bienvenida',
   },
   newGroup: 'Nuevo grupo',
+  myGroups: 'Mis grupos',
 
   // Create group
   name: 'Nombre',
@@ -58,4 +59,7 @@ export default {
 
   // Group
   noGroup: 'El grupo que buscas no existe, es privado o ha cambiado de dirección.',
+
+  // Members
+  admin: 'Administrador',
 };

@@ -2,7 +2,7 @@
   <q-page v-if="found">
     <div class="container row">
       <div
-        class="column col-12 gutter-y-xlg"
+        class="column col-12 gutter-y-xlg no-wrap"
         :class="{
           'col-lg-8': fit && side,
           'col-md-8': !fit && side,
@@ -10,7 +10,7 @@
         }"
       >
         <q-skeleton
-          v-if="$apollo.loading || !group.banner"
+          v-if="$apollo.loading || (edit && !group.banner)"
           type="rect"
           :animation="$apollo.loading ? 'wave' : 'none'"
           class="banner"
@@ -23,23 +23,21 @@
           @error="loadingBanner = false"
         />
         <div class="row items-center no-wrap">
-          <q-skeleton
-            v-if="loadingBanner"
-            type="QAvatar"
-            size="80px"
-            class="q-mr-lg"
-            :animation="$apollo.loading || group.banner ? 'wave' : 'none'"
-          />
+          <q-skeleton v-if="$apollo.loading" type="QAvatar" size="80px" class="q-mr-lg" />
           <q-avatar
             v-else
             size="80px"
             :style="`background: ${defaultColor}`"
             class="col-auto group-image q-mr-lg"
           >
-            <img v-if="group.image" draggable="false" :src="group.image" />
+            <img
+              v-if="group.image || !group.banner"
+              draggable="false"
+              :src="group.image || defaultIcon"
+            />
           </q-avatar>
           <q-skeleton v-if="$apollo.loading" type="text" width="50%" class="text-h2" />
-          <h2 v-else>{{ group.name }}</h2>
+          <h2 v-else class="ellipsis-2-lines">{{ group.name }}</h2>
         </div>
         <div v-if="$apollo.loading">
           <q-skeleton type="text" width="100%" class="text-lg" />
@@ -66,7 +64,7 @@
             <q-chip
               v-for="topic in group.topics"
               :key="topic.name"
-              :color="topic.color"
+              :color="getRandomColor(topic)"
               :label="topic.label"
               text-color="white"
               class="q-mr-xs"
@@ -80,7 +78,8 @@
 </template>
 
 <script>
-import { getMainColorAsync, getPaletteColor, getRandomColor } from '@/utils/colors';
+import { getMainColorAsync, getRandomColor } from '@/utils/colors';
+import { identicon } from '@/services/gravatar';
 import { getClientGroup, toClientGroup } from '@/graphql/client/getGroup';
 import { getGroup } from '@/graphql/getGroup';
 
@@ -88,6 +87,7 @@ export default {
   meta() {
     return {
       title: this.group.name,
+      titleTemplate: null,
       meta: {
         description: { name: 'description', content: this.group.description },
         og_description: { property: 'og:description', content: this.group.description },
@@ -108,6 +108,10 @@ export default {
     fit: {
       type: Boolean,
       default: false
+    },
+    edit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -123,7 +127,7 @@ export default {
       cached: !!cached,
       group: cached ? cached.group : {},
       loadingBanner: true,
-      defaultColor: getPaletteColor('primary')
+      defaultColor: 'transparent'
     };
   },
   apollo: {
@@ -137,11 +141,7 @@ export default {
         update(data) {
           this.found = data.groups && data.groups.length > 0;
           if (this.found) {
-            const group = toClientGroup(data.groups[0]);
-            group.topics.forEach(topic => {
-              topic.color = getRandomColor();
-            });
-            return group;
+            return toClientGroup(data.groups[0]);
           }
           this.$emit('not-found');
           return {};
@@ -158,6 +158,9 @@ export default {
     },
     side() {
       return this.$apollo.loading || this.hasTopics;
+    },
+    defaultIcon() {
+      return identicon(this.group.name);
     }
   },
   methods: {
@@ -170,6 +173,12 @@ export default {
         );
         this.loadingBanner = false;
       });
+    },
+    getRandomColor(topic) {
+      if (!topic.color) {
+        topic.color = getRandomColor();
+      }
+      return topic.color;
     }
   }
 };
