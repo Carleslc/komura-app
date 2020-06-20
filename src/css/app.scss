@@ -306,21 +306,6 @@ h5,
   font-size: 1.3em;
 }
 
-.drawer-mobile {
-  h1,
-  .text-h1 {
-    font-size: 3.5em;
-  }
-  h2,
-  .text-h2 {
-    font-size: 2.5em;
-  }
-  h3,
-  .text-h3 {
-    font-size: 1.8em;
-  }
-}
-
 @media (max-width: $breakpoint-xs-max) {
   h1,
   .text-h1 {
@@ -333,6 +318,10 @@ h5,
   h3,
   .text-h3 {
     font-size: 1.8em;
+  }
+  h4,
+  .text-h4 {
+    font-size: 1.3em;
   }
 }
 
@@ -928,6 +917,10 @@ h5,
 
 .rounded {
   border-radius: 20px;
+
+  @media (max-width: $breakpoint-xs-max) {
+    border-radius: 10px;
+  }
 }
 
 .gt-min {

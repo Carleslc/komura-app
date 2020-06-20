@@ -1,7 +1,7 @@
 <template>
   <q-item v-ripple clickable :to="{ name: 'group', params: { path: group.path } }" class="border">
     <q-item-section avatar>
-      <q-img :src="group.image" basic class="rounded shadow-3" width="64px" height="64px"> </q-img>
+      <q-img :src="group.image" basic class="rounded shadow-3 group-icon" />
     </q-item-section>
     <q-item-section>
       <q-item-label lines="2">
@@ -35,7 +35,19 @@ export default {
 </script>
 
 <style lang="scss">
-.q-item.border {
-  border-radius: 2px;
+.q-item {
+  .border {
+    border-radius: 2px;
+  }
+
+  .group-icon {
+    width: 64px;
+    height: 64px;
+
+    @media (max-width: $breakpoint-xs-max) {
+      width: 42px;
+      height: 42px;
+    }
+  }
 }
 </style>

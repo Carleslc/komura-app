@@ -1,6 +1,6 @@
 <template>
   <q-page class="column">
-    <div class="col-auto row gutter-y-lg gutter-y-max-sm">
+    <div class="col-auto row full-width gutter-y-lg gutter-y-max-sm">
       <div class="col-xs-12 col-md-6 col-lg-8 gutter-y-lg pr-lg pr-min-md">
         <h3 v-t="'myGroups'" />
         <div class="row q-col-gutter-x-lg">
