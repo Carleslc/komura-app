@@ -32,6 +32,7 @@
             v-if="split"
             label="done"
             :disabled="uncompleted"
+            :loading="$apollo.loading"
             class="q-mt-lg self-start"
           />
         </div>
