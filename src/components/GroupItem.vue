@@ -9,7 +9,7 @@
       </q-item-label>
     </q-item-section>
     <q-item-section v-if="group.admin" side>
-      <q-icon name="r_star" color="grey">
+      <q-icon name="r_star" color="grey-light">
         <q-tooltip
           anchor="center left"
           self="center right"
