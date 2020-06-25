@@ -33,21 +33,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-.q-item {
-  .border {
-    border-radius: 2px;
-  }
-
-  .group-icon {
-    width: 64px;
-    height: 64px;
-
-    @media (max-width: $breakpoint-xs-max) {
-      width: 42px;
-      height: 42px;
-    }
-  }
-}
-</style>

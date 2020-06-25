@@ -6,6 +6,7 @@ query getUserGroups($id: String!) {
     ) {
       role
       group {
+        id
         path
         name
         image

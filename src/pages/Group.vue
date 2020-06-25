@@ -37,7 +37,9 @@
             />
           </q-avatar>
           <q-skeleton v-if="$apollo.loading" type="text" width="50%" class="text-h2" />
-          <h2 v-else class="ellipsis-2-lines">{{ group.name }}</h2>
+          <h2 v-else class="ellipsis-2-lines">
+            {{ group.name }}
+          </h2>
         </div>
         <div v-if="$apollo.loading">
           <q-skeleton type="text" width="100%" class="text-lg" />
@@ -73,6 +75,8 @@
         </div>
       </div>
     </div>
+    <fab v-if="currentMember.admin && !edit" icon="r_edit" label="edit" @click="edit = true" />
+    <fab v-else-if="edit" icon="r_done" color="positive" label="done" @click="edit = false" />
   </q-page>
   <not-found v-else message="noGroup" emoji="desert" />
 </template>
@@ -82,6 +86,7 @@ import { getMainColorAsync, getRandomColor } from '@/utils/colors';
 import { identicon } from '@/services/gravatar';
 import { getClientGroup, toClientGroup } from '@/graphql/client/getGroup';
 import { getGroup } from '@/graphql/getGroup';
+import currentMember from '@/mixins/currentMember';
 
 export default {
   meta() {
@@ -98,18 +103,16 @@ export default {
   },
   components: {
     banner: () => import('components/Banner.vue'),
+    fab: () => import('components/Fab.vue'),
     'not-found': () => import('pages/NotFound.vue')
   },
+  mixins: [currentMember],
   props: {
     path: {
       type: String,
       required: true
     },
     fit: {
-      type: Boolean,
-      default: false
-    },
-    edit: {
       type: Boolean,
       default: false
     }
@@ -124,6 +127,7 @@ export default {
 
     return {
       found: true,
+      edit: false,
       cached: !!cached,
       group: cached ? cached.group : {},
       loadingBanner: true,

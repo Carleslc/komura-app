@@ -2,6 +2,8 @@ export default {
   // Misc
   please: 'Por favor',
   error: 'Vaya... parece que ha ocurrido un error inesperado 😣',
+  done: '¡Listo!',
+  edit: 'Editar',
 
   // Forms
   required: {
@@ -49,7 +51,6 @@ export default {
   banner: 'Imagen del grupo',
   groupAlreadyExists: 'Ya existe un grupo con un nombre similar a "{name}". Prueba con otro nombre.',
   groupRestrictedName: 'No es posible usar el nombre "{name}". Prueba con otro nombre.',
-  createGroup: '¡Listo!',
 
   // Topics
   topics: 'Temas',

@@ -169,11 +169,18 @@
 .q-btn {
   border-radius: $roundness; // rounded
 
-  .q-btn__wrapper {
+  &:not(.q-btn--fab) .q-btn__wrapper {
     padding: 0;
 
     &::before {
       box-shadow: none; // unelevated
+    }
+  }
+
+  &.q-btn--fab {
+    .q-btn__content span {
+      padding-right: 0.285em;
+      padding-left: 0.571em;
     }
   }
 
@@ -826,6 +833,22 @@ h5,
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+}
+
+.q-item {
+  .border {
+    border-radius: 2px;
+  }
+}
+
+.group-icon {
+  width: 64px;
+  height: 64px;
+
+  @media (max-width: $breakpoint-xs-max) {
+    width: 42px;
+    height: 42px;
+  }
 }
 
 .q-p {

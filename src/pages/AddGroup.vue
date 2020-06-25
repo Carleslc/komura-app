@@ -30,7 +30,7 @@
           />
           <submit-btn
             v-if="split"
-            label="createGroup"
+            label="done"
             :disabled="uncompleted"
             class="q-mt-lg self-start"
           />

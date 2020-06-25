@@ -1,0 +1,9 @@
+query getMemberById($user: String!, $group: bigint!) {
+  members_by_pk(user_id: $user, group_id: $group) {
+    role
+    name
+    description
+    image
+    banner
+  }
+}
