@@ -14,7 +14,7 @@
         <p class="text-sm text-accent">{{ $t('required.label') }}</p>
       </q-tooltip>
     </span>
-    <p v-if="hint" v-t="hint" class="full-width q-mb-md text-grey" />
+    <p v-if="hint" v-t="hint" class="full-width q-mb-md text" />
     <div class="full-width">
       <slot />
     </div>
