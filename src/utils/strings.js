@@ -66,7 +66,7 @@ export function params(objectParams) {
     .join('&');
 }
 
-export const blacklist = ['new'];
+export const blacklistSlugs = ['new', 'edit'];
 
 export function equalsIgnoreCase(a, b) {
   return lowerCase(a) === lowerCase(b);

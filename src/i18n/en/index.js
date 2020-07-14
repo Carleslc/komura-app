@@ -54,6 +54,9 @@ export default {
   searchTopics: 'Search topics',
   limitTopics: 'Select up to {max} topics.',
 
+  // Edit group
+  editGroup: 'Edit group',
+
   // Group
   noGroup: "The group you're looking for is private, has been moved or doesn't exist.",
 

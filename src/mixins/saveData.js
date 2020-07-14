@@ -1,12 +1,13 @@
 import { LocalStorage } from 'quasar';
 import isEmpty from 'lodash.isempty';
 
-export function saveData(key, defaultData) {
+export function saveData(key, defaultData, componentRef) {
   function save() {
+    const component = componentRef ? this.$refs[componentRef] : this;
     const currentData = Object.keys(defaultData)
-      .filter(d => !isEmpty(this[d]))
+      .filter(d => !isEmpty(component[d]))
       .reduce((obj, d) => {
-        obj[d] = this[d];
+        obj[d] = component[d];
         return obj;
       }, {});
 
@@ -24,23 +25,19 @@ export function saveData(key, defaultData) {
       return {
         ...defaultData,
         ...saved,
-        isDefaultData: !LocalStorage.has(key)
+        isDefaultData: !saved
       };
     },
-    // save data on page close
-    created() {
+    mounted() {
+      // save data on page close
       this.save = save.bind(this);
       window.addEventListener('beforeunload', this.save);
     },
     // save data on route change
     beforeDestroy() {
-      this.save();
-      window.removeEventListener('beforeunload', this.save);
-    },
-    // enforce data validation if data is not default
-    mounted() {
-      if (!this.isDefaultData && this.validate) {
-        this.validate(); // Overwrite in component if needed
+      if (this.save) {
+        this.save();
+        window.removeEventListener('beforeunload', this.save);
       }
     },
     methods: {

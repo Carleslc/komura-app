@@ -29,6 +29,12 @@ const routes = [
         component: () => import('pages/AddGroup.vue')
       },
       {
+        name: 'editGroup',
+        path: '/groups/:path*/edit',
+        component: () => import('pages/EditGroup.vue'),
+        props: true
+      },
+      {
         name: 'group',
         path: '/groups/:path*',
         component: () => import('pages/Group.vue'),

@@ -6,15 +6,19 @@ import { i18n } from '@/boot/i18n';
 const ENABLED = process.env.PROD;
 
 function capture(e, level = Sentry.Severity.Error) {
-  if (typeof e === 'string') {
-    Sentry.captureMessage(e, level);
-  } else {
-    Sentry.captureException(e, level);
+  if (e) {
+    if (typeof e === 'string') {
+      Sentry.captureMessage(e, level);
+    } else {
+      Sentry.captureException(e, level);
+    }
   }
 }
 
 function log(e, level = Sentry.Severity.Error) {
-  console.error(`[${level}]`, e);
+  if (e) {
+    console.error(`[${level}]`, e);
+  }
 }
 
 export const report = ENABLED ? capture : log;
@@ -24,7 +28,7 @@ const handled = new Set();
 function reportUnique(key, message, level) {
   if (!handled.has(key)) {
     report(message, level);
-    handled.add(key || message);
+    handled.add(key);
   }
 }
 

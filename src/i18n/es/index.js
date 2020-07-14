@@ -58,6 +58,9 @@ export default {
   searchTopics: 'Buscar temas',
   limitTopics: 'Puedes seleccionar hasta {max} temas.',
 
+  // Edit group
+  editGroup: 'Editar grupo',
+
   // Group
   noGroup: 'El grupo que buscas no existe, es privado o ha cambiado de dirección.',
 

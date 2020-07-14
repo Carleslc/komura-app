@@ -10,7 +10,7 @@
         }"
       >
         <q-skeleton
-          v-if="$apollo.loading || (edit && !group.banner)"
+          v-if="$apollo.loading"
           type="rect"
           :animation="$apollo.loading ? 'wave' : 'none'"
           class="banner"
@@ -75,8 +75,7 @@
         </div>
       </div>
     </div>
-    <fab v-if="currentMember.admin && !edit" icon="r_edit" label="edit" @click="edit = true" />
-    <fab v-else-if="edit" icon="r_done" color="positive" label="done" @click="edit = false" />
+    <edit-btn v-if="currentMember.admin" :to="{ name: 'editGroup', params: { path } }" />
   </q-page>
   <not-found v-else message="noGroup" emoji="desert" />
 </template>
@@ -103,7 +102,7 @@ export default {
   },
   components: {
     banner: () => import('components/Banner.vue'),
-    fab: () => import('components/Fab.vue'),
+    'edit-btn': () => import('components/EditButton.vue'),
     'not-found': () => import('pages/NotFound.vue')
   },
   mixins: [currentMember],
@@ -127,7 +126,6 @@ export default {
 
     return {
       found: true,
-      edit: false,
       cached: !!cached,
       group: cached ? cached.group : {},
       loadingBanner: true,
